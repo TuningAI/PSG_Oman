@@ -1,0 +1,608 @@
+export const DEFAULT_SETTINGS = {
+  gmail: {
+    email: 'proposals@pgsoman.com',
+    appPassword: '',
+    autoSyncIntervalMinutes: 10,
+    syncToGmailDrafts: true,
+    maxEmailsPerSync: 15,
+    lastSyncedLabel: '09:42 GST',
+  },
+  ai: {
+    provider: 'gemini',
+    geminiApiKey: '',
+    geminiModel: 'gemini-2.5-flash',
+    openaiApiKey: '',
+    openaiModel: 'gpt-4o-mini',
+  },
+  socialAccounts: {
+    linkedin: {
+      connected: true,
+      companyPageName: 'PGS Oman — Premier Green Environmental Services LLC',
+      handle: 'linkedin.com/company/pgs-oman-environmental',
+      AccountType: 'Company Page & Executive Profile',
+      autoIncludeContactFooter: true,
+    },
+    instagram: {
+      connected: true,
+      username: '@pgs.oman.official',
+      bioName: 'PGS Oman | Waste & Environmental Contracting',
+      autoHashtags: true,
+    },
+  },
+  companyProfile: {
+    companyName: 'PGS Oman',
+    fullLegalName: 'PGS Oman — Premier Green Environmental & Waste Management LLC',
+    managerName: 'Ahmed Al Kindi',
+    managerInitials: 'AK',
+    managerTitle: 'General Manager · PGS Oman',
+    phone: '+968 2450 8800 / +968 9900 1234',
+    email: 'proposals@pgsoman.com',
+    defaultCc: 'operations@pgsoman.com',
+    location: 'Muscat, Sultanate of Oman (Serving Muscat, Sohar, Duqm & Salalah)',
+    certifications: 'Be’ah Approved Contractor | Environment Authority License #EA-WM-4092 | ISO 14001 & ISO 45001 Certified',
+    paymentTerms: '30 days',
+    validityPeriod: '30 Days from Quotation Date',
+    signatureNote: 'We provide GPS-tracked fleet operations, full waste transfer manifests, and 24/7 emergency skip replacement.',
+    rateCard: [
+      {
+        id: 'rc-1',
+        serviceName: 'General waste · 1,100 L Bin (3× weekly collection)',
+        unit: 'Per Bin / Month',
+        rate: '208 OMR',
+        notes: 'Includes municipal landfill tipping fees & bin sanitization',
+      },
+      {
+        id: 'rc-2',
+        serviceName: 'Cardboard recycling · 1,100 L Bin (Weekly collection)',
+        unit: 'Per Bin / Month',
+        rate: '240.500 OMR',
+        notes: 'Includes baling & monthly recycling diversion certificate',
+      },
+      {
+        id: 'rc-3',
+        serviceName: '6 m³ / 7 CBM Skip Container',
+        unit: 'Per Lift / Trip',
+        rate: '200 OMR',
+        notes: 'Includes haulage and municipal disposal manifest',
+      },
+      {
+        id: 'rc-4',
+        serviceName: '20 CBM / 30 CBM RoRo Container (C&D / Factory Bulk)',
+        unit: 'Per Trip',
+        rate: '275 OMR',
+        notes: 'Suitable for factory expansion, C&D rubble & bulky industrial waste',
+      },
+      {
+        id: 'rc-5',
+        serviceName: 'Hazardous & Chemical Waste Transport & Manifested Disposal',
+        unit: 'Per Metric Ton',
+        rate: '140 OMR',
+        notes: 'ADR-certified trucks, full Environment Authority manifest documentation',
+      },
+    ],
+  },
+};
+
+export const INITIAL_SOCIAL_POSTS = [
+  {
+    id: 'social-demo-1',
+    createdAt: new Date(Date.now() - 1000 * 60 * 95).toISOString(),
+    prompt: 'Showcase our new fleet of 30 CBM RoRo containers and chain-lift skip trucks deployed at Sohar Freezone & Rusayl Industrial Estate for 24/7 industrial waste management.',
+    status: 'published',
+    publishedAt: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
+    platforms: ['linkedin', 'instagram'],
+    visualConfig: {
+      templateStyle: 'executive-emerald',
+      aspectRatio: '1:1',
+      categoryBadge: 'FLEET MOBILIZATION & OPERATIONS',
+      headline: 'Expanding Our 24/7 Industrial Waste Fleet Across Sohar & Muscat',
+      subheadline: 'GPS-Tracked 30 CBM RoRo Containers, Chain-Lift Skips & Certified Environmental Compliance',
+      highlights: [
+        'Be’ah & Environment Authority Licensed',
+        '24-Hour Skip Replacement SLA',
+        'ISO 14001 & 45001 Certified Operations',
+      ],
+      sceneIllustration: 'fleet-trucks',
+      uploadedPhotos: [],
+    },
+    linkedinCaption: `Proud to announce the mobilization of our expanded heavy-duty RoRo and Chain-Lift Skip fleet serving industrial partners across Sohar Freezone and Rusayl Industrial Estate! 🚛♻️
+
+At PGS Oman, we understand that reliable, compliant waste logistics are critical to keeping Oman’s manufacturing, construction, and warehousing hubs running safely and efficiently.
+
+What this fleet expansion delivers for our contracting partners:
+✅ Rapid 24-hour SLA for 6 m³, 20 CBM, and 30 CBM RoRo skip replacements
+✅ Full cradle-to-grave Be’ah waste transfer manifests & calibrated weighbridge documentation
+✅ Dedicated cardboard, plastic, and industrial scrap segregation with monthly ISO 14001 diversion certificates
+✅ 100% GPS-tracked fleet operated by HSE-certified drivers
+
+Planning a new industrial project or reviewing your Annual Waste Management Contract? Connect with our Contracts Division at proposals@pgsoman.com or call +968 2450 8800.`,
+    instagramCaption: `Powering cleaner industries across the Sultanate! 🇴🇲♻️
+
+Our newest fleet of 30 CBM RoRo containers and skip loaders is officially on the ground at Sohar Freezone & Rusayl Industrial Estate — delivering 24/7 waste collection, recycling segregation, and zero-downtime site support. 🚛✨
+
+🔹 1,100 L Bins, 6 m³ Skips & 30 CBM RoRo Containers
+🔹 Full Be’ah & Environment Authority Compliance
+🔹 Monthly ESG & Recycling Diversion Certificates
+🔹 Fast 24-Hour On-Call Replacement
+
+📩 DM us or email proposals@pgsoman.com to book a free site inspection for your facility!`,
+    hashtags: [
+      '#PGSOman',
+      '#WasteManagementOman',
+      '#OmanVision2040',
+      '#SoharFreezone',
+      '#RusaylIndustrial',
+      '#BeahCompliance',
+      '#SustainableOman',
+    ],
+  },
+  {
+    id: 'social-demo-2',
+    createdAt: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
+    prompt: 'Promote our ADR-certified Hazardous & Industrial Waste Disposal and Recycling Segregation services helping Omani companies achieve ISO 14001 sustainability goals.',
+    status: 'draft',
+    platforms: ['linkedin', 'instagram'],
+    visualConfig: {
+      templateStyle: 'industrial-slate',
+      aspectRatio: '1:1',
+      categoryBadge: 'SUSTAINABILITY & HSE EXCELLENCE',
+      headline: 'Zero-Risk Hazardous Waste & Industrial Recycling Solutions',
+      subheadline: 'Helping Oman’s Energy, Petrochemical & Manufacturing Leaders Meet Vision 2040 ESG Targets',
+      highlights: [
+        'ADR-Certified Hazardous Transport',
+        '5-Part EA Manifest Documentation',
+        'Certified Recycling Rebate Program',
+      ],
+      sceneIllustration: 'recycling-facility',
+      uploadedPhotos: [],
+    },
+    linkedinCaption: `Environmental compliance isn't just a regulatory requirement—it's the foundation of sustainable industrial growth under Oman Vision 2040. 🌱🇴🇲
+
+PGS Oman provides end-to-end Hazardous Waste Management and Industrial Recycling programs engineered for petrochemical plants, logistics hubs, and major construction contractors.
+
+Our turnkey environmental contracting capabilities include:
+• ADR-certified transport & manifested disposal of hazardous sludge, chemical drums, and industrial effluents
+• Complete 5-part Environment Authority waste manifests & destruction certificates within 7 days
+• On-site baler & segregation programs for cardboard, LDPE film, timber, and scrap metal with official ESG Diversion Certificates
+
+Reach out to Ahmed Al Kindi and our Contracts team at proposals@pgsoman.com for a comprehensive waste audit and commercial proposal.`,
+    instagramCaption: `Turning industrial waste challenges into certified sustainability wins! 🌱♻️
+
+From ADR-certified hazardous waste disposal to high-efficiency cardboard & plastic recycling programs, PGS Oman keeps your facility 100% compliant with Environment Authority and ISO 14001 standards. 🛡️🇴🇲
+
+✅ Full Cradle-to-Grave Waste Manifests
+✅ Certified Destruction & Recycling Reports
+✅ Serving Muscat, Sohar, Duqm & Salalah
+
+Contact our team at +968 2450 8800 to upgrade your waste management contract today!`,
+    hashtags: [
+      '#EnvironmentalCompliance',
+      '#OmanSustainability',
+      '#ISO14001',
+      '#HazardousWasteManagement',
+      '#GreenOman',
+      '#PGSOman',
+    ],
+  },
+];
+
+export const INITIAL_DEMO_EMAILS = [
+  {
+    id: 'msg-demo-101',
+    messageId: '<rfq-2026-alnoor@alnoorlogistics.om>',
+    initials: 'AN',
+    fromName: 'Salim Al-Harthy',
+    fromEmail: 'salim@alnoorlogistics.om',
+    companyName: 'Al Noor Logistics LLC',
+    subject: 'RFQ: Waste collection for 2 Muscat warehouses',
+    displayTime: '09:38',
+    shortMeta: 'Ghala + Rusayl · 12 months',
+    receivedAt: new Date(Date.now() - 1000 * 60 * 25).toISOString(),
+    isDemo: true,
+    isWasteProposal: true,
+    category: 'New Proposal / RFP',
+    urgency: 'High',
+    status: 'pending_approval',
+    gmailDraftSynced: false,
+    bodyText: `Dear Ahmed,
+
+Al Noor Logistics LLC is requesting a quotation for waste collection services across our Ghala and Rusayl warehouses in Muscat for a 12-month contract starting 1 Nov 2026.
+
+Scope of services required:
+- General waste: 6 × 1,100 L bins collected 3× weekly
+- Cardboard recycling: 2 × 1,100 L bins collected weekly
+- Skips: 2 × 6 m³ skips with 2 lifts per month
+
+Please find attached our formal RFQ document (AlNoor_Waste_RFQ.pdf) and submit your quotation by 23 Oct 2026.
+
+Best regards,
+Salim Al-Harthy
+Procurement Manager · Al Noor Logistics LLC`,
+    attachments: [
+      {
+        filename: 'AlNoor_Waste_RFQ.pdf',
+        mimeType: 'application/pdf',
+        size: 194500,
+        pages: 2,
+        previewHeader: 'AL NOOR LOGISTICS LLC',
+        previewSubheader: 'RFQ - WASTE COLLECTION SERVICES',
+        previewLocation: 'Ghala & Rusayl warehouses\n8 bins · 2 skips · 12 months',
+        previewLines: [
+          'General waste: 6 × 1,100 L · 3× weekly',
+          'Cardboard: 2 × 1,100 L · weekly',
+          'Skips: 2 × 6 m³ · lifts per month',
+        ],
+        previewFooter: 'Start date: 1 November 2026\nPlease submit quotation by 23 October 2026.',
+        extractedText: `AL NOOR LOGISTICS LLC
+RFQ - WASTE COLLECTION SERVICES
+Locations: Ghala & Rusayl warehouses (8 bins · 2 skips · 12 months)
+- General waste: 6 × 1,100 L · 3× weekly
+- Cardboard: 2 × 1,100 L · weekly
+- Skips: 2 × 6 m³ · 2 lifts per month
+Start date: 1 November 2026
+Please submit quotation by 23 October 2026.`,
+      },
+    ],
+    aiAnalysis: {
+      relevanceScore: 99,
+      relevanceReason: 'Direct RFQ for warehouse waste collection and skip removal across Ghala and Rusayl.',
+      executiveSummary: [
+        'Al Noor Logistics needs waste collection at its Ghala and Rusayl warehouses.',
+        'Collect general waste 3× weekly and cardboard weekly; remove 2 skips monthly.',
+        '12-month service from 1 Nov 2026. Please quote by 23 Oct 2026.',
+      ],
+      extractedDetails: {
+        wasteStreamsLabel: 'General + cardboard',
+        siteLocationsLabel: 'Ghala + Rusayl, Muscat',
+        binsVolumeLabel: '8 × 1,100 L; 2 × 6 m³',
+        contractDurationLabel: '12 months · 1 Nov 2026',
+        wasteTypes: ['General waste', 'Cardboard'],
+        estimatedVolume: '8 × 1,100 L; 2 × 6 m³',
+        locations: ['Ghala + Rusayl, Muscat'],
+        contractDuration: '12 months · 1 Nov 2026',
+        deadline: '23 Oct 2026',
+        estimatedMonthlyValue: '2,129 OMR/month',
+      },
+    },
+    draft: {
+      to: 'salim@alnoorlogistics.om',
+      cc: 'operations@pgsoman.com',
+      subject: 'Quotation | Ghala & Rusayl waste collection',
+      tonePreset: 'Accept & Send Quotation',
+      introText: 'Dear Salim,\n\nThank you for your RFQ. We are pleased to quote for your Ghala and Rusayl warehouses for 12 months from 1 Nov 2026.',
+      pricingTable: [
+        { service: 'General waste · 6 bins × 208', amount: '1,248.000' },
+        { service: 'Cardboard · 2 bins × 240.500', amount: '481.000' },
+        { service: '6 m³ skips · 2 lifts × 200', amount: '400.000' },
+      ],
+      totalLabel: '2,129 OMR/month',
+      outroText: 'General waste: 3× weekly; cardboard: weekly; skips: 2 lifts/month. Payment: 30 days. Please confirm to arrange mobilisation.\n\nKind regards, Ahmed Al Kindi\nGeneral Manager · PGS Oman',
+      body: `Dear Salim,
+
+Thank you for your RFQ. We are pleased to quote for your Ghala and Rusayl warehouses for 12 months from 1 Nov 2026.
+
+MONTHLY SERVICE BREAKDOWN:
+• General waste · 6 bins × 208 OMR = 1,248.000 OMR/month
+• Cardboard · 2 bins × 240.500 OMR = 481.000 OMR/month
+• 6 m³ skips · 2 lifts × 200 OMR = 400.000 OMR/month
+Total · excluding VAT: 2,129 OMR/month
+
+General waste: 3× weekly; cardboard: weekly; skips: 2 lifts/month. Payment: 30 days. Please confirm to arrange mobilisation.
+
+Kind regards, Ahmed Al Kindi
+General Manager · PGS Oman`,
+      lastUpdatedAt: new Date(Date.now() - 1000 * 60 * 20).toISOString(),
+    },
+  },
+  {
+    id: 'msg-demo-102',
+    messageId: '<renewal-2026@muscatbayfacilities.om>',
+    initials: 'MB',
+    fromName: 'Tariq Al-Balushi',
+    fromEmail: 't.balushi@muscatbayfacilities.om',
+    companyName: 'Muscat Bay Facilities',
+    subject: 'Annual waste management contract renewal',
+    displayTime: '09:12',
+    shortMeta: 'Qantab · 12 months',
+    receivedAt: new Date(Date.now() - 1000 * 60 * 52).toISOString(),
+    isDemo: true,
+    isWasteProposal: true,
+    category: 'Contract Documentation',
+    urgency: 'High',
+    status: 'pending_approval',
+    gmailDraftSynced: false,
+    bodyText: `Dear Ahmed,
+
+We would like to proceed with the 12-month annual waste management contract renewal for Muscat Bay Facilities in Qantab starting 15 Nov 2026.
+
+The scope covers 10 × 1,100 L general waste bins (3× weekly), 4 × 1,100 L recyclable bins (weekly), and 3 × 6 m³ skip lifts per month. Please review the attached renewal schedule (MuscatBay_Renewal_2026.pdf) and send your updated commercial confirmation.
+
+Regards,
+Tariq Al-Balushi
+Facilities Director · Muscat Bay Facilities`,
+    attachments: [
+      {
+        filename: 'MuscatBay_Renewal_2026.pdf',
+        mimeType: 'application/pdf',
+        size: 168000,
+        pages: 2,
+        previewHeader: 'MUSCAT BAY FACILITIES LLC',
+        previewSubheader: 'ANNUAL WASTE CONTRACT RENEWAL',
+        previewLocation: 'Qantab Mixed-Use Zone\n14 bins · 3 skips · 12 months',
+        previewLines: [
+          'General waste: 10 × 1,100 L · 3× weekly',
+          'Recyclables: 4 × 1,100 L · weekly',
+          'Skips: 3 × 6 m³ · lifts per month',
+        ],
+        previewFooter: 'Renewal Date: 15 November 2026\nStandard 30-day credit terms apply.',
+        extractedText: `MUSCAT BAY FACILITIES LLC - CONTRACT RENEWAL
+Location: Qantab · 12 months
+- General waste: 10 × 1,100 L · 3× weekly
+- Recyclables: 4 × 1,100 L · weekly
+- Skips: 3 × 6 m³ · lifts per month`,
+      },
+    ],
+    aiAnalysis: {
+      relevanceScore: 98,
+      relevanceReason: 'Annual waste management contract renewal documentation for Qantab facilities.',
+      executiveSummary: [
+        'Muscat Bay Facilities requests a 12-month contract renewal for its Qantab operations.',
+        'Includes 10 general waste bins (3× weekly), 4 recycling bins (weekly), and 3 skip lifts monthly.',
+        'Renewal effective from 15 Nov 2026 under 30-day payment terms.',
+      ],
+      extractedDetails: {
+        wasteStreamsLabel: 'General + recyclables',
+        siteLocationsLabel: 'Qantab, Muscat',
+        binsVolumeLabel: '14 × 1,100 L; 3 × 6 m³',
+        contractDurationLabel: '12 months · 15 Nov 2026',
+        wasteTypes: ['General waste', 'Recyclables'],
+        estimatedVolume: '14 × 1,100 L; 3 × 6 m³',
+        locations: ['Qantab, Muscat'],
+        contractDuration: '12 months · 15 Nov 2026',
+        deadline: '10 Nov 2026',
+        estimatedMonthlyValue: '3,642 OMR/month',
+      },
+    },
+    draft: {
+      to: 't.balushi@muscatbayfacilities.om',
+      cc: 'operations@pgsoman.com',
+      subject: 'Contract Renewal Confirmation | Qantab waste management',
+      tonePreset: 'Accept & Send Quotation',
+      introText: 'Dear Tariq,\n\nThank you for forwarding the renewal schedule. We are pleased to confirm our commercial rates for the 12-month Qantab contract from 15 Nov 2026.',
+      pricingTable: [
+        { service: 'General waste · 10 bins × 208', amount: '2,080.000' },
+        { service: 'Recyclables · 4 bins × 240.500', amount: '962.000' },
+        { service: '6 m³ skips · 3 lifts × 200', amount: '600.000' },
+      ],
+      totalLabel: '3,642 OMR/month',
+      outroText: 'General waste: 3× weekly; recyclables: weekly; skips: 3 lifts/month. Payment: 30 days. Please countersign to complete renewal.\n\nKind regards, Ahmed Al Kindi\nGeneral Manager · PGS Oman',
+      body: `Dear Tariq,
+
+Thank you for forwarding the renewal schedule. We are pleased to confirm our commercial rates for the 12-month Qantab contract from 15 Nov 2026.
+
+MONTHLY SERVICE BREAKDOWN:
+• General waste · 10 bins × 208 OMR = 2,080.000 OMR/month
+• Recyclables · 4 bins × 240.500 OMR = 962.000 OMR/month
+• 6 m³ skips · 3 lifts × 200 OMR = 600.000 OMR/month
+Total · excluding VAT: 3,642 OMR/month
+
+General waste: 3× weekly; recyclables: weekly; skips: 3 lifts/month. Payment: 30 days. Please countersign to complete renewal.
+
+Kind regards, Ahmed Al Kindi
+General Manager · PGS Oman`,
+      lastUpdatedAt: new Date(Date.now() - 1000 * 60 * 48).toISOString(),
+    },
+  },
+  {
+    id: 'msg-demo-103',
+    messageId: '<skips-sohar-2026@soharindustrial.om>',
+    initials: 'SI',
+    fromName: 'Eng. Nasser Al-Zadjali',
+    fromEmail: 'nasser@soharindustrial.om',
+    companyName: 'Sohar Industrial Services',
+    subject: 'Skip collection for factory expansion',
+    displayTime: '08:46',
+    shortMeta: 'Sohar · 6 months',
+    receivedAt: new Date(Date.now() - 1000 * 60 * 90).toISOString(),
+    isDemo: true,
+    isWasteProposal: true,
+    category: 'Rate Inquiry / Quotation',
+    urgency: 'High',
+    status: 'pending_approval',
+    gmailDraftSynced: false,
+    bodyText: `Dear PGS Oman Team,
+
+We are expanding our Sohar Industrial Estate manufacturing plant and require skip collection services for a 6-month period starting 1 Nov 2026:
+- 4 × 6 m³ skips for mixed industrial & packaging waste (6 lifts per month)
+- 2 × 30 CBM RoRo containers for construction & scrap debris (4 trips per month)
+- 4 × 1,100 L general waste bins (3× weekly)
+
+Attached is our site layout and skip schedule (Sohar_Factory_Skips_RFQ.pdf).
+
+Best regards,
+Eng. Nasser Al-Zadjali
+Projects Lead · Sohar Industrial Services`,
+    attachments: [
+      {
+        filename: 'Sohar_Factory_Skips_RFQ.pdf',
+        mimeType: 'application/pdf',
+        size: 215000,
+        pages: 2,
+        previewHeader: 'SOHAR INDUSTRIAL SERVICES',
+        previewSubheader: 'FACTORY EXPANSION WASTE SCHEDULE',
+        previewLocation: 'Sohar Industrial Estate, Phase 4\n4 bins · 6 containers · 6 months',
+        previewLines: [
+          'General waste: 4 × 1,100 L · 3× weekly',
+          'Industrial skips: 4 × 6 m³ · 6 lifts/mo',
+          'RoRo containers: 2 × 30 CBM · 4 trips/mo',
+        ],
+        previewFooter: 'Mobilisation: 1 November 2026\nBe’ah manifest required per trip.',
+        extractedText: `SOHAR INDUSTRIAL SERVICES - FACTORY EXPANSION
+Location: Sohar · 6 months
+- General waste: 4 × 1,100 L · 3× weekly
+- Industrial skips: 4 × 6 m³ · 6 lifts/month
+- RoRo containers: 2 × 30 CBM · 4 trips/month`,
+      },
+    ],
+    aiAnalysis: {
+      relevanceScore: 97,
+      relevanceReason: 'Quotation request for skip and RoRo container collection for a 6-month factory expansion in Sohar.',
+      executiveSummary: [
+        'Sohar Industrial Services needs skip and RoRo collection for its factory expansion in Sohar.',
+        'Requires 4 general bins (3× weekly), 6 lifts/month of 6 m³ skips, and 4 trips/month of 30 CBM RoRo.',
+        '6-month contract starting 1 Nov 2026 with Be’ah manifest compliance.',
+      ],
+      extractedDetails: {
+        wasteStreamsLabel: 'Industrial + C&D scrap',
+        siteLocationsLabel: 'Sohar Industrial Estate',
+        binsVolumeLabel: '4 × 1,100 L; 4 × 6 m³; 2 × 30 CBM',
+        contractDurationLabel: '6 months · 1 Nov 2026',
+        wasteTypes: ['Industrial waste', 'C&D scrap'],
+        estimatedVolume: '4 × 1,100 L; 4 × 6 m³',
+        locations: ['Sohar Industrial Estate'],
+        contractDuration: '6 months · 1 Nov 2026',
+        deadline: '25 Oct 2026',
+        estimatedMonthlyValue: '3,132 OMR/month',
+      },
+    },
+    draft: {
+      to: 'nasser@soharindustrial.om',
+      cc: 'operations@pgsoman.com',
+      subject: 'Quotation | Sohar factory expansion skip collection',
+      tonePreset: 'Accept & Send Quotation',
+      introText: 'Dear Nasser,\n\nThank you for your enquiry. We are pleased to quote for your Sohar factory expansion for 6 months from 1 Nov 2026.',
+      pricingTable: [
+        { service: 'General waste · 4 bins × 208', amount: '832.000' },
+        { service: '6 m³ skips · 6 lifts × 200', amount: '1,200.000' },
+        { service: '30 CBM RoRo · 4 trips × 275', amount: '1,100.000' },
+      ],
+      totalLabel: '3,132 OMR/month',
+      outroText: 'Includes full Be’ah manifests and 24-hour skip replacement SLA. Payment: 30 days. Please confirm to arrange mobilisation.\n\nKind regards, Ahmed Al Kindi\nGeneral Manager · PGS Oman',
+      body: `Dear Nasser,
+
+Thank you for your enquiry. We are pleased to quote for your Sohar factory expansion for 6 months from 1 Nov 2026.
+
+MONTHLY SERVICE BREAKDOWN:
+• General waste · 4 bins × 208 OMR = 832.000 OMR/month
+• 6 m³ skips · 6 lifts × 200 OMR = 1,200.000 OMR/month
+• 30 CBM RoRo · 4 trips × 275 OMR = 1,100.000 OMR/month
+Total · excluding VAT: 3,132 OMR/month
+
+Includes full Be’ah manifests and 24-hour skip replacement SLA. Payment: 30 days. Please confirm to arrange mobilisation.
+
+Kind regards, Ahmed Al Kindi
+General Manager · PGS Oman`,
+      lastUpdatedAt: new Date(Date.now() - 1000 * 60 * 85).toISOString(),
+    },
+  },
+  {
+    id: 'msg-demo-104',
+    messageId: '<promo-99812@muscat-office-mart.com>',
+    initials: 'MO',
+    fromName: 'Muscat Office Supplies Promo',
+    fromEmail: 'deals@muscat-office-mart.com',
+    companyName: 'Muscat Office Mart',
+    subject: 'FLASH SALE: 40% Off Laser Printer Toners & Office Chairs',
+    displayTime: '08:15',
+    shortMeta: 'Filtered · Promotional',
+    receivedAt: new Date(Date.now() - 1000 * 60 * 320).toISOString(),
+    isDemo: true,
+    isWasteProposal: false,
+    category: 'Unrelated / Marketing',
+    urgency: 'Low',
+    status: 'filtered_out',
+    gmailDraftSynced: false,
+    bodyText: `Huge End-of-Month Clearance on Office Stationery! Get 40% off HP & Canon toner cartridges, A4 80gsm paper boxes, and executive mesh chairs.`,
+    attachments: [],
+    aiAnalysis: {
+      relevanceScore: 2,
+      relevanceReason: 'Promotional marketing newsletter for office stationery. Kept out of your proposal queue automatically.',
+      executiveSummary: [
+        'Automatically filtered out by AI: Marketing advertisement for office stationery.',
+      ],
+      extractedDetails: {},
+    },
+    draft: null,
+  },
+  {
+    id: 'msg-demo-105',
+    messageId: '<newsletter-441@gulf-hr-summit.com>',
+    initials: 'GH',
+    fromName: 'Gulf HR & Leadership Summit',
+    fromEmail: 'events@gulf-hr-summit.com',
+    companyName: 'Gulf Events Group',
+    subject: 'Early Bird Tickets: Annual HR & Payroll Conference in Muscat',
+    displayTime: '07:50',
+    shortMeta: 'Filtered · Event Invite',
+    receivedAt: new Date(Date.now() - 1000 * 60 * 360).toISOString(),
+    isDemo: true,
+    isWasteProposal: false,
+    category: 'Unrelated / Marketing',
+    urgency: 'Low',
+    status: 'filtered_out',
+    gmailDraftSynced: false,
+    bodyText: `Join 300+ HR leaders in Muscat next month for the Annual Gulf HR & Payroll Conference. Register today for a 20% early bird discount.`,
+    attachments: [],
+    aiAnalysis: {
+      relevanceScore: 4,
+      relevanceReason: 'Generic conference event invitation unrelated to waste management contracting.',
+      executiveSummary: ['Automatically filtered out by AI: Conference marketing email.'],
+      extractedDetails: {},
+    },
+    draft: null,
+  },
+  {
+    id: 'msg-demo-106',
+    messageId: '<it-cloud-promo@oman-tech-host.com>',
+    initials: 'OT',
+    fromName: 'Oman Cloud Hosting',
+    fromEmail: 'sales@oman-tech-host.com',
+    companyName: 'Oman Tech Host',
+    subject: 'Upgrade Your Domain & Web Hosting Plan Today',
+    displayTime: 'Yesterday',
+    shortMeta: 'Filtered · IT Promo',
+    receivedAt: new Date(Date.now() - 1000 * 60 * 600).toISOString(),
+    isDemo: true,
+    isWasteProposal: false,
+    category: 'Unrelated / Marketing',
+    urgency: 'Low',
+    status: 'filtered_out',
+    gmailDraftSynced: false,
+    bodyText: `Special offer on web hosting and domain renewals for .om businesses.`,
+    attachments: [],
+    aiAnalysis: {
+      relevanceScore: 1,
+      relevanceReason: 'IT hosting promotional email unrelated to waste management proposals.',
+      executiveSummary: ['Automatically filtered out by AI: Web hosting promotion.'],
+      extractedDetails: {},
+    },
+    draft: null,
+  },
+  {
+    id: 'msg-demo-107',
+    messageId: '<fleet-tyres-promo@auto-parts.om>',
+    initials: 'AP',
+    fromName: 'Auto Parts Promotional Mailer',
+    fromEmail: 'newsletter@auto-parts.om',
+    companyName: 'Muscat Auto Accessories',
+    subject: 'Sedan Car Seat Covers & Air Fresheners Bulk Deal',
+    displayTime: 'Yesterday',
+    shortMeta: 'Filtered · Retail Promo',
+    receivedAt: new Date(Date.now() - 1000 * 60 * 720).toISOString(),
+    isDemo: true,
+    isWasteProposal: false,
+    category: 'Unrelated / Marketing',
+    urgency: 'Low',
+    status: 'filtered_out',
+    gmailDraftSynced: false,
+    bodyText: `Retail promotion on passenger car seat covers and accessories.`,
+    attachments: [],
+    aiAnalysis: {
+      relevanceScore: 3,
+      relevanceReason: 'Retail car accessory newsletter, not a waste management contract or proposal.',
+      executiveSummary: ['Automatically filtered out by AI: Retail car accessory promotion.'],
+      extractedDetails: {},
+    },
+    draft: null,
+  },
+];
