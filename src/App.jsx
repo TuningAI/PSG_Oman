@@ -3,7 +3,6 @@ import {
   Recycle,
   Mail,
   CheckCircle2,
-  Clock,
   Sparkles,
   Send,
   RefreshCw,
@@ -19,7 +18,8 @@ import {
   Paperclip,
   ChevronUp,
   ChevronDown,
-  Eye,
+  Maximize2,
+  Minimize2,
   Pencil,
   Save,
   ListFilter,
@@ -64,21 +64,23 @@ function getInitials(companyName = '') {
 }
 
 /**
- * Individual Stacked Mail Card matching the 3-row wireframe:
- * Row 1: Mail Subject (Original mail)
- * Row 2: Mail Summary
- * Row 3: AI Action: Proposal / Site visit / etc (with AI Draft & Approve/Send)
+ * Individual Stacked Mail Card with 3 independently minimizable/maximizable rows.
+ * By default, all 3 rows start MINIMIZED so the manager can scan all mails quickly:
+ * - Row 1 (Mail Subject): Minimized shows Subject & Sender; Maximized shows Complete Original Mail + Attachment.
+ * - Row 2 (Mail Summary): Minimized shows Main Extracted Details (Waste Stream, Location, Est. Value); Maximized shows Detailed Bullet-Point Summary.
+ * - Row 3 (AI Action): Minimized shows Specific Action Selector; Maximized shows Complete AI-Drafted Response Mail & Approval controls.
  */
 function MailCard({
   emailItem,
-  defaultExpandedDraft = false,
   settings,
   onUpdateEmail,
   onOpenPdfPreview,
   showToast,
 }) {
-  const [showOriginalMail, setShowOriginalMail] = useState(false);
-  const [showDraftPanel, setShowDraftPanel] = useState(defaultExpandedDraft);
+  // All 3 sections default to FALSE (minimized) so the manager can scan all mails easily
+  const [isMailMaximized, setIsMailMaximized] = useState(false);
+  const [isSummaryMaximized, setIsSummaryMaximized] = useState(false);
+  const [isActionMaximized, setIsActionMaximized] = useState(false);
   const [isEditingDraft, setIsEditingDraft] = useState(false);
 
   const [draftTo, setDraftTo] = useState(emailItem.draft?.to || emailItem.fromEmail || '');
@@ -146,9 +148,30 @@ function MailCard({
     emailItem.aiAnalysis?.extractedDetails?.estimatedMonthlyValue ||
     '2,129 OMR/month';
 
+  const wasteStreamText =
+    emailItem.aiAnalysis?.extractedDetails?.wasteStreamsLabel ||
+    (emailItem.aiAnalysis?.extractedDetails?.wasteTypes || []).join(' + ') ||
+    'General + cardboard';
+
+  const locationText =
+    emailItem.aiAnalysis?.extractedDetails?.siteLocationsLabel ||
+    (emailItem.aiAnalysis?.extractedDetails?.locations || []).join(', ') ||
+    'Ghala + Rusayl, Muscat';
+
+  const volumeText =
+    emailItem.aiAnalysis?.extractedDetails?.binsVolumeLabel ||
+    emailItem.aiAnalysis?.extractedDetails?.estimatedVolume ||
+    '8 × 1,100 L; 2 × 6 m³';
+
+  const durationText =
+    emailItem.aiAnalysis?.extractedDetails?.contractDurationLabel ||
+    emailItem.aiAnalysis?.extractedDetails?.contractDuration ||
+    '12 months';
+
+  // When manager chooses an action option, update draft and maximize the AI Action section
   const handleActionSelect = async (presetId) => {
     setSelectedTone(presetId);
-    setShowDraftPanel(true);
+    setIsActionMaximized(true);
     setRegenerating(true);
     try {
       const res = await fetch(`/api/emails/${emailItem.id}/regenerate`, {
@@ -273,23 +296,37 @@ function MailCard({
     }
   };
 
+  const allMaximized = isMailMaximized && isSummaryMaximized && isActionMaximized;
+  const toggleAllSections = () => {
+    const nextState = !allMaximized;
+    setIsMailMaximized(nextState);
+    setIsSummaryMaximized(nextState);
+    setIsActionMaximized(nextState);
+  };
+
   return (
-    <div className="bg-white rounded-2xl border-2 border-[#CBD5E1] shadow-sm p-4 space-y-3 transition hover:border-[#0B7A53]/60">
+    <div className="bg-white rounded-2xl border-2 border-[#CBD5E1] shadow-sm p-3.5 space-y-2.5 transition hover:border-[#0B7A53]/70">
       {/* =====================================================================
           ROW 1: Mail Subject (Original mail)
+          - Minimized (Default): Shows Mail Subject, Sender, Badges, and Maximize button.
+          - Maximized: Shows Complete Original Mail Body + Attached PDF/Contract.
          ===================================================================== */}
-      <div className="rounded-xl border border-[#CBD5E1] bg-[#F8FAFC] px-4 py-3">
+      <div className="rounded-xl border border-[#CBD5E1] bg-[#F8FAFC] px-4 py-2.5">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="flex items-center gap-3 min-w-0">
+          {/* Left: Avatar + Subject + Sender */}
+          <div
+            onClick={() => setIsMailMaximized(!isMailMaximized)}
+            className="flex items-center gap-3 min-w-0 flex-1 cursor-pointer"
+          >
             <span className="w-8 h-8 rounded-lg bg-[#D1FAE5] text-[#065F46] text-xs font-extrabold flex items-center justify-center shrink-0">
               {initials}
             </span>
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#0B7A53]">
-                  Mail Subject (Original mail):
+                  Mail Subject:
                 </span>
-                <span className="text-sm font-bold text-[#111827]">
+                <span className="text-sm font-bold text-[#111827] truncate">
                   {emailItem.subject}
                 </span>
               </div>
@@ -297,94 +334,110 @@ function MailCard({
                 <strong className="text-[#334155]">
                   {emailItem.companyName || emailItem.fromName}
                 </strong>
-                <span>({emailItem.fromEmail})</span>
+                <span>&lt;{emailItem.fromEmail}&gt;</span>
                 <span>·</span>
-                <span>Received {timeStr}</span>
-                {emailItem.shortMeta && (
-                  <>
-                    <span>·</span>
-                    <span className="font-medium text-[#475569]">{emailItem.shortMeta}</span>
-                  </>
-                )}
+                <span>{timeStr}</span>
               </div>
             </div>
           </div>
 
-          {/* Right Badges & "View Original Mail" Toggle */}
-          <div className="flex flex-wrap items-center gap-2">
+          {/* Right: Status Badges + Maximize Original Mail Button */}
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
             {emailItem.status === 'pending_approval' && (
-              <span className="px-2.5 py-1 rounded-md bg-[#FEF3C7] text-[#92400E] text-xs font-bold">
+              <span className="px-2 py-0.5 rounded-md bg-[#FEF3C7] text-[#92400E] text-[11px] font-bold">
                 Needs Approval
               </span>
             )}
             {emailItem.status === 'approved_sent' && (
-              <span className="px-2.5 py-1 rounded-md bg-[#D1FAE5] text-[#065F46] text-xs font-bold flex items-center gap-1">
-                <Check className="w-3.5 h-3.5" />
+              <span className="px-2 py-0.5 rounded-md bg-[#D1FAE5] text-[#065F46] text-[11px] font-bold flex items-center gap-1">
+                <Check className="w-3 h-3" />
                 Approved & Sent
               </span>
             )}
             {emailItem.urgency === 'High' && emailItem.isWasteProposal && (
-              <span className="px-2.5 py-1 rounded-md bg-[#FEE2E2] text-[#B91C1C] text-xs font-bold">
+              <span className="px-2 py-0.5 rounded-md bg-[#FEE2E2] text-[#B91C1C] text-[11px] font-bold">
                 High Priority
               </span>
             )}
-
             {emailItem.attachments?.length > 0 && (
-              <button
-                type="button"
-                onClick={() => onOpenPdfPreview(emailItem.attachments[0])}
-                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white border border-[#CBD5E1] hover:border-[#0B7A53] text-xs font-semibold text-[#1E293B] transition"
-              >
-                <Paperclip className="w-3.5 h-3.5 text-[#E11D48]" />
-                <span>{emailItem.attachments[0].filename}</span>
-              </button>
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white border border-[#CBD5E1] text-[11px] font-semibold text-[#334155]">
+                <Paperclip className="w-3 h-3 text-[#E11D48]" />
+                PDF Attached
+              </span>
             )}
 
             <button
               type="button"
-              onClick={() => setShowOriginalMail(!showOriginalMail)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-[#CBD5E1] hover:bg-slate-100 text-xs font-bold text-[#334155] transition"
+              onClick={toggleAllSections}
+              className="px-2.5 py-1 rounded-lg bg-slate-200/70 hover:bg-slate-200 text-[11px] font-bold text-[#334155] transition"
+              title="Maximize or Minimize all 3 rows in this mail card"
             >
-              <Eye className="w-3.5 h-3.5 text-[#0B7A53]" />
-              <span>{showOriginalMail ? 'Hide Original Mail' : 'Read Original Mail'}</span>
-              {showOriginalMail ? (
-                <ChevronUp className="w-3.5 h-3.5" />
+              {allMaximized ? 'Minimize All' : 'Expand All'}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setIsMailMaximized(!isMailMaximized)}
+              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg border text-xs font-bold transition ${
+                isMailMaximized
+                  ? 'bg-[#101C24] text-white border-[#101C24]'
+                  : 'bg-white border-[#CBD5E1] text-[#1E293B] hover:border-[#0B7A53]'
+              }`}
+            >
+              {isMailMaximized ? (
+                <>
+                  <Minimize2 className="w-3.5 h-3.5" />
+                  <span>Minimize Mail</span>
+                </>
               ) : (
-                <ChevronDown className="w-3.5 h-3.5" />
+                <>
+                  <Maximize2 className="w-3.5 h-3.5 text-[#0B7A53]" />
+                  <span>Maximize Mail</span>
+                </>
               )}
             </button>
           </div>
         </div>
 
-        {/* Collapsible Original Email Content */}
-        {showOriginalMail && (
+        {/* MAXIMIZED VIEW FOR ROW 1: Complete Original Mail from Inbox + Attachment */}
+        {isMailMaximized && (
           <div className="mt-3 pt-3 border-t border-[#E2E8EC] grid grid-cols-1 lg:grid-cols-12 gap-3">
-            <div className="lg:col-span-8 bg-white p-3.5 rounded-xl border border-[#E2E8EC]">
-              <div className="text-[11px] font-bold uppercase tracking-wider text-[#64748B] mb-1.5">
-                Original Client Email Body
+            <div
+              className={`${
+                emailItem.attachments?.length > 0 ? 'lg:col-span-8' : 'lg:col-span-12'
+              } bg-white p-4 rounded-xl border border-[#E2E8EC]`}
+            >
+              <div className="flex items-center justify-between border-b border-[#EEF2F6] pb-2 mb-2.5 text-xs text-[#64748B]">
+                <div>
+                  <strong>From:</strong> {emailItem.fromName} &lt;{emailItem.fromEmail}&gt;
+                </div>
+                <div>
+                  <strong>Subject:</strong> {emailItem.subject}
+                </div>
               </div>
               <pre className="text-xs text-[#1E293B] whitespace-pre-wrap font-sans leading-relaxed">
                 {emailItem.bodyText}
               </pre>
             </div>
+
             {emailItem.attachments?.length > 0 && (
-              <div className="lg:col-span-4 bg-white p-3.5 rounded-xl border border-[#E2E8EC] flex flex-col justify-between">
+              <div className="lg:col-span-4 bg-white p-4 rounded-xl border border-[#E2E8EC] flex flex-col justify-between">
                 <div>
                   <div className="text-[11px] font-bold uppercase tracking-wider text-[#E11D48] mb-1.5 flex items-center gap-1.5">
                     <FileText className="w-3.5 h-3.5" />
-                    Attached Document Extracted by AI
+                    Attached Contract / RFQ Document
                   </div>
-                  <div className="text-xs font-bold text-[#111827] mb-1">
+                  <div className="text-xs font-bold text-[#111827] mb-2">
                     {emailItem.attachments[0].filename}
                   </div>
-                  <pre className="text-[11px] text-[#475569] whitespace-pre-wrap font-mono leading-snug bg-[#F8FAFC] p-2.5 rounded-lg border border-[#EEF2F6]">
+                  <pre className="text-[11px] text-[#475569] whitespace-pre-wrap font-mono leading-snug bg-[#F8FAFC] p-3 rounded-lg border border-[#EEF2F6] max-h-44 overflow-y-auto">
                     {emailItem.attachments[0].extractedText}
                   </pre>
                 </div>
                 <button
                   type="button"
                   onClick={() => onOpenPdfPreview(emailItem.attachments[0])}
-                  className="mt-2 w-full py-1.5 rounded-lg bg-[#F1F5F9] hover:bg-[#E2E8F0] text-xs font-bold text-[#1E293B] transition"
+                  className="mt-2.5 w-full py-1.5 rounded-lg bg-[#F1F5F9] hover:bg-[#E2E8F0] text-xs font-bold text-[#1E293B] transition"
                 >
                   Open Full Document Preview
                 </button>
@@ -395,89 +448,122 @@ function MailCard({
       </div>
 
       {/* =====================================================================
-          ROW 2: Mail Summary (AI Generated Summary & Key Specs)
+          ROW 2: Mail Summary
+          - Minimized (Default): Shows ONLY main extracted details (Waste Stream, Location, Volume, Duration, Est. Contract Value) + Maximize button.
+          - Maximized: Shows Detailed AI Summary in Bullet Points.
          ===================================================================== */}
-      <div className="rounded-xl border border-[#CBEAD9] bg-[#EBF8F2] px-4 py-3.5">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-          <div className="space-y-1.5 flex-1">
-            <div className="flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-[#0B7A53]" />
-              <span className="text-xs font-extrabold uppercase tracking-wider text-[#0B7A53]">
-                Mail Summary (AI Read & Extracted):
+      {emailItem.isWasteProposal && (
+        <div className="rounded-xl border border-[#CBEAD9] bg-[#EBF8F2] px-4 py-2.5">
+          {/* Minimized Bar: Main Extracted Details Only */}
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div
+              onClick={() => setIsSummaryMaximized(!isSummaryMaximized)}
+              className="flex flex-wrap items-center gap-2 flex-1 cursor-pointer"
+            >
+              <span className="inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider text-[#0B7A53] mr-1">
+                <Sparkles className="w-3.5 h-3.5" />
+                Mail Summary:
+              </span>
+
+              {/* Main Extracted Detail Pills */}
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white border border-[#CBEAD9] text-xs">
+                <span className="text-[#64748B] font-medium">Waste Stream:</span>
+                <strong className="text-[#111827]">{wasteStreamText}</strong>
+              </span>
+
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white border border-[#CBEAD9] text-xs">
+                <span className="text-[#64748B] font-medium">Location:</span>
+                <strong className="text-[#111827]">{locationText}</strong>
+              </span>
+
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white border border-[#CBEAD9] text-xs">
+                <span className="text-[#64748B] font-medium">Volume:</span>
+                <strong className="text-[#111827]">{volumeText}</strong>
+              </span>
+
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white border border-[#CBEAD9] text-xs">
+                <span className="text-[#64748B] font-medium">Duration:</span>
+                <strong className="text-[#111827]">{durationText}</strong>
+              </span>
+
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#0B4F3A] text-white text-xs">
+                <span className="text-[#A7F3D0] font-medium">Est. Value:</span>
+                <strong className="font-extrabold">{pricingTotal}</strong>
               </span>
             </div>
 
-            <ul className="space-y-1 pl-1">
-              {(emailItem.aiAnalysis?.executiveSummary || []).map((point, idx) => (
-                <li
-                  key={idx}
-                  className="text-xs text-[#064E3B] font-medium flex items-start gap-2 leading-relaxed"
-                >
-                  <span className="font-extrabold text-[#0B7A53]">{idx + 1}.</span>
-                  <span>{point}</span>
-                </li>
-              ))}
-            </ul>
+            {/* Maximize / Minimize Summary Button */}
+            <button
+              type="button"
+              onClick={() => setIsSummaryMaximized(!isSummaryMaximized)}
+              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg border text-xs font-bold shrink-0 transition ${
+                isSummaryMaximized
+                  ? 'bg-[#0B4F3A] text-white border-[#0B4F3A]'
+                  : 'bg-white border-[#CBEAD9] text-[#065F46] hover:border-[#0B7A53]'
+              }`}
+            >
+              {isSummaryMaximized ? (
+                <>
+                  <Minimize2 className="w-3.5 h-3.5" />
+                  <span>Minimize Summary</span>
+                </>
+              ) : (
+                <>
+                  <Maximize2 className="w-3.5 h-3.5 text-[#0B7A53]" />
+                  <span>Maximize Summary</span>
+                </>
+              )}
+            </button>
           </div>
 
-          {/* Key Extracted Contract Metrics Pills */}
-          {emailItem.isWasteProposal && (
-            <div className="flex flex-wrap items-center gap-2 shrink-0">
-              <div className="px-3 py-1.5 rounded-lg bg-white border border-[#CBEAD9]">
-                <div className="text-[10px] text-[#64748B] font-medium">Waste Streams</div>
-                <div className="text-xs font-bold text-[#111827]">
-                  {emailItem.aiAnalysis?.extractedDetails?.wasteStreamsLabel ||
-                    'General + cardboard'}
-                </div>
+          {/* MAXIMIZED VIEW FOR ROW 2: Detailed Summary in Bullet Points */}
+          {isSummaryMaximized && (
+            <div className="mt-3 pt-3 border-t border-[#CBEAD9] bg-white/90 rounded-xl p-3.5 space-y-2">
+              <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#0B7A53]">
+                Detailed AI Proposal Summary (Bullet Points)
               </div>
-
-              <div className="px-3 py-1.5 rounded-lg bg-white border border-[#CBEAD9]">
-                <div className="text-[10px] text-[#64748B] font-medium">Site Locations</div>
-                <div className="text-xs font-bold text-[#111827]">
-                  {emailItem.aiAnalysis?.extractedDetails?.siteLocationsLabel ||
-                    'Ghala + Rusayl'}
-                </div>
-              </div>
-
-              <div className="px-3 py-1.5 rounded-lg bg-white border border-[#CBEAD9]">
-                <div className="text-[10px] text-[#64748B] font-medium">Bins / Skips Volume</div>
-                <div className="text-xs font-bold text-[#111827]">
-                  {emailItem.aiAnalysis?.extractedDetails?.binsVolumeLabel ||
-                    '8 × 1,100 L; 2 × 6 m³'}
-                </div>
-              </div>
-
-              <div className="px-3.5 py-1.5 rounded-lg bg-[#0B4F3A] text-white">
-                <div className="text-[10px] text-[#A7F3D0] font-medium">Est. Contract Value</div>
-                <div className="text-xs font-extrabold text-white">{pricingTotal}</div>
-              </div>
+              <ul className="space-y-1.5 pl-1">
+                {(emailItem.aiAnalysis?.executiveSummary || []).map((point, idx) => (
+                  <li
+                    key={idx}
+                    className="text-xs text-[#064E3B] font-medium flex items-start gap-2 leading-relaxed"
+                  >
+                    <span className="w-4 h-4 rounded-full bg-[#0B7A53] text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
+                      {idx + 1}
+                    </span>
+                    <span>{point}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
         </div>
-      </div>
+      )}
 
       {/* =====================================================================
           ROW 3: AI Action: Proposal / Site visit / etc
+          - Minimized (Default): Shows ONLY the specific AI Action option buttons + Maximize button.
+          - Maximized: Shows the complete AI-Drafted Response Mail based on the chosen option + Approve & Send.
          ===================================================================== */}
       {!emailItem.isWasteProposal || emailItem.status === 'filtered_out' ? (
-        <div className="rounded-xl border border-[#CBD5E1] bg-white px-4 py-3 flex items-center justify-between">
+        <div className="rounded-xl border border-[#CBD5E1] bg-white px-4 py-2.5 flex items-center justify-between">
           <span className="text-xs text-[#64748B]">
             <strong>AI Action:</strong> Ignored automatically (Unrelated / Non-Proposal Email)
           </span>
           <button
             type="button"
             onClick={handleRestoreProposal}
-            className="px-3.5 py-1.5 rounded-lg bg-[#0B7A53] text-white text-xs font-bold hover:bg-[#096645] transition"
+            className="px-3.5 py-1 rounded-lg bg-[#0B7A53] text-white text-xs font-bold hover:bg-[#096645] transition"
           >
             Move to Proposals & Generate AI Draft
           </button>
         </div>
       ) : (
-        <div className="rounded-xl border border-[#CBD5E1] bg-white px-4 py-3.5 space-y-3">
-          {/* Action Selector Bar */}
+        <div className="rounded-xl border border-[#CBD5E1] bg-white px-4 py-2.5">
+          {/* Minimized Bar: Specific Action Selector + Maximize Draft Button */}
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-xs font-extrabold uppercase tracking-wider text-[#111827] mr-1">
+              <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#111827] mr-1">
                 AI Action:
               </span>
 
@@ -490,7 +576,7 @@ function MailCard({
                     type="button"
                     disabled={regenerating}
                     onClick={() => handleActionSelect(preset.id)}
-                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs transition ${
+                    className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg border text-xs transition ${
                       isActive
                         ? 'bg-[#EFFAF5] border-[1.5px] border-[#0B7A53] text-[#0B7A53] font-bold'
                         : 'bg-[#F8FAFC] border-[#E2E8EC] text-[#334155] font-medium hover:border-[#CBD5E1]'
@@ -504,45 +590,42 @@ function MailCard({
               })}
             </div>
 
-            {/* Right Quick Approve & Expand Draft Controls */}
-            <div className="flex flex-wrap items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setShowDraftPanel(!showDraftPanel)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#CBD5E1] bg-white hover:bg-slate-50 text-xs font-bold text-[#1E293B] transition"
-              >
-                <Pencil className="w-3.5 h-3.5 text-[#0B7A53]" />
-                <span>{showDraftPanel ? 'Hide AI Draft' : 'Review / Edit AI Draft'}</span>
-                {showDraftPanel ? (
-                  <ChevronUp className="w-3.5 h-3.5" />
-                ) : (
-                  <ChevronDown className="w-3.5 h-3.5" />
-                )}
-              </button>
+            {/* Right: Maximize / Minimize AI Draft Button */}
+            <div className="flex items-center gap-2 shrink-0">
+              {regenerating && (
+                <span className="text-xs font-semibold text-[#0B7A53] flex items-center gap-1">
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                  Drafting...
+                </span>
+              )}
 
               <button
                 type="button"
-                onClick={handleApproveAndSend}
-                disabled={approvingSend}
-                className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-[#0B7A53] hover:bg-[#096645] text-white text-xs font-bold shadow-sm disabled:opacity-50 transition"
+                onClick={() => setIsActionMaximized(!isActionMaximized)}
+                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg border text-xs font-bold transition ${
+                  isActionMaximized
+                    ? 'bg-[#0B7A53] text-white border-[#0B7A53]'
+                    : 'bg-white border-[#CBD5E1] text-[#1E293B] hover:border-[#0B7A53]'
+                }`}
               >
-                {approvingSend ? (
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                {isActionMaximized ? (
+                  <>
+                    <Minimize2 className="w-3.5 h-3.5" />
+                    <span>Minimize Draft</span>
+                  </>
                 ) : (
-                  <Send className="w-3.5 h-3.5" />
+                  <>
+                    <Maximize2 className="w-3.5 h-3.5 text-[#0B7A53]" />
+                    <span>Maximize AI Draft & Approve</span>
+                  </>
                 )}
-                <span>
-                  {emailItem.status === 'approved_sent'
-                    ? 'Sent ✓ (Click to Resend)'
-                    : 'Approve & Send Mail'}
-                </span>
               </button>
             </div>
           </div>
 
-          {/* Expandable AI Draft Review & Editor Panel */}
-          {showDraftPanel && (
-            <div className="pt-3 border-t border-[#E2E8EC] space-y-3">
+          {/* MAXIMIZED VIEW FOR ROW 3: Complete AI-Drafted Response Mail & Approval Bar */}
+          {isActionMaximized && (
+            <div className="mt-3 pt-3 border-t border-[#E2E8EC] space-y-3">
               {/* AI Custom Instruction Bar */}
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8EC]">
                 <Sparkles className="w-4 h-4 text-[#0B7A53] shrink-0" />
@@ -604,7 +687,7 @@ function MailCard({
               <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8EC] space-y-2.5">
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] font-bold uppercase tracking-wider text-[#64748B]">
-                    AI-Drafted Response ({selectedTone})
+                    AI-Drafted Response Mail ({selectedTone})
                   </span>
                   <button
                     type="button"
@@ -689,10 +772,18 @@ function MailCard({
                     type="button"
                     onClick={handleApproveAndSend}
                     disabled={approvingSend}
-                    className="px-6 py-2.5 rounded-xl bg-[#0B7A53] hover:bg-[#096645] text-white text-xs font-bold flex items-center gap-2 shadow-sm transition"
+                    className="px-6 py-2.5 rounded-xl bg-[#0B7A53] hover:bg-[#096645] text-white text-xs font-bold flex items-center gap-2 shadow-sm disabled:opacity-50 transition"
                   >
-                    <Send className="w-3.5 h-3.5" />
-                    <span>Approve & Send Email to {draftTo}</span>
+                    {approvingSend ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    ) : (
+                      <Send className="w-3.5 h-3.5" />
+                    )}
+                    <span>
+                      {emailItem.status === 'approved_sent'
+                        ? 'Approved & Sent ✓ (Click to Resend)'
+                        : `Approve & Send Email to ${draftTo}`}
+                    </span>
                   </button>
                 </div>
               </div>
@@ -839,7 +930,7 @@ export default function App() {
       )}
 
       {/* =====================================================================
-          LEFTMOST NAVIGATION SIDEBAR (Matching Wireframe: Software Name | Email Management | Social Media)
+          LEFTMOST NAVIGATION SIDEBAR (Software Name | Email Management | Social Media)
          ===================================================================== */}
       <aside className="w-[260px] bg-[#101C24] text-white flex flex-col justify-between shrink-0 p-4 select-none border-r border-[#1E2F3B]">
         <div className="space-y-6">
@@ -932,12 +1023,11 @@ export default function App() {
       </aside>
 
       {/* =====================================================================
-          RIGHT MAIN CONTENT WINDOW (Matching Wireframe)
+          RIGHT MAIN CONTENT WINDOW
          ===================================================================== */}
       <div className="flex-1 flex flex-col min-w-0 p-6 space-y-5 overflow-y-auto">
         {activeMainModule === 'social_assistant' ? (
           <>
-            {/* Top Header Box for Social Media */}
             <header className="bg-white rounded-2xl border-2 border-[#CBD5E1] px-6 py-4 flex flex-wrap items-center justify-between gap-4 shadow-sm">
               <div>
                 <h1 className="text-xl font-extrabold text-[#111827]">
@@ -962,7 +1052,7 @@ export default function App() {
           </>
         ) : (
           /* =====================================================================
-             EMAIL PROPOSAL & CONTRACT ASSISTANT (Exact Wireframe Structure)
+             EMAIL PROPOSAL & CONTRACT ASSISTANT (Minimized by Default, Maximize on Click)
              ===================================================================== */
           <div className="max-w-[1440px] w-full mx-auto space-y-5">
             {/* Top Box: Email Proposal & Contract Assistant */}
@@ -974,8 +1064,8 @@ export default function App() {
                 <div className="flex items-center gap-2 text-xs text-[#64748B] mt-1">
                   <CheckCircle2 className="w-3.5 h-3.5 text-[#0B7A53]" />
                   <span>
-                    Gmail connected · {settings?.gmail?.email || 'proposals@pgsoman.com'} · Only waste
-                    management proposals & contract mails collected
+                    Gmail connected · {settings?.gmail?.email || 'proposals@pgsoman.com'} · All
+                    proposal mails are minimized by default — click Maximize on any row to inspect
                   </span>
                 </div>
               </div>
@@ -1002,12 +1092,12 @@ export default function App() {
               </div>
             </header>
 
-            {/* "Mails" Section Header + Quick Filter Pills */}
+            {/* "Mails" Section Header + Filter Pills */}
             <div className="flex flex-wrap items-center justify-between gap-4 pt-1">
               <div className="flex items-center gap-3">
                 <h2 className="text-2xl font-extrabold text-[#111827] tracking-tight">Mails</h2>
                 <span className="px-2.5 py-0.5 rounded-full bg-[#E6F4EE] text-[#0B7A53] text-xs font-extrabold">
-                  {displayedMails.length} Showing
+                  {displayedMails.length} Proposals
                 </span>
               </div>
 
@@ -1064,8 +1154,8 @@ export default function App() {
               </div>
             </div>
 
-            {/* Vertically Stacked Mail Cards List (Each Card has: Mail Subject | Mail Summary | AI Action) */}
-            <div className="space-y-5 pb-10">
+            {/* Vertically Stacked Mail Cards List (All Minimized by Default) */}
+            <div className="space-y-4 pb-10">
               {displayedMails.length === 0 ? (
                 <div className="bg-white rounded-2xl border-2 border-[#CBD5E1] p-12 text-center space-y-2">
                   <CheckCircle2 className="w-10 h-10 text-[#0B7A53] mx-auto" />
@@ -1075,11 +1165,10 @@ export default function App() {
                   </p>
                 </div>
               ) : (
-                displayedMails.map((mail, index) => (
+                displayedMails.map((mail) => (
                   <MailCard
                     key={mail.id}
                     emailItem={mail}
-                    defaultExpandedDraft={index === 0}
                     settings={settings}
                     onUpdateEmail={updateEmailInList}
                     onOpenPdfPreview={(att) => setPdfPreviewAttachment(att)}
