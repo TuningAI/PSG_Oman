@@ -11,8 +11,9 @@ function formatRateCardText(rateCard = []) {
     .join('\n');
 }
 
-function buildSystemPrompt(companyProfile, tonePreset = 'Accept & Send Quotation', customInstructions = '') {
+function buildSystemPrompt(companyProfile, tonePreset = 'Accept & Send Quotation', customInstructions = '', filterRules = {}) {
   const rateCardStr = formatRateCardText(companyProfile.rateCard);
+  const customExtractionPrompt = filterRules?.customPrompt?.trim();
 
   return `You are an expert AI Office Support & Contracts Assistant for the General Manager of a Waste Management Contracting Company:
 Company Name: ${companyProfile.companyName}
@@ -26,9 +27,12 @@ Payment Terms: ${companyProfile.paymentTerms}
 OFFICIAL COMPANY SERVICE RATE CARD:
 ${rateCardStr}
 
+${customExtractionPrompt ? `CRITICAL USER EMAIL EXTRACTION RULES & PROMPT:
+"${customExtractionPrompt}"
+Evaluate the incoming email strictly according to the criteria above. If the email matches these criteria, set "isWasteProposal": true so it is collected into the manager's primary inbox.\n` : ''}
 YOUR TASK:
 1. Analyze the incoming email (and any extracted attachment text).
-2. Determine if the email is related to Waste Management Proposals, RFQs, Quotations, Waste Collection Inquiries, or Contract Documentation ("isWasteProposal": true/false).
+2. Determine if the email matches the Extraction Rules or is related to Waste Management Proposals, RFQs, Quotations, Waste Collection Inquiries, or Contract Documentation ("isWasteProposal": true/false).
 3. If "isWasteProposal" is true:
    - Summarize the proposal clearly in 3 concise bullet points ("executiveSummary").
    - Extract structured details: wasteStreamsLabel, siteLocationsLabel, binsVolumeLabel, contractDurationLabel, estimatedMonthlyValue.
@@ -128,21 +132,54 @@ async function callOpenAIAPI(apiKey, model, systemPrompt, userPrompt) {
   return JSON.parse(rawText);
 }
 
-function smartLocalAnalyzeAndDraft(emailData, companyProfile, tonePreset = 'Accept & Send Quotation', customInstructions = '') {
+function checkWhitelistMatch(fromEmail = '', filterRules = {}) {
+  const emailClean = (fromEmail || '').toLowerCase().trim();
+  const domain = emailClean.split('@')[1] || '';
+
+  const allowedSenders = Array.isArray(filterRules.allowedSenders) ? filterRules.allowedSenders : [];
+  for (const s of allowedSenders) {
+    if (s && emailClean === s.toLowerCase().trim()) {
+      return { matched: true, reason: `Whitelisted Sender: ${s}` };
+    }
+  }
+
+  const allowedDomains = Array.isArray(filterRules.allowedDomains) ? filterRules.allowedDomains : [];
+  for (const d of allowedDomains) {
+    const cleanD = d.replace(/^@/, '').toLowerCase().trim();
+    if (cleanD && (domain === cleanD || domain.endsWith('.' + cleanD))) {
+      return { matched: true, reason: `Whitelisted Domain: @${cleanD}` };
+    }
+  }
+
+  return { matched: false };
+}
+
+function smartLocalAnalyzeAndDraft(emailData, companyProfile, tonePreset = 'Accept & Send Quotation', customInstructions = '', filterRules = {}) {
   const combinedText = `${emailData.subject || ''}\n${emailData.bodyText || ''}\n${
     (emailData.attachments || []).map((a) => `${a.filename}: ${a.extractedText || ''}`).join('\n')
   }`;
   const lower = combinedText.toLowerCase();
 
-  const wasteKeywords = [
+  const whitelist = checkWhitelistMatch(emailData.fromEmail, filterRules);
+
+  const baseKeywords = [
     'waste', 'skip', 'roro', 'bin', 'disposal', 'garbage', 'refuse', 'sludge', 'hazardous',
     'recycl', 'landfill', 'sewage', 'tanker', 'rfp', 'rfq', 'tender', 'quotation', 'contract',
     'manifest', 'be\'ah', 'beah', 'environmental', 'collection', 'cbm', 'scrap', 'debris',
-    'cardboard', 'industrial', 'proposal', 'amc', 'warehouse'
+    'cardboard', 'industrial', 'proposal', 'amc', 'warehouse', 'quote', 'contracting'
   ];
 
-  const matchedKeywords = wasteKeywords.filter((k) => lower.includes(k));
-  const isWasteProposal = matchedKeywords.length >= 2;
+  // Extract extra keywords from user's custom prompt if provided
+  let customKeywords = [];
+  if (filterRules?.customPrompt) {
+    const words = filterRules.customPrompt.toLowerCase().match(/\b[a-z]{3,}\b/g) || [];
+    const stopwords = new Set(['the', 'and', 'all', 'any', 'from', 'with', 'for', 'that', 'this', 'into', 'our', 'mail', 'mails', 'email', 'emails', 'inbox', 'extract', 'automatically', 'filter', 'ignore']);
+    customKeywords = words.filter((w) => !stopwords.has(w));
+  }
+  const allKeywords = Array.from(new Set([...baseKeywords, ...customKeywords]));
+
+  const matchedKeywords = allKeywords.filter((k) => lower.includes(k));
+  const isWasteProposal = whitelist.matched || matchedKeywords.length >= 2;
 
   let inferredCompany = emailData.companyName || '';
   if (!inferredCompany && emailData.fromEmail) {
@@ -159,7 +196,7 @@ function smartLocalAnalyzeAndDraft(emailData, companyProfile, tonePreset = 'Acce
       urgency: 'Low',
       companyName: inferredCompany || 'External Sender',
       relevanceScore: 5,
-      relevanceReason: 'Not related to waste management proposals or contracts.',
+      relevanceReason: 'Not related to waste management proposals or extraction rules.',
       executiveSummary: ['Automatically filtered out by AI: Unrelated marketing or non-proposal email.'],
       extractedDetails: {},
       draftSubject: '',
@@ -177,9 +214,17 @@ function smartLocalAnalyzeAndDraft(emailData, companyProfile, tonePreset = 'Acce
     { service: 'Cardboard · 2 bins × 240.500', amount: '481.000' },
     { service: '6 m³ skips · 2 lifts × 200', amount: '400.000' },
   ];
-  const defaultTotal = emailData.draft?.totalLabel || existingDetails.estimatedMonthlyValue || '2,129 OMR/month';
+  let defaultTotal = emailData.draft?.totalLabel || existingDetails.estimatedMonthlyValue || '2,129 OMR/month';
+  if (customInstructions) {
+    const priceMatch = customInstructions.match(/(\d[\d,.]*)\s*(?:OMR|rial|ريال)?/i);
+    if (priceMatch && (customInstructions.toLowerCase().includes('price') || customInstructions.toLowerCase().includes('omr') || customInstructions.toLowerCase().includes('total') || customInstructions.includes('سعر') || customInstructions.includes('ريال'))) {
+      defaultTotal = `${priceMatch[1]} OMR/month`;
+    }
+  }
 
-  const customLine = customInstructions ? ` Note: ${customInstructions.trim()}` : '';
+  const customLine = customInstructions
+    ? `\n\nSpecial Commercial Note / Updated Terms:\n• ${customInstructions.trim()}`
+    : '';
   const managerName = companyProfile.managerName || 'Ahmed Al Kindi';
   const managerTitle = companyProfile.managerTitle || 'General Manager · PGS Oman';
 
@@ -243,6 +288,8 @@ export async function analyzeEmailAndGenerateDraft({
 }) {
   const companyProfile = settings.companyProfile;
   const aiSettings = settings.ai || {};
+  const filterRules = settings.filterRules || {};
+  const whitelist = checkWhitelistMatch(emailData.fromEmail, filterRules);
 
   const attachmentsText = (emailData.attachments || [])
     .map((att, i) => `--- ATTACHMENT ${i + 1}: ${att.filename} ---\n${att.extractedText || ''}`)
@@ -255,24 +302,37 @@ Body:
 ${emailData.bodyText || ''}
 ${attachmentsText}
 Action Preset: "${tonePreset}"
-${customInstructions ? `Manager Instruction: "${customInstructions}"` : ''}`;
+${customInstructions ? `Manager Instruction: "${customInstructions}"` : ''}
+${whitelist.matched ? `\nSPECIAL OVERRIDE: Sender matches ${whitelist.reason}. This email MUST be classified as "isWasteProposal": true and extracted.` : ''}`;
 
-  const systemPrompt = buildSystemPrompt(companyProfile, tonePreset, customInstructions);
+  const systemPrompt = buildSystemPrompt(companyProfile, tonePreset, customInstructions, filterRules);
 
   try {
     if (aiSettings.provider === 'gemini' && aiSettings.geminiApiKey?.trim()) {
       const result = await callGeminiAPI(aiSettings.geminiApiKey.trim(), aiSettings.geminiModel, systemPrompt, userPrompt);
+      if (whitelist.matched) {
+        result.isWasteProposal = true;
+        result.relevanceReason = (result.relevanceReason ? result.relevanceReason + ' | ' : '') + whitelist.reason;
+      }
       return { ...result, usedProvider: `Google Gemini (${aiSettings.geminiModel || 'gemini-2.5-flash'})` };
     }
     if (aiSettings.provider === 'openai' && aiSettings.openaiApiKey?.trim()) {
       const result = await callOpenAIAPI(aiSettings.openaiApiKey.trim(), aiSettings.openaiModel, systemPrompt, userPrompt);
+      if (whitelist.matched) {
+        result.isWasteProposal = true;
+        result.relevanceReason = (result.relevanceReason ? result.relevanceReason + ' | ' : '') + whitelist.reason;
+      }
       return { ...result, usedProvider: `OpenAI (${aiSettings.openaiModel || 'gpt-4o-mini'})` };
     }
   } catch (err) {
     console.warn('Live LLM API call failed, falling back to Smart Built-in AI Engine:', err.message);
   }
 
-  const fallbackResult = smartLocalAnalyzeAndDraft(emailData, companyProfile, tonePreset, customInstructions);
+  const fallbackResult = smartLocalAnalyzeAndDraft(emailData, companyProfile, tonePreset, customInstructions, filterRules);
+  if (whitelist.matched) {
+    fallbackResult.isWasteProposal = true;
+    fallbackResult.relevanceReason = (fallbackResult.relevanceReason ? fallbackResult.relevanceReason + ' | ' : '') + whitelist.reason;
+  }
   return { ...fallbackResult, usedProvider: 'Built-in Smart Waste-AI Engine' };
 }
 

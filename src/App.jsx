@@ -3,6 +3,7 @@ import {
   Recycle,
   Mail,
   CheckCircle2,
+  Clock,
   Sparkles,
   Send,
   RefreshCw,
@@ -18,42 +19,69 @@ import {
   Paperclip,
   ChevronUp,
   ChevronDown,
-  Maximize2,
-  Minimize2,
-  Pencil,
+  ChevronLeft,
+  ChevronRight,
+  ArrowLeft,
+  ArrowRight,
+  Search,
+  Star,
   Save,
-  ListFilter,
+  Globe,
+  Truck,
+  Banknote,
+  Calendar,
+  Trash2,
+  Inbox,
+  Edit3,
+  SlidersHorizontal,
 } from 'lucide-react';
 import SettingsModal from './components/SettingsModal.jsx';
 import SimulateModal from './components/SimulateModal.jsx';
 import SocialMediaWorkspace from './components/SocialMediaWorkspace.jsx';
+import ExtractionRulesModal from './components/ExtractionRulesModal.jsx';
+import { TRANSLATIONS } from './i18n.js';
 
-const ACTION_PRESETS = [
-  {
-    id: 'Accept & Send Quotation',
-    shortLabel: 'Proposal / Quotation',
-    label: 'Send Proposal / Quotation',
-    icon: FileText,
+const ARABIC_PROPOSAL_TRANSLATIONS = {
+  'msg-demo-101': {
+    companyNameAr: 'شركة النور للخدمات اللوجستية (Al Noor Logistics)',
+    subjectAr: 'طلب عرض سعر: جمع النفايات لمستودعين في مسقط (غلا والرسيل)',
+    locationAr: 'غلا + الرسيل، مسقط',
+    wasteTypeAr: 'نفايات عامة + كرتون للتدوير',
+    volumeAr: '٨ حاويات (١١٠٠ لتر) + ٢ حاوية سكيب (٦ م³)',
+    durationAr: '١٢ شهراً · يبدأ ١ نوفمبر ٢٠٢٦',
+    summaryAr: [
+      'تطلب شركة النور للخدمات اللوجستية عقد جمع نفايات لمستودعاتها في منطقتي غلا والرسيل بمسقط.',
+      'يشمل الطلب: تفريغ ٦ حاويات نفايات عامة (٣ مرات أسبوعياً)، وحاويتين للكرتون (أسبوعياً)، ورفع حاويتين سكيب شهرياً.',
+      'مدة العقد ١٢ شهراً ابتداءً من ١ نوفمبر ٢٠٢٦، ويرغبون باستلام عرض السعر قبل ٢٣ أكتوبر ٢٠٢٦.',
+    ],
   },
-  {
-    id: 'Request Site Inquiry / Visit',
-    shortLabel: 'Site Visit',
-    label: 'Request Site Visit / Inquiry',
-    icon: MapPin,
+  'msg-demo-102': {
+    companyNameAr: 'مرافق خليج مسقط (Muscat Bay Facilities)',
+    subjectAr: 'تجديد العقد السنوي لإدارة وجمع النفايات — قنتب',
+    locationAr: 'قنتب، مسقط',
+    wasteTypeAr: 'نفايات عامة + مواد قابلة للتدوير',
+    volumeAr: '١٤ حاوية (١١٠٠ لتر) + ٣ حاويات سكيب (٦ م³)',
+    durationAr: '١٢ شهراً · يبدأ ١٥ نوفمبر ٢٠٢٦',
+    summaryAr: [
+      'ترغب شركة مرافق خليج مسقط بتجديد عقد إدارة النفايات السنوي لمرافقها في منطقة قنتب لمدة ١٢ شهراً.',
+      'يشمل النطاق ١٠ حاويات نفايات عامة (٣ مرات أسبوعياً)، و٤ حاويات تدوير (أسبوعياً)، و٣ رفعات لحاويات السكيب شهرياً.',
+      'يبدأ التجديد في ١٥ نوفمبر ٢٠٢٦ بنظام الدفع الآجل (٣٠ يوماً).',
+    ],
   },
-  {
-    id: 'Ask for Missing Specs',
-    shortLabel: 'Missing Specs',
-    label: 'Ask for Missing Specs',
-    icon: MessageSquare,
+  'msg-demo-103': {
+    companyNameAr: 'صحار للخدمات الصناعية (Sohar Industrial Services)',
+    subjectAr: 'طلب حاويات سكيب وRoRo لتوسعة المصنع في صحار',
+    locationAr: 'منطقة صحار الصناعية',
+    wasteTypeAr: 'نفايات صناعية + مخلفات بناء وتوسعة',
+    volumeAr: '٤ حاويات + ٤ سكيب (٦ م³) + ٢ حاوية كبيرة (٣٠ م³)',
+    durationAr: '٦ أشهر · يبدأ ١ نوفمبر ٢٠٢٦',
+    summaryAr: [
+      'تحتاج شركة صحار للخدمات الصناعية إلى خدمة حاويات نفايات لمشروع توسعة مصنعها في صحار الصناعية.',
+      'المطلوب: ٤ حاويات عامة، و٦ رفعات شهرياً لحاويات السكيب (٦ م³)، و٤ رحلات شهرياً لحاويات RoRo الكبيرة (٣٠ م³).',
+      'مدة العقد ٦ أشهر مع توفير تصاريح وإيصالات شركة بيئة (Be’ah) الرسمية.',
+    ],
   },
-  {
-    id: 'Approve Contract Terms',
-    shortLabel: 'Approve Contract',
-    label: 'Approve Contract Terms',
-    icon: CheckCircle2,
-  },
-];
+};
 
 function getInitials(companyName = '') {
   const words = companyName.trim().split(/\s+/);
@@ -63,739 +91,12 @@ function getInitials(companyName = '') {
   return (companyName.slice(0, 2) || 'CL').toUpperCase();
 }
 
-/**
- * Individual Stacked Mail Card with 3 independently minimizable/maximizable rows.
- * By default, all 3 rows start MINIMIZED so the manager can scan all mails quickly:
- * - Row 1 (Mail Subject): Minimized shows Subject & Sender; Maximized shows Complete Original Mail + Attachment.
- * - Row 2 (Mail Summary): Minimized shows Main Extracted Details (Waste Stream, Location, Est. Value); Maximized shows Detailed Bullet-Point Summary.
- * - Row 3 (AI Action): Minimized shows Specific Action Selector; Maximized shows Complete AI-Drafted Response Mail & Approval controls.
- */
-function MailCard({
-  emailItem,
-  settings,
-  onUpdateEmail,
-  onOpenPdfPreview,
-  showToast,
-}) {
-  // All 3 sections default to FALSE (minimized) so the manager can scan all mails easily
-  const [isMailMaximized, setIsMailMaximized] = useState(false);
-  const [isSummaryMaximized, setIsSummaryMaximized] = useState(false);
-  const [isActionMaximized, setIsActionMaximized] = useState(false);
-  const [isEditingDraft, setIsEditingDraft] = useState(false);
-
-  const [draftTo, setDraftTo] = useState(emailItem.draft?.to || emailItem.fromEmail || '');
-  const [draftCc, setDraftCc] = useState(
-    emailItem.draft?.cc || settings?.companyProfile?.defaultCc || 'operations@pgsoman.com'
-  );
-  const [draftSubject, setDraftSubject] = useState(
-    emailItem.draft?.subject || `Quotation | ${emailItem.subject}`
-  );
-  const [draftIntro, setDraftIntro] = useState(
-    emailItem.draft?.introText ||
-      `Dear ${emailItem.fromName?.split(' ')[0] || 'Client'},\n\nThank you for your RFQ. We are pleased to quote for your waste collection services.`
-  );
-  const [draftOutro, setDraftOutro] = useState(
-    emailItem.draft?.outroText ||
-      `Payment: 30 days. Please confirm to arrange mobilisation.\n\nKind regards, Ahmed Al Kindi\nGeneral Manager · PGS Oman`
-  );
-  const [draftBody, setDraftBody] = useState(emailItem.draft?.body || '');
-  const [selectedTone, setSelectedTone] = useState(
-    emailItem.draft?.tonePreset || 'Accept & Send Quotation'
-  );
-  const [customInstruction, setCustomInstruction] = useState('');
-
-  const [regenerating, setRegenerating] = useState(false);
-  const [savingDraft, setSavingDraft] = useState(false);
-  const [savingGmailDraft, setSavingGmailDraft] = useState(false);
-  const [approvingSend, setApprovingSend] = useState(false);
-
-  useEffect(() => {
-    if (emailItem?.draft) {
-      setDraftTo(emailItem.draft.to || emailItem.fromEmail || '');
-      setDraftCc(
-        emailItem.draft.cc || settings?.companyProfile?.defaultCc || 'operations@pgsoman.com'
-      );
-      setDraftSubject(emailItem.draft.subject || `Quotation | ${emailItem.subject}`);
-      setDraftIntro(
-        emailItem.draft.introText ||
-          `Dear ${emailItem.fromName?.split(' ')[0] || 'Client'},\n\nThank you for your RFQ. We are pleased to quote for your waste collection services.`
-      );
-      setDraftOutro(
-        emailItem.draft.outroText ||
-          `Payment: 30 days. Please confirm to arrange mobilisation.\n\nKind regards, Ahmed Al Kindi\nGeneral Manager · PGS Oman`
-      );
-      setDraftBody(emailItem.draft.body || '');
-      setSelectedTone(emailItem.draft.tonePreset || 'Accept & Send Quotation');
-    }
-  }, [emailItem?.id, emailItem?.draft?.lastUpdatedAt]);
-
-  const initials = emailItem.initials || getInitials(emailItem.companyName || emailItem.fromName);
-  const timeStr =
-    emailItem.displayTime ||
-    new Date(emailItem.receivedAt).toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false,
-    });
-
-  const pricingRows = emailItem.draft?.pricingTable || [
-    { service: 'General waste · 6 bins × 208', amount: '1,248.000' },
-    { service: 'Cardboard · 2 bins × 240.500', amount: '481.000' },
-    { service: '6 m³ skips · 2 lifts × 200', amount: '400.000' },
-  ];
-  const pricingTotal =
-    emailItem.draft?.totalLabel ||
-    emailItem.aiAnalysis?.extractedDetails?.estimatedMonthlyValue ||
-    '2,129 OMR/month';
-
-  const wasteStreamText =
-    emailItem.aiAnalysis?.extractedDetails?.wasteStreamsLabel ||
-    (emailItem.aiAnalysis?.extractedDetails?.wasteTypes || []).join(' + ') ||
-    'General + cardboard';
-
-  const locationText =
-    emailItem.aiAnalysis?.extractedDetails?.siteLocationsLabel ||
-    (emailItem.aiAnalysis?.extractedDetails?.locations || []).join(', ') ||
-    'Ghala + Rusayl, Muscat';
-
-  const volumeText =
-    emailItem.aiAnalysis?.extractedDetails?.binsVolumeLabel ||
-    emailItem.aiAnalysis?.extractedDetails?.estimatedVolume ||
-    '8 × 1,100 L; 2 × 6 m³';
-
-  const durationText =
-    emailItem.aiAnalysis?.extractedDetails?.contractDurationLabel ||
-    emailItem.aiAnalysis?.extractedDetails?.contractDuration ||
-    '12 months';
-
-  // When manager chooses an action option, update draft and maximize the AI Action section
-  const handleActionSelect = async (presetId) => {
-    setSelectedTone(presetId);
-    setIsActionMaximized(true);
-    setRegenerating(true);
-    try {
-      const res = await fetch(`/api/emails/${emailItem.id}/regenerate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          tonePreset: presetId,
-          customInstructions: customInstruction,
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to update AI action draft');
-      onUpdateEmail(data.email);
-      setCustomInstruction('');
-      showToast(`AI Draft updated for "${presetId}"`, 'success');
-    } catch (err) {
-      showToast(err.message, 'error');
-    } finally {
-      setRegenerating(false);
-    }
-  };
-
-  const handleSaveEdits = async () => {
-    setSavingDraft(true);
-    try {
-      const res = await fetch(`/api/emails/${emailItem.id}/draft`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          to: draftTo,
-          cc: draftCc,
-          subject: draftSubject,
-          introText: draftIntro,
-          outroText: draftOutro,
-          body: draftBody,
-          tonePreset: selectedTone,
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to save draft');
-      onUpdateEmail(data.email);
-      setIsEditingDraft(false);
-      showToast('Draft changes saved!', 'success');
-    } catch (err) {
-      showToast(err.message, 'error');
-    } finally {
-      setSavingDraft(false);
-    }
-  };
-
-  const handleSaveToGmailDrafts = async () => {
-    setSavingGmailDraft(true);
-    try {
-      const res = await fetch(`/api/emails/${emailItem.id}/save-gmail-draft`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          draft: {
-            to: draftTo,
-            cc: draftCc,
-            subject: draftSubject,
-            introText: draftIntro,
-            outroText: draftOutro,
-            body: draftBody,
-            tonePreset: selectedTone,
-          },
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to save to Gmail Drafts');
-      onUpdateEmail(data.email);
-      showToast(data.message, 'success');
-    } catch (err) {
-      showToast(err.message, 'error');
-    } finally {
-      setSavingGmailDraft(false);
-    }
-  };
-
-  const handleApproveAndSend = async () => {
-    setApprovingSend(true);
-    try {
-      const res = await fetch(`/api/emails/${emailItem.id}/approve-send`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          draft: {
-            to: draftTo,
-            cc: draftCc,
-            subject: draftSubject,
-            introText: draftIntro,
-            outroText: draftOutro,
-            body: draftBody,
-            tonePreset: selectedTone,
-          },
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to send email');
-      onUpdateEmail(data.email, data.stats);
-      showToast(data.message, 'success');
-    } catch (err) {
-      showToast(err.message, 'error');
-    } finally {
-      setApprovingSend(false);
-    }
-  };
-
-  const handleRestoreProposal = async () => {
-    try {
-      const res = await fetch(`/api/emails/${emailItem.id}/reclassify`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ makeProposal: true }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-      onUpdateEmail(data.email, data.stats);
-      showToast(data.message, 'success');
-    } catch (err) {
-      showToast(err.message, 'error');
-    }
-  };
-
-  const allMaximized = isMailMaximized && isSummaryMaximized && isActionMaximized;
-  const toggleAllSections = () => {
-    const nextState = !allMaximized;
-    setIsMailMaximized(nextState);
-    setIsSummaryMaximized(nextState);
-    setIsActionMaximized(nextState);
-  };
-
-  return (
-    <div className="bg-white rounded-2xl border-2 border-[#CBD5E1] shadow-sm p-3.5 space-y-2.5 transition hover:border-[#0B7A53]/70">
-      {/* =====================================================================
-          ROW 1: Mail Subject (Original mail)
-          - Minimized (Default): Shows Mail Subject, Sender, Badges, and Maximize button.
-          - Maximized: Shows Complete Original Mail Body + Attached PDF/Contract.
-         ===================================================================== */}
-      <div className="rounded-xl border border-[#CBD5E1] bg-[#F8FAFC] px-4 py-2.5">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          {/* Left: Avatar + Subject + Sender */}
-          <div
-            onClick={() => setIsMailMaximized(!isMailMaximized)}
-            className="flex items-center gap-3 min-w-0 flex-1 cursor-pointer"
-          >
-            <span className="w-8 h-8 rounded-lg bg-[#D1FAE5] text-[#065F46] text-xs font-extrabold flex items-center justify-center shrink-0">
-              {initials}
-            </span>
-            <div className="min-w-0 flex-1">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#0B7A53]">
-                  Mail Subject:
-                </span>
-                <span className="text-sm font-bold text-[#111827] truncate">
-                  {emailItem.subject}
-                </span>
-              </div>
-              <div className="flex flex-wrap items-center gap-2 text-xs text-[#64748B] mt-0.5">
-                <strong className="text-[#334155]">
-                  {emailItem.companyName || emailItem.fromName}
-                </strong>
-                <span>&lt;{emailItem.fromEmail}&gt;</span>
-                <span>·</span>
-                <span>{timeStr}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Right: Status Badges + Maximize Original Mail Button */}
-          <div className="flex flex-wrap items-center gap-2 shrink-0">
-            {emailItem.status === 'pending_approval' && (
-              <span className="px-2 py-0.5 rounded-md bg-[#FEF3C7] text-[#92400E] text-[11px] font-bold">
-                Needs Approval
-              </span>
-            )}
-            {emailItem.status === 'approved_sent' && (
-              <span className="px-2 py-0.5 rounded-md bg-[#D1FAE5] text-[#065F46] text-[11px] font-bold flex items-center gap-1">
-                <Check className="w-3 h-3" />
-                Approved & Sent
-              </span>
-            )}
-            {emailItem.urgency === 'High' && emailItem.isWasteProposal && (
-              <span className="px-2 py-0.5 rounded-md bg-[#FEE2E2] text-[#B91C1C] text-[11px] font-bold">
-                High Priority
-              </span>
-            )}
-            {emailItem.attachments?.length > 0 && (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-white border border-[#CBD5E1] text-[11px] font-semibold text-[#334155]">
-                <Paperclip className="w-3 h-3 text-[#E11D48]" />
-                PDF Attached
-              </span>
-            )}
-
-            <button
-              type="button"
-              onClick={toggleAllSections}
-              className="px-2.5 py-1 rounded-lg bg-slate-200/70 hover:bg-slate-200 text-[11px] font-bold text-[#334155] transition"
-              title="Maximize or Minimize all 3 rows in this mail card"
-            >
-              {allMaximized ? 'Minimize All' : 'Expand All'}
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setIsMailMaximized(!isMailMaximized)}
-              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg border text-xs font-bold transition ${
-                isMailMaximized
-                  ? 'bg-[#101C24] text-white border-[#101C24]'
-                  : 'bg-white border-[#CBD5E1] text-[#1E293B] hover:border-[#0B7A53]'
-              }`}
-            >
-              {isMailMaximized ? (
-                <>
-                  <Minimize2 className="w-3.5 h-3.5" />
-                  <span>Minimize Mail</span>
-                </>
-              ) : (
-                <>
-                  <Maximize2 className="w-3.5 h-3.5 text-[#0B7A53]" />
-                  <span>Maximize Mail</span>
-                </>
-              )}
-            </button>
-          </div>
-        </div>
-
-        {/* MAXIMIZED VIEW FOR ROW 1: Complete Original Mail from Inbox + Attachment */}
-        {isMailMaximized && (
-          <div className="mt-3 pt-3 border-t border-[#E2E8EC] grid grid-cols-1 lg:grid-cols-12 gap-3">
-            <div
-              className={`${
-                emailItem.attachments?.length > 0 ? 'lg:col-span-8' : 'lg:col-span-12'
-              } bg-white p-4 rounded-xl border border-[#E2E8EC]`}
-            >
-              <div className="flex items-center justify-between border-b border-[#EEF2F6] pb-2 mb-2.5 text-xs text-[#64748B]">
-                <div>
-                  <strong>From:</strong> {emailItem.fromName} &lt;{emailItem.fromEmail}&gt;
-                </div>
-                <div>
-                  <strong>Subject:</strong> {emailItem.subject}
-                </div>
-              </div>
-              <pre className="text-xs text-[#1E293B] whitespace-pre-wrap font-sans leading-relaxed">
-                {emailItem.bodyText}
-              </pre>
-            </div>
-
-            {emailItem.attachments?.length > 0 && (
-              <div className="lg:col-span-4 bg-white p-4 rounded-xl border border-[#E2E8EC] flex flex-col justify-between">
-                <div>
-                  <div className="text-[11px] font-bold uppercase tracking-wider text-[#E11D48] mb-1.5 flex items-center gap-1.5">
-                    <FileText className="w-3.5 h-3.5" />
-                    Attached Contract / RFQ Document
-                  </div>
-                  <div className="text-xs font-bold text-[#111827] mb-2">
-                    {emailItem.attachments[0].filename}
-                  </div>
-                  <pre className="text-[11px] text-[#475569] whitespace-pre-wrap font-mono leading-snug bg-[#F8FAFC] p-3 rounded-lg border border-[#EEF2F6] max-h-44 overflow-y-auto">
-                    {emailItem.attachments[0].extractedText}
-                  </pre>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => onOpenPdfPreview(emailItem.attachments[0])}
-                  className="mt-2.5 w-full py-1.5 rounded-lg bg-[#F1F5F9] hover:bg-[#E2E8F0] text-xs font-bold text-[#1E293B] transition"
-                >
-                  Open Full Document Preview
-                </button>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-
-      {/* =====================================================================
-          ROW 2: Mail Summary
-          - Minimized (Default): Shows ONLY main extracted details (Waste Stream, Location, Volume, Duration, Est. Contract Value) + Maximize button.
-          - Maximized: Shows Detailed AI Summary in Bullet Points.
-         ===================================================================== */}
-      {emailItem.isWasteProposal && (
-        <div className="rounded-xl border border-[#CBEAD9] bg-[#EBF8F2] px-4 py-2.5">
-          {/* Minimized Bar: Main Extracted Details Only */}
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div
-              onClick={() => setIsSummaryMaximized(!isSummaryMaximized)}
-              className="flex flex-wrap items-center gap-2 flex-1 cursor-pointer"
-            >
-              <span className="inline-flex items-center gap-1.5 text-[11px] font-extrabold uppercase tracking-wider text-[#0B7A53] mr-1">
-                <Sparkles className="w-3.5 h-3.5" />
-                Mail Summary:
-              </span>
-
-              {/* Main Extracted Detail Pills */}
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white border border-[#CBEAD9] text-xs">
-                <span className="text-[#64748B] font-medium">Waste Stream:</span>
-                <strong className="text-[#111827]">{wasteStreamText}</strong>
-              </span>
-
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white border border-[#CBEAD9] text-xs">
-                <span className="text-[#64748B] font-medium">Location:</span>
-                <strong className="text-[#111827]">{locationText}</strong>
-              </span>
-
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white border border-[#CBEAD9] text-xs">
-                <span className="text-[#64748B] font-medium">Volume:</span>
-                <strong className="text-[#111827]">{volumeText}</strong>
-              </span>
-
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white border border-[#CBEAD9] text-xs">
-                <span className="text-[#64748B] font-medium">Duration:</span>
-                <strong className="text-[#111827]">{durationText}</strong>
-              </span>
-
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#0B4F3A] text-white text-xs">
-                <span className="text-[#A7F3D0] font-medium">Est. Value:</span>
-                <strong className="font-extrabold">{pricingTotal}</strong>
-              </span>
-            </div>
-
-            {/* Maximize / Minimize Summary Button */}
-            <button
-              type="button"
-              onClick={() => setIsSummaryMaximized(!isSummaryMaximized)}
-              className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg border text-xs font-bold shrink-0 transition ${
-                isSummaryMaximized
-                  ? 'bg-[#0B4F3A] text-white border-[#0B4F3A]'
-                  : 'bg-white border-[#CBEAD9] text-[#065F46] hover:border-[#0B7A53]'
-              }`}
-            >
-              {isSummaryMaximized ? (
-                <>
-                  <Minimize2 className="w-3.5 h-3.5" />
-                  <span>Minimize Summary</span>
-                </>
-              ) : (
-                <>
-                  <Maximize2 className="w-3.5 h-3.5 text-[#0B7A53]" />
-                  <span>Maximize Summary</span>
-                </>
-              )}
-            </button>
-          </div>
-
-          {/* MAXIMIZED VIEW FOR ROW 2: Detailed Summary in Bullet Points */}
-          {isSummaryMaximized && (
-            <div className="mt-3 pt-3 border-t border-[#CBEAD9] bg-white/90 rounded-xl p-3.5 space-y-2">
-              <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#0B7A53]">
-                Detailed AI Proposal Summary (Bullet Points)
-              </div>
-              <ul className="space-y-1.5 pl-1">
-                {(emailItem.aiAnalysis?.executiveSummary || []).map((point, idx) => (
-                  <li
-                    key={idx}
-                    className="text-xs text-[#064E3B] font-medium flex items-start gap-2 leading-relaxed"
-                  >
-                    <span className="w-4 h-4 rounded-full bg-[#0B7A53] text-white text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">
-                      {idx + 1}
-                    </span>
-                    <span>{point}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* =====================================================================
-          ROW 3: AI Action: Proposal / Site visit / etc
-          - Minimized (Default): Shows ONLY the specific AI Action option buttons + Maximize button.
-          - Maximized: Shows the complete AI-Drafted Response Mail based on the chosen option + Approve & Send.
-         ===================================================================== */}
-      {!emailItem.isWasteProposal || emailItem.status === 'filtered_out' ? (
-        <div className="rounded-xl border border-[#CBD5E1] bg-white px-4 py-2.5 flex items-center justify-between">
-          <span className="text-xs text-[#64748B]">
-            <strong>AI Action:</strong> Ignored automatically (Unrelated / Non-Proposal Email)
-          </span>
-          <button
-            type="button"
-            onClick={handleRestoreProposal}
-            className="px-3.5 py-1 rounded-lg bg-[#0B7A53] text-white text-xs font-bold hover:bg-[#096645] transition"
-          >
-            Move to Proposals & Generate AI Draft
-          </button>
-        </div>
-      ) : (
-        <div className="rounded-xl border border-[#CBD5E1] bg-white px-4 py-2.5">
-          {/* Minimized Bar: Specific Action Selector + Maximize Draft Button */}
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#111827] mr-1">
-                AI Action:
-              </span>
-
-              {ACTION_PRESETS.map((preset) => {
-                const IconComponent = preset.icon;
-                const isActive = selectedTone === preset.id;
-                return (
-                  <button
-                    key={preset.id}
-                    type="button"
-                    disabled={regenerating}
-                    onClick={() => handleActionSelect(preset.id)}
-                    className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg border text-xs transition ${
-                      isActive
-                        ? 'bg-[#EFFAF5] border-[1.5px] border-[#0B7A53] text-[#0B7A53] font-bold'
-                        : 'bg-[#F8FAFC] border-[#E2E8EC] text-[#334155] font-medium hover:border-[#CBD5E1]'
-                    }`}
-                  >
-                    <IconComponent className="w-3.5 h-3.5" />
-                    <span>{preset.shortLabel}</span>
-                    {isActive && <Check className="w-3.5 h-3.5 text-[#0B7A53]" />}
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Right: Maximize / Minimize AI Draft Button */}
-            <div className="flex items-center gap-2 shrink-0">
-              {regenerating && (
-                <span className="text-xs font-semibold text-[#0B7A53] flex items-center gap-1">
-                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                  Drafting...
-                </span>
-              )}
-
-              <button
-                type="button"
-                onClick={() => setIsActionMaximized(!isActionMaximized)}
-                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-lg border text-xs font-bold transition ${
-                  isActionMaximized
-                    ? 'bg-[#0B7A53] text-white border-[#0B7A53]'
-                    : 'bg-white border-[#CBD5E1] text-[#1E293B] hover:border-[#0B7A53]'
-                }`}
-              >
-                {isActionMaximized ? (
-                  <>
-                    <Minimize2 className="w-3.5 h-3.5" />
-                    <span>Minimize Draft</span>
-                  </>
-                ) : (
-                  <>
-                    <Maximize2 className="w-3.5 h-3.5 text-[#0B7A53]" />
-                    <span>Maximize AI Draft & Approve</span>
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-
-          {/* MAXIMIZED VIEW FOR ROW 3: Complete AI-Drafted Response Mail & Approval Bar */}
-          {isActionMaximized && (
-            <div className="mt-3 pt-3 border-t border-[#E2E8EC] space-y-3">
-              {/* AI Custom Instruction Bar */}
-              <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#F8FAFC] border border-[#E2E8EC]">
-                <Sparkles className="w-4 h-4 text-[#0B7A53] shrink-0" />
-                <input
-                  type="text"
-                  placeholder="Tell AI what to change in this draft (e.g., 'Offer 10% discount' or 'Schedule site visit on Tuesday')..."
-                  value={customInstruction}
-                  onChange={(e) => setCustomInstruction(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.preventDefault();
-                      handleActionSelect(selectedTone);
-                    }
-                  }}
-                  className="flex-1 bg-transparent text-xs text-[#111827] placeholder-[#64748B] focus:outline-none"
-                />
-                <button
-                  type="button"
-                  disabled={regenerating}
-                  onClick={() => handleActionSelect(selectedTone)}
-                  className="px-3 py-1 rounded-lg bg-white border border-[#D8E0E5] hover:border-[#0B7A53] text-[#0B7A53] text-xs font-bold transition shrink-0"
-                >
-                  {regenerating ? 'Updating...' : 'Apply'}
-                </button>
-              </div>
-
-              {/* To / CC / Subject Bar */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-2 text-xs">
-                <div className="flex items-center px-3 py-1.5 rounded-lg bg-[#F8FAFC] border border-[#EEF2F6]">
-                  <span className="text-[#64748B] font-semibold mr-2">To:</span>
-                  <input
-                    type="email"
-                    value={draftTo}
-                    onChange={(e) => setDraftTo(e.target.value)}
-                    className="flex-1 font-medium text-[#111827] bg-transparent focus:outline-none"
-                  />
-                </div>
-                <div className="flex items-center px-3 py-1.5 rounded-lg bg-[#F8FAFC] border border-[#EEF2F6]">
-                  <span className="text-[#64748B] font-semibold mr-2">CC:</span>
-                  <input
-                    type="text"
-                    value={draftCc}
-                    onChange={(e) => setDraftCc(e.target.value)}
-                    className="flex-1 font-medium text-[#111827] bg-transparent focus:outline-none"
-                  />
-                </div>
-                <div className="flex items-center px-3 py-1.5 rounded-lg bg-[#F8FAFC] border border-[#EEF2F6]">
-                  <span className="text-[#64748B] font-semibold mr-2">Subject:</span>
-                  <input
-                    type="text"
-                    value={draftSubject}
-                    onChange={(e) => setDraftSubject(e.target.value)}
-                    className="flex-1 font-bold text-[#111827] bg-transparent focus:outline-none"
-                  />
-                </div>
-              </div>
-
-              {/* Drafted Email Content with Pricing Table */}
-              <div className="p-4 rounded-xl bg-[#F8FAFC] border border-[#E2E8EC] space-y-2.5">
-                <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#64748B]">
-                    AI-Drafted Response Mail ({selectedTone})
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      if (isEditingDraft) {
-                        handleSaveEdits();
-                      } else {
-                        setIsEditingDraft(true);
-                      }
-                    }}
-                    className="flex items-center gap-1 text-xs font-bold text-[#0B7A53] hover:underline"
-                  >
-                    <Pencil className="w-3 h-3" />
-                    <span>{isEditingDraft ? 'Save Text Changes' : 'Edit Text Directly'}</span>
-                  </button>
-                </div>
-
-                {isEditingDraft ? (
-                  <textarea
-                    rows={8}
-                    value={draftBody}
-                    onChange={(e) => setDraftBody(e.target.value)}
-                    className="w-full p-3 rounded-xl bg-white border border-[#0B7A53] text-xs text-[#111827] leading-relaxed focus:outline-none"
-                  />
-                ) : (
-                  <div className="text-xs text-[#1E293B] space-y-2.5 leading-relaxed bg-white p-4 rounded-xl border border-[#EEF2F6]">
-                    <div className="whitespace-pre-line">{draftIntro}</div>
-
-                    {/* Monthly Service Pricing Table */}
-                    <div className="rounded-xl border border-[#E2E8EC] overflow-hidden my-2 max-w-2xl">
-                      <div className="px-3.5 py-2 bg-[#F8FAFC] border-b border-[#EEF2F6] flex items-center justify-between text-[10px] font-bold uppercase tracking-wider text-[#64748B]">
-                        <span>MONTHLY SERVICE</span>
-                        <span>OMR / MONTH</span>
-                      </div>
-                      <div className="divide-y divide-[#EEF2F6] bg-white">
-                        {pricingRows.map((row, idx) => (
-                          <div
-                            key={idx}
-                            className="px-3.5 py-1.5 flex items-center justify-between text-xs text-[#1E293B]"
-                          >
-                            <span>{row.service}</span>
-                            <span className="font-medium tabular-nums">{row.amount}</span>
-                          </div>
-                        ))}
-                      </div>
-                      <div className="px-3.5 py-2 bg-[#EBF8F2] border-t border-[#CBEAD9] flex items-center justify-between text-xs font-extrabold text-[#065F46]">
-                        <span>Total · excluding VAT</span>
-                        <span>{pricingTotal}</span>
-                      </div>
-                    </div>
-
-                    <div className="whitespace-pre-line text-[#334155]">{draftOutro}</div>
-                  </div>
-                )}
-
-                {/* Bottom Action Footer inside Draft Panel */}
-                <div className="pt-2 flex flex-wrap items-center justify-between gap-3">
-                  <div className="flex items-center gap-4">
-                    <button
-                      type="button"
-                      onClick={handleSaveToGmailDrafts}
-                      disabled={savingGmailDraft}
-                      className="flex items-center gap-1.5 text-xs font-bold text-[#334155] hover:text-[#0B7A53] transition"
-                    >
-                      <Save className="w-3.5 h-3.5" />
-                      <span>
-                        {savingGmailDraft
-                          ? 'Saving to Gmail Drafts...'
-                          : emailItem.gmailDraftSynced
-                          ? 'Saved in Gmail Drafts ✓'
-                          : 'Save to Gmail Drafts'}
-                      </span>
-                    </button>
-
-                    <span className="flex items-center gap-1 text-[11px] font-medium text-[#0B7A53]">
-                      <ShieldCheck className="w-3.5 h-3.5" />
-                      <span>Sends only with your approval</span>
-                    </span>
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={handleApproveAndSend}
-                    disabled={approvingSend}
-                    className="px-6 py-2.5 rounded-xl bg-[#0B7A53] hover:bg-[#096645] text-white text-xs font-bold flex items-center gap-2 shadow-sm disabled:opacity-50 transition"
-                  >
-                    {approvingSend ? (
-                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                    ) : (
-                      <Send className="w-3.5 h-3.5" />
-                    )}
-                    <span>
-                      {emailItem.status === 'approved_sent'
-                        ? 'Approved & Sent ✓ (Click to Resend)'
-                        : `Approve & Send Email to ${draftTo}`}
-                    </span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-    </div>
-  );
-}
-
 export default function App() {
+  // Language: 'en' (English LTR) | 'ar' (Arabic RTL for GCC / Oman managers)
+  const [lang, setLang] = useState('en');
+  const t = TRANSLATIONS[lang] || TRANSLATIONS.en;
+  const isRtl = lang === 'ar';
+
   // Primary Leftmost Navigation Sidebar Tab: 'email_assistant' | 'social_assistant'
   const [activeMainModule, setActiveMainModule] = useState('email_assistant');
 
@@ -812,14 +113,52 @@ export default function App() {
   const [loading, setLoading] = useState(true);
   const [syncingGmail, setSyncingGmail] = useState(false);
 
-  // Filter tab for Mails list: 'proposals' | 'pending_approval' | 'approved_sent' | 'filtered_out'
-  const [mailFilter, setMailFilter] = useState('proposals');
+  // Gmail-Style Inbox State:
+  // When openedEmailId is null -> Shows full-width Google Mail Inbox List.
+  // When openedEmailId is set  -> Goes inside that specific mail (Gmail Thread View).
+  const [activeQueueTab, setActiveQueueTab] = useState('all_proposals'); // 'all_proposals' | 'pending_approval' | 'approved_sent' | 'filtered_out'
+  const [searchQuery, setSearchQuery] = useState('');
+  const [openedEmailId, setOpenedEmailId] = useState(null);
+  const [starredIds, setStarredIds] = useState(['msg-demo-101']);
+
+  // Inside-Mail View State:
+  // Original mail is MINIMIZED by default!
+  const [isOriginalMailExpanded, setIsOriginalMailExpanded] = useState(false);
+
+  // Draft Editor state for the opened email
+  const [draftFrom, setDraftFrom] = useState('');
+  const [draftTo, setDraftTo] = useState('');
+  const [draftCc, setDraftCc] = useState('');
+  const [draftSubject, setDraftSubject] = useState('');
+  const [draftBody, setDraftBody] = useState('');
+  const [selectedTone, setSelectedTone] = useState('Accept & Send Quotation');
+  const [aiSuggestionInput, setAiSuggestionInput] = useState('');
+
+  // Action states
+  const [regenerating, setRegenerating] = useState(false);
+  const [savingGmailDraft, setSavingGmailDraft] = useState(false);
+  const [approvingSend, setApprovingSend] = useState(false);
 
   // Modals & Toasts
   const [pdfPreviewAttachment, setPdfPreviewAttachment] = useState(null);
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
+  const [settingsInitialTab, setSettingsInitialTab] = useState('company');
+  const [settingsEditEmail, setSettingsEditEmail] = useState(null);
+  const [extractionRulesModalOpen, setExtractionRulesModalOpen] = useState(false);
   const [simulateModalOpen, setSimulateModalOpen] = useState(false);
   const [toast, setToast] = useState(null);
+
+  // Compute all synced Gmail accounts
+  const syncedGmailAccounts = useMemo(() => {
+    const g = settings?.gmail || {};
+    if (Array.isArray(g.accounts) && g.accounts.length > 0) {
+      return g.accounts.filter((a) => a && a.email);
+    }
+    if (g.email && g.email.trim()) {
+      return [{ id: 'gmail-1', email: g.email.trim(), appPassword: g.appPassword || '' }];
+    }
+    return [];
+  }, [settings]);
 
   const showToast = (message, type = 'success') => {
     setToast({ message, type });
@@ -828,7 +167,7 @@ export default function App() {
     }, 4500);
   };
 
-  const fetchState = async () => {
+  const fetchState = async (silent = false) => {
     try {
       const res = await fetch('/api/state');
       const data = await res.json();
@@ -837,7 +176,9 @@ export default function App() {
       setSettings(data.settings || null);
       if (data.stats) setStats(data.stats);
     } catch (err) {
-      showToast('Failed to load assistant data: ' + err.message, 'error');
+      if (!silent) {
+        showToast('Failed to load assistant data: ' + err.message, 'error');
+      }
     } finally {
       setLoading(false);
     }
@@ -845,28 +186,101 @@ export default function App() {
 
   useEffect(() => {
     fetchState();
+    // Live background polling every 15s to automatically reflect background Gmail auto-syncing
+    const pollTimer = setInterval(() => {
+      fetchState(true);
+    }, 15000);
+    return () => clearInterval(pollTimer);
   }, []);
 
-  const displayedMails = useMemo(() => {
+  // Filtered emails for the Gmail-style inbox list
+  const filteredEmails = useMemo(() => {
     return emails.filter((e) => {
-      if (mailFilter === 'pending_approval') {
-        return e.isWasteProposal && e.status === 'pending_approval';
+      if (activeQueueTab === 'pending_approval') {
+        if (!e.isWasteProposal || e.status !== 'pending_approval') return false;
+      } else if (activeQueueTab === 'approved_sent') {
+        if (!e.isWasteProposal || e.status !== 'approved_sent') return false;
+      } else if (activeQueueTab === 'filtered_out') {
+        if (e.isWasteProposal && e.status !== 'filtered_out') return false;
+      } else {
+        // 'all_proposals'
+        if (!e.isWasteProposal || e.status === 'filtered_out') return false;
       }
-      if (mailFilter === 'approved_sent') {
-        return e.isWasteProposal && e.status === 'approved_sent';
+
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase();
+        const hay = `${e.companyName || ''} ${e.fromName || ''} ${e.fromEmail || ''} ${
+          e.subject || ''
+        } ${e.bodyText || ''}`.toLowerCase();
+        if (!hay.includes(q)) return false;
       }
-      if (mailFilter === 'filtered_out') {
-        return !e.isWasteProposal || e.status === 'filtered_out';
-      }
-      return e.isWasteProposal;
+      return true;
     });
-  }, [emails, mailFilter]);
+  }, [emails, activeQueueTab, searchQuery]);
+
+  const openedEmail = useMemo(
+    () => emails.find((e) => e.id === openedEmailId) || null,
+    [emails, openedEmailId]
+  );
+
+  const openedIndex = useMemo(
+    () => filteredEmails.findIndex((e) => e.id === openedEmailId),
+    [filteredEmails, openedEmailId]
+  );
+
+  // Sync draft editor fields whenever openedEmail changes or its draft updates
+  useEffect(() => {
+    const defaultFrom =
+      openedEmail?.draft?.from ||
+      openedEmail?.syncedAccountEmail ||
+      openedEmail?.toEmail ||
+      syncedGmailAccounts[0]?.email ||
+      settings?.companyProfile?.email ||
+      'proposals@pgsoman.com';
+
+    if (openedEmail?.draft) {
+      setDraftFrom(defaultFrom);
+      setDraftTo(openedEmail.draft.to || openedEmail.fromEmail || '');
+      setDraftCc(
+        openedEmail.draft.cc ||
+          settings?.companyProfile?.defaultCc ||
+          'operations@pgsoman.com'
+      );
+      setDraftSubject(
+        openedEmail.draft.subject || `Quotation | ${openedEmail.subject}`
+      );
+      setDraftBody(openedEmail.draft.body || '');
+      setSelectedTone(openedEmail.draft.tonePreset || 'Accept & Send Quotation');
+    } else if (openedEmail) {
+      setDraftFrom(defaultFrom);
+      setDraftTo(openedEmail.fromEmail || '');
+      setDraftCc('operations@pgsoman.com');
+      setDraftSubject(`Re: ${openedEmail.subject}`);
+      setDraftBody('');
+    }
+  }, [openedEmail?.id, openedEmail?.draft?.lastUpdatedAt, syncedGmailAccounts]);
+
+  // Reset minimized original mail state when opening a different email
+  useEffect(() => {
+    setIsOriginalMailExpanded(false);
+    setAiSuggestionInput('');
+  }, [openedEmailId]);
 
   const updateEmailInList = (updatedEmail, newStats) => {
-    setEmails((prev) => prev.map((e) => (e.id === updatedEmail.id ? updatedEmail : e)));
+    setEmails((prev) =>
+      prev.map((e) => (e.id === updatedEmail.id ? updatedEmail : e))
+    );
     if (newStats) setStats(newStats);
   };
 
+  const toggleStar = (e, id) => {
+    e.stopPropagation();
+    setStarredIds((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+
+  // Sync Gmail Inbox
   const handleSyncGmail = async () => {
     setSyncingGmail(true);
     try {
@@ -874,7 +288,8 @@ export default function App() {
       const data = await res.json();
       if (!res.ok) {
         showToast(data.error || 'Could not sync Gmail', 'warning');
-        if (data.error?.includes('Settings')) {
+        if (data.error?.includes('Settings') || data.error?.includes('Gmail')) {
+          setSettingsInitialTab('gmail');
           setSettingsModalOpen(true);
         }
         return;
@@ -900,121 +315,431 @@ export default function App() {
     setSettings(data.settings);
   };
 
+  const handleDeleteGmailAccount = async (emailToDelete) => {
+    try {
+      const remaining = syncedGmailAccounts.filter(
+        (a) => a.email.toLowerCase() !== emailToDelete.toLowerCase()
+      );
+      const updatedGmail = {
+        ...(settings?.gmail || {}),
+        accounts: remaining,
+        email: remaining[0]?.email || '',
+        appPassword: remaining[0]?.appPassword || '',
+      };
+      await handleSaveSettings({ gmail: updatedGmail });
+      showToast(`Deleted synced Gmail ID: ${emailToDelete}`, 'success');
+    } catch (err) {
+      showToast(err.message || 'Failed to delete Gmail account', 'error');
+    }
+  };
+
+  // Generate / Update AI Mail Response based on Manager's Suggestion or Action Type
+  const handleGenerateWithAi = async (presetOverride) => {
+    if (!openedEmail) return;
+    const toneToUse = presetOverride || selectedTone;
+    setSelectedTone(toneToUse);
+    setRegenerating(true);
+    try {
+      const res = await fetch(`/api/emails/${openedEmail.id}/regenerate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tonePreset: toneToUse,
+          customInstructions: aiSuggestionInput,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to generate draft');
+      updateEmailInList(data.email);
+      setDraftSubject(data.email.draft?.subject || draftSubject);
+      setDraftBody(data.email.draft?.body || '');
+      showToast(
+        lang === 'ar'
+          ? 'تم توليد وتحديث مسودة الرد بالذكاء الاصطناعي!'
+          : 'AI has updated the mail response draft!',
+        'success'
+      );
+    } catch (err) {
+      showToast(err.message, 'error');
+    } finally {
+      setRegenerating(false);
+    }
+  };
+
+  // Save to Gmail Drafts
+  const handleSaveToGmailDrafts = async () => {
+    if (!openedEmail) return;
+    setSavingGmailDraft(true);
+    try {
+      const res = await fetch(`/api/emails/${openedEmail.id}/save-gmail-draft`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          draft: {
+            from: draftFrom,
+            to: draftTo,
+            cc: draftCc,
+            subject: draftSubject,
+            body: draftBody,
+            tonePreset: selectedTone,
+          },
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to save to Gmail Drafts');
+      updateEmailInList(data.email);
+      showToast(data.message, 'success');
+    } catch (err) {
+      showToast(err.message, 'error');
+    } finally {
+      setSavingGmailDraft(false);
+    }
+  };
+
+  // Respond to Mail with Generated Draft (Send back to client)
+  const handleRespondAndSend = async () => {
+    if (!openedEmail) return;
+    setApprovingSend(true);
+    try {
+      const res = await fetch(`/api/emails/${openedEmail.id}/approve-send`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          draft: {
+            from: draftFrom,
+            to: draftTo,
+            cc: draftCc,
+            subject: draftSubject,
+            body: draftBody,
+            tonePreset: selectedTone,
+          },
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to send email');
+      updateEmailInList(data.email, data.stats);
+      showToast(
+        lang === 'ar'
+          ? `تم إرسال الرد إلى ${draftTo} بنجاح!`
+          : data.message,
+        'success'
+      );
+    } catch (err) {
+      showToast(err.message, 'error');
+    } finally {
+      setApprovingSend(false);
+    }
+  };
+
+  const handleRestoreSpam = async () => {
+    if (!openedEmail) return;
+    try {
+      const res = await fetch(`/api/emails/${openedEmail.id}/reclassify`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ makeProposal: true }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      updateEmailInList(data.email, data.stats);
+      setActiveQueueTab('all_proposals');
+      showToast(data.message, 'success');
+    } catch (err) {
+      showToast(err.message, 'error');
+    }
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-[#101C24] text-white gap-3">
-        <Loader2 className="w-9 h-9 text-[#10B981] animate-spin" />
-        <p className="text-sm font-semibold text-slate-200">Loading PGS Oman AI Hub...</p>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#06392A] text-white gap-3">
+        <Loader2 className="w-10 h-10 text-amber-400 animate-spin" />
+        <p className="text-base font-bold">Loading PGS Oman Executive Assistant...</p>
       </div>
     );
   }
 
+  const pendingCount = emails.filter(
+    (e) => e.isWasteProposal && e.status === 'pending_approval'
+  ).length;
+  const allProposalsCount = emails.filter(
+    (e) => e.isWasteProposal && e.status !== 'filtered_out'
+  ).length;
+  const approvedCount = emails.filter(
+    (e) => e.isWasteProposal && e.status === 'approved_sent'
+  ).length;
+
+  const arData = openedEmail ? ARABIC_PROPOSAL_TRANSLATIONS[openedEmail.id] : null;
+  const pricingTotal =
+    openedEmail?.draft?.totalLabel ||
+    openedEmail?.aiAnalysis?.extractedDetails?.estimatedMonthlyValue ||
+    '2,129 OMR/month';
+
+  const summaryPoints =
+    isRtl && arData?.summaryAr
+      ? arData.summaryAr
+      : openedEmail?.aiAnalysis?.executiveSummary || [];
+
+  const locationDisplay =
+    isRtl && arData?.locationAr
+      ? arData.locationAr
+      : openedEmail?.aiAnalysis?.extractedDetails?.siteLocationsLabel ||
+        'Ghala + Rusayl, Muscat';
+
+  const wasteTypeDisplay =
+    isRtl && arData?.wasteTypeAr
+      ? arData.wasteTypeAr
+      : openedEmail?.aiAnalysis?.extractedDetails?.wasteStreamsLabel ||
+        'General + cardboard';
+
+  const volumeDisplay =
+    isRtl && arData?.volumeAr
+      ? arData.volumeAr
+      : openedEmail?.aiAnalysis?.extractedDetails?.binsVolumeLabel ||
+        '8 × 1,100 L; 2 × 6 m³';
+
+  const durationDisplay =
+    isRtl && arData?.durationAr
+      ? arData.durationAr
+      : openedEmail?.aiAnalysis?.extractedDetails?.contractDurationLabel ||
+        '12 months · 1 Nov 2026';
+
+  const QUICK_ACTIONS = [
+    { id: 'Accept & Send Quotation', label: t.actionQuoteTitle, icon: FileText },
+    { id: 'Request Site Inquiry / Visit', label: t.actionVisitTitle, icon: MapPin },
+    { id: 'Ask for Missing Specs', label: t.actionSpecsTitle, icon: MessageSquare },
+    { id: 'Approve Contract Terms', label: t.actionContractTitle, icon: CheckCircle2 },
+  ];
+
   return (
-    <div className="min-h-screen flex bg-[#F5F7F8] text-[#111827] font-sans antialiased">
+    <div
+      dir={isRtl ? 'rtl' : 'ltr'}
+      className="min-h-screen flex bg-[#F7F6F2] text-slate-900 antialiased"
+    >
       {/* Toast Notification */}
       {toast && (
-        <div className="fixed bottom-5 right-5 z-50 max-w-md">
+        <div className="fixed bottom-6 right-6 z-50 max-w-md">
           <div
-            className={`flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg border text-xs font-semibold ${
+            className={`flex items-center gap-3 px-5 py-4 rounded-2xl shadow-2xl border text-sm font-bold ${
               toast.type === 'error'
                 ? 'bg-rose-950 text-white border-rose-700'
                 : toast.type === 'warning'
                 ? 'bg-amber-950 text-white border-amber-700'
-                : 'bg-[#101C24] text-white border-[#0B7A53]'
+                : 'bg-[#06392A] text-white border-emerald-500'
             }`}
           >
-            <CheckCircle2 className="w-4 h-4 text-[#10B981] shrink-0" />
+            <CheckCircle2 className="w-5 h-5 text-amber-400 shrink-0" />
             <span>{toast.message}</span>
           </div>
         </div>
       )}
 
       {/* =====================================================================
-          LEFTMOST NAVIGATION SIDEBAR (Software Name | Email Management | Social Media)
+          LEFTMOST EXECUTIVE SIDEBAR (Royal Emerald & Omani Gold Palette)
          ===================================================================== */}
-      <aside className="w-[260px] bg-[#101C24] text-white flex flex-col justify-between shrink-0 p-4 select-none border-r border-[#1E2F3B]">
-        <div className="space-y-6">
-          {/* Box 1: Software Name */}
-          <div className="p-4 rounded-xl bg-[#162630] border-2 border-[#2A404E] flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-[#0B7A53] flex items-center justify-center shrink-0">
-              <Recycle className="w-5 h-5 text-white" />
+      <aside className="w-72 bg-[#06392A] text-white flex flex-col justify-between shrink-0 p-5 select-none shadow-xl">
+        <div className="space-y-5">
+          {/* Company Brand Header */}
+          <div className="p-4 rounded-2xl bg-[#094D39] border border-emerald-700/60 flex items-center gap-3.5">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-md shrink-0">
+              <Recycle className="w-7 h-7 text-[#06392A]" />
             </div>
             <div className="min-w-0">
-              <div className="text-base font-extrabold tracking-tight text-white leading-tight truncate">
-                PGS Oman AI Hub
+              <div className="text-lg font-extrabold tracking-tight text-white truncate">
+                {t.appName}
               </div>
-              <div className="text-[10px] font-semibold uppercase tracking-wider text-[#8A9EA9] mt-0.5">
-                Waste Contracting Assistant
+              <div className="text-xs font-medium text-emerald-200 truncate">
+                {t.appSubtitle}
               </div>
             </div>
           </div>
 
-          {/* Navigation Buttons: Email Management & Social Media */}
-          <nav className="space-y-3">
+          {/* 1-Click Language Switcher (Arabic / English) */}
+          <button
+            type="button"
+            onClick={() => setLang(lang === 'en' ? 'ar' : 'en')}
+            className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-400/40 text-amber-200 transition"
+          >
+            <div className="flex items-center gap-2.5">
+              <Globe className="w-5 h-5 text-amber-400" />
+              <span className="text-sm font-bold">{t.switchLangLabel}</span>
+            </div>
+            <span className="px-2 py-0.5 rounded bg-amber-400/20 text-amber-300 text-xs font-bold">
+              {lang === 'en' ? 'عربي' : 'EN'}
+            </span>
+          </button>
+
+          {/* 2 Primary Assistant Tabs */}
+          <nav className="space-y-3 pt-1">
+            {/* Tab 1: Email Management (Inbox) */}
             <button
               type="button"
-              onClick={() => setActiveMainModule('email_assistant')}
-              className={`w-full flex items-center justify-between px-4 py-4 rounded-xl border-2 text-left transition ${
+              onClick={() => {
+                setActiveMainModule('email_assistant');
+                setOpenedEmailId(null);
+              }}
+              className={`w-full flex items-center justify-between p-4 rounded-2xl border-2 text-start transition ${
                 activeMainModule === 'email_assistant'
-                  ? 'bg-[#0B7A53] border-[#10B981] text-white shadow-md'
-                  : 'bg-[#162630] border-[#263B48] text-[#C5D1D8] hover:text-white hover:border-[#3B5566]'
+                  ? 'bg-white text-[#06392A] border-amber-400 shadow-lg'
+                  : 'bg-[#094D39]/70 border-emerald-800/80 text-emerald-100 hover:bg-[#094D39]'
               }`}
             >
-              <div className="flex items-center gap-3">
-                <Mail className="w-5 h-5 shrink-0" />
-                <div>
-                  <div className="text-sm font-bold leading-snug">Email Management</div>
-                  <div className="text-[11px] opacity-80">Proposals & Contracts</div>
+              <div className="flex items-center gap-3.5 min-w-0">
+                <div
+                  className={`p-2.5 rounded-xl shrink-0 ${
+                    activeMainModule === 'email_assistant'
+                      ? 'bg-[#06392A] text-amber-400'
+                      : 'bg-[#06392A]/60 text-emerald-300'
+                  }`}
+                >
+                  <Mail className="w-6 h-6" />
+                </div>
+                <div className="min-w-0">
+                  <div className="text-[15px] font-extrabold truncate">
+                    {t.navProposals}
+                  </div>
+                  <div
+                    className={`text-xs truncate mt-0.5 ${
+                      activeMainModule === 'email_assistant'
+                        ? 'text-slate-600 font-medium'
+                        : 'text-emerald-300/80'
+                    }`}
+                  >
+                    {t.navProposalsSub}
+                  </div>
                 </div>
               </div>
-              <span className="px-2 py-0.5 rounded-md bg-black/25 text-xs font-extrabold">
-                {stats.pendingApprovalCount}
-              </span>
+              {pendingCount > 0 && (
+                <span className="px-2.5 py-1 rounded-full bg-amber-500 text-slate-950 text-xs font-extrabold shrink-0">
+                  {pendingCount}
+                </span>
+              )}
             </button>
 
+            {/* Tab 2: Social Media Assistant */}
             <button
               type="button"
               onClick={() => setActiveMainModule('social_assistant')}
-              className={`w-full flex items-center justify-between px-4 py-4 rounded-xl border-2 text-left transition ${
+              className={`w-full flex items-center justify-between p-4 rounded-2xl border-2 text-start transition ${
                 activeMainModule === 'social_assistant'
-                  ? 'bg-[#0B7A53] border-[#10B981] text-white shadow-md'
-                  : 'bg-[#162630] border-[#263B48] text-[#C5D1D8] hover:text-white hover:border-[#3B5566]'
+                  ? 'bg-white text-[#06392A] border-amber-400 shadow-lg'
+                  : 'bg-[#094D39]/70 border-emerald-800/80 text-emerald-100 hover:bg-[#094D39]'
               }`}
             >
-              <div className="flex items-center gap-3">
-                <Megaphone className="w-5 h-5 shrink-0" />
-                <div>
-                  <div className="text-sm font-bold leading-snug">Social Media</div>
-                  <div className="text-[11px] opacity-80">LinkedIn & Instagram</div>
+              <div className="flex items-center gap-3.5 min-w-0">
+                <div
+                  className={`p-2.5 rounded-xl shrink-0 ${
+                    activeMainModule === 'social_assistant'
+                      ? 'bg-[#06392A] text-amber-400'
+                      : 'bg-[#06392A]/60 text-emerald-300'
+                  }`}
+                >
+                  <Megaphone className="w-6 h-6" />
+                </div>
+                <div className="min-w-0">
+                  <div className="text-[15px] font-extrabold truncate">{t.navSocial}</div>
+                  <div
+                    className={`text-xs truncate mt-0.5 ${
+                      activeMainModule === 'social_assistant'
+                        ? 'text-slate-600 font-medium'
+                        : 'text-emerald-300/80'
+                    }`}
+                  >
+                    {t.navSocialSub}
+                  </div>
                 </div>
               </div>
-              <span className="px-2 py-0.5 rounded-md bg-black/25 text-[11px] font-bold">
-                IN+IG
-              </span>
             </button>
           </nav>
+
+          {/* Reassuring Safety Card */}
+          <div className="p-4 rounded-2xl bg-[#094D39]/80 border border-emerald-700/60 space-y-1.5">
+            <div className="flex items-center gap-2 text-sm font-bold text-amber-300">
+              <ShieldCheck className="w-5 h-5 shrink-0" />
+              <span>{t.controlTitle}</span>
+            </div>
+            <p className="text-xs text-emerald-100/90 leading-relaxed">{t.controlDesc}</p>
+          </div>
         </div>
 
-        {/* Bottom Settings & Manager Info */}
-        <div className="space-y-3 pt-4 border-t border-[#1E2F3B]">
+        {/* Bottom Synced Gmail Accounts List, Settings & Manager Profile */}
+        <div className="space-y-3 pt-4 border-t border-emerald-800/80">
+          {/* Synced Gmail Accounts Display + Edit & Delete Buttons in Sidebar */}
+          <div className="p-3 rounded-xl bg-[#094D39]/90 border border-emerald-700/80 space-y-2">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <span
+                  className={`w-2.5 h-2.5 rounded-full shrink-0 ${
+                    syncedGmailAccounts.length > 0 ? 'bg-emerald-400' : 'bg-amber-400'
+                  }`}
+                />
+                <span className="text-[11px] font-bold text-emerald-300 uppercase tracking-wider">
+                  {syncedGmailAccounts.length > 0 ? t.syncedGmailLabel : t.notSyncedGmailLabel}
+                </span>
+              </div>
+            </div>
+
+            {syncedGmailAccounts.length > 0 && (
+              <div className="space-y-1.5">
+                {syncedGmailAccounts.map((acc) => (
+                  <div
+                    key={acc.id || acc.email}
+                    className="flex items-center justify-between gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#06392A]/80 border border-emerald-800"
+                  >
+                    <span className="text-xs font-extrabold text-white truncate">
+                      {acc.email}
+                    </span>
+                    <div className="flex items-center gap-1 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setSettingsInitialTab('gmail');
+                          setSettingsEditEmail(acc.email);
+                          setSettingsModalOpen(true);
+                        }}
+                        title={t.btnEditGmail}
+                        className="inline-flex items-center gap-1 px-2 py-1 rounded bg-emerald-700 hover:bg-emerald-600 text-white text-[11px] font-bold transition"
+                      >
+                        <Edit3 className="w-3 h-3" />
+                        <span>{t.btnEditGmail}</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteGmailAccount(acc.email)}
+                        title={t.btnDeleteGmail}
+                        className="inline-flex items-center gap-1 px-2 py-1 rounded bg-rose-600/90 hover:bg-rose-500 text-white text-[11px] font-bold transition"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                        <span>{t.btnDeleteGmail}</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
           <button
             type="button"
-            onClick={() => setSettingsModalOpen(true)}
-            className="w-full flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl bg-[#162630] hover:bg-[#1D313E] border border-[#263B48] text-xs font-semibold text-[#C5D1D8] hover:text-white transition"
+            onClick={() => {
+              setSettingsInitialTab('company');
+              setSettingsEditEmail(null);
+              setSettingsModalOpen(true);
+            }}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-[#094D39] hover:bg-emerald-800 text-white text-sm font-bold border border-emerald-700 transition"
           >
-            <Settings className="w-4 h-4 text-[#10B981]" />
-            <span>Company, Rate Card & Setup</span>
+            <Settings className="w-5 h-5 text-amber-400 shrink-0" />
+            <span>{t.navSettings}</span>
           </button>
 
-          <div className="px-2 py-1 flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full bg-[#1E3B38] text-[#6EE7B7] text-xs font-bold flex items-center justify-center shrink-0">
+          <div className="flex items-center gap-3 px-2 pt-1">
+            <div className="w-10 h-10 rounded-full bg-amber-400 text-[#06392A] text-sm font-extrabold flex items-center justify-center shrink-0">
               {settings?.companyProfile?.managerInitials || 'AK'}
             </div>
             <div className="min-w-0">
-              <div className="text-xs font-bold text-white truncate">
+              <div className="text-sm font-bold text-white truncate">
                 {settings?.companyProfile?.managerName || 'Ahmed Al Kindi'}
               </div>
-              <div className="text-[10.5px] text-[#7D919E] truncate">
+              <div className="text-xs text-emerald-300 truncate">
                 {settings?.companyProfile?.managerTitle || 'General Manager · PGS Oman'}
               </div>
             </div>
@@ -1023,160 +748,910 @@ export default function App() {
       </aside>
 
       {/* =====================================================================
-          RIGHT MAIN CONTENT WINDOW
+          RIGHT MAIN WINDOW
          ===================================================================== */}
-      <div className="flex-1 flex flex-col min-w-0 p-6 space-y-5 overflow-y-auto">
+      <div className="flex-1 flex flex-col min-w-0 overflow-y-auto">
         {activeMainModule === 'social_assistant' ? (
-          <>
-            <header className="bg-white rounded-2xl border-2 border-[#CBD5E1] px-6 py-4 flex flex-wrap items-center justify-between gap-4 shadow-sm">
-              <div>
-                <h1 className="text-xl font-extrabold text-[#111827]">
-                  Social Media Marketing Assistant (LinkedIn & Instagram)
-                </h1>
-                <p className="text-xs text-[#64748B] mt-0.5">
-                  Generate branded post images and captions from your prompt or uploaded photos
-                </p>
-              </div>
-            </header>
-
-            <SocialMediaWorkspace
-              socialPosts={socialPosts}
-              settings={settings}
-              onUpdateSocialPosts={(updatedPosts, updatedStats) => {
-                setSocialPosts(updatedPosts);
-                if (updatedStats) setStats(updatedStats);
-              }}
-              onSaveSettings={handleSaveSettings}
-              showToast={showToast}
-            />
-          </>
-        ) : (
+          <SocialMediaWorkspace
+            socialPosts={socialPosts}
+            settings={settings}
+            onUpdateSocialPosts={(updatedPosts, updatedStats) => {
+              setSocialPosts(updatedPosts);
+              if (updatedStats) setStats(updatedStats);
+            }}
+            onSaveSettings={handleSaveSettings}
+            showToast={showToast}
+          />
+        ) : !openedEmail ? (
           /* =====================================================================
-             EMAIL PROPOSAL & CONTRACT ASSISTANT (Minimized by Default, Maximize on Click)
+             VIEW 1: GOOGLE MAIL (GMAIL) STYLE INBOX LIST VIEW
              ===================================================================== */
-          <div className="max-w-[1440px] w-full mx-auto space-y-5">
-            {/* Top Box: Email Proposal & Contract Assistant */}
-            <header className="bg-white rounded-2xl border-2 border-[#CBD5E1] px-6 py-4 flex flex-wrap items-center justify-between gap-4 shadow-sm">
-              <div>
-                <h1 className="text-xl font-extrabold text-[#111827]">
-                  Email Proposal & Contract Assistant
-                </h1>
-                <div className="flex items-center gap-2 text-xs text-[#64748B] mt-1">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-[#0B7A53]" />
-                  <span>
-                    Gmail connected · {settings?.gmail?.email || 'proposals@pgsoman.com'} · All
-                    proposal mails are minimized by default — click Maximize on any row to inspect
-                  </span>
-                </div>
+          <div className="flex-1 p-6 lg:p-8 max-w-[1500px] w-full mx-auto space-y-5">
+            {/* Top Gmail-Style Search & Action Bar */}
+            <header className="bg-white rounded-2xl border border-slate-200/90 px-5 py-3.5 shadow-sm flex flex-wrap items-center justify-between gap-4">
+              {/* Search Bar (Just like Gmail) */}
+              <div className="relative flex-1 min-w-[260px] max-w-xl">
+                <Search className="w-5 h-5 text-slate-400 absolute start-4 top-3" />
+                <input
+                  type="text"
+                  placeholder={t.searchPlaceholder}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full ps-12 pe-4 py-2.5 rounded-xl bg-[#F4F3EE] focus:bg-white border border-transparent focus:border-[#065F46] text-sm font-medium text-slate-900 focus:outline-none transition"
+                />
               </div>
 
+              {/* Right Synced Gmail Account Pills (with Edit & Delete) + Sync & Test Buttons */}
               <div className="flex flex-wrap items-center gap-2.5">
+                {syncedGmailAccounts.length === 0 ? (
+                  <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-amber-50 border border-amber-200 text-xs">
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0" />
+                    <span className="font-bold text-amber-900">{t.notSyncedGmailLabel}</span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSettingsInitialTab('gmail');
+                        setSettingsEditEmail(null);
+                        setSettingsModalOpen(true);
+                      }}
+                      className="inline-flex items-center gap-1 ms-1 px-2.5 py-1 rounded-lg bg-[#065F46] text-white font-extrabold transition"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>{t.btnConnectGmail}</span>
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex flex-wrap items-center gap-2">
+                    {syncedGmailAccounts.map((acc) => (
+                      <div
+                        key={acc.id || acc.email}
+                        className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#ECFDF5] border border-emerald-200 text-xs"
+                      >
+                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 shrink-0" />
+                        <span className="font-bold text-slate-600">{t.syncedGmailLabel}</span>
+                        <span className="font-extrabold text-[#06392A]">{acc.email}</span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSettingsInitialTab('gmail');
+                            setSettingsEditEmail(acc.email);
+                            setSettingsModalOpen(true);
+                          }}
+                          className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-white hover:bg-emerald-100 border border-emerald-300 text-[#065F46] font-extrabold transition"
+                        >
+                          <Edit3 className="w-3.5 h-3.5" />
+                          <span>{t.btnEditGmail}</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteGmailAccount(acc.email)}
+                          className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-white hover:bg-rose-100 border border-rose-300 text-rose-700 font-extrabold transition"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                          <span>{t.btnDeleteGmail}</span>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Extraction Rules & Whitelist Modal Button */}
+                <button
+                  type="button"
+                  onClick={() => setExtractionRulesModalOpen(true)}
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 border-2 border-amber-400/80 text-[#06392A] text-sm font-extrabold shadow-sm transition"
+                  title="Configure AI extraction prompt, whitelisted company domains and email addresses"
+                >
+                  <SlidersHorizontal className="w-4 h-4 text-amber-600" />
+                  <span>{t.btnFilterRules}</span>
+                </button>
+
                 <button
                   type="button"
                   onClick={() => setSimulateModalOpen(true)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#F8FAFC] hover:bg-slate-100 text-[#1E293B] border border-[#CBD5E1] text-xs font-bold transition"
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-sm font-bold transition"
                 >
-                  <Plus className="w-4 h-4 text-[#0B7A53]" />
-                  <span>Simulate Incoming Mail</span>
+                  <Plus className="w-4 h-4 text-[#065F46]" />
+                  <span>{t.btnTestMail}</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={handleSyncGmail}
                   disabled={syncingGmail}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#0B7A53] hover:bg-[#096645] text-white text-xs font-bold shadow-sm disabled:opacity-50 transition"
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#065F46] hover:bg-[#047857] text-white text-sm font-bold shadow-sm disabled:opacity-50 transition"
                 >
-                  <RefreshCw className={`w-3.5 h-3.5 ${syncingGmail ? 'animate-spin' : ''}`} />
-                  <span>{syncingGmail ? 'Syncing...' : 'Sync Gmail Inbox'}</span>
+                  <RefreshCw className={`w-4 h-4 ${syncingGmail ? 'animate-spin' : ''}`} />
+                  <span>{syncingGmail ? t.btnCheckingGmail : t.btnCheckGmail}</span>
                 </button>
               </div>
             </header>
 
-            {/* "Mails" Section Header + Filter Pills */}
-            <div className="flex flex-wrap items-center justify-between gap-4 pt-1">
-              <div className="flex items-center gap-3">
-                <h2 className="text-2xl font-extrabold text-[#111827] tracking-tight">Mails</h2>
-                <span className="px-2.5 py-0.5 rounded-full bg-[#E6F4EE] text-[#0B7A53] text-xs font-extrabold">
-                  {displayedMails.length} Proposals
-                </span>
+            {/* Main Gmail-Style Inbox Container */}
+            <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm overflow-hidden">
+              {/* Gmail Category Tabs Header */}
+              <div className="flex flex-wrap border-b border-slate-200 bg-[#FAF9F6] px-4">
+                <button
+                  type="button"
+                  onClick={() => setActiveQueueTab('all_proposals')}
+                  className={`flex items-center gap-2.5 px-6 py-4 text-sm font-extrabold border-b-4 transition ${
+                    activeQueueTab === 'all_proposals'
+                      ? 'border-[#065F46] text-[#065F46] bg-white'
+                      : 'border-transparent text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  <Inbox className="w-4 h-4" />
+                  <span>{t.tabAll}</span>
+                  <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-[#065F46] text-xs font-extrabold">
+                    {allProposalsCount}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setActiveQueueTab('pending_approval')}
+                  className={`flex items-center gap-2.5 px-6 py-4 text-sm font-extrabold border-b-4 transition ${
+                    activeQueueTab === 'pending_approval'
+                      ? 'border-amber-500 text-amber-800 bg-white'
+                      : 'border-transparent text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  <Clock className="w-4 h-4" />
+                  <span>{t.tabWaiting}</span>
+                  <span className="px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 text-xs font-extrabold">
+                    {pendingCount}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setActiveQueueTab('approved_sent')}
+                  className={`flex items-center gap-2.5 px-6 py-4 text-sm font-extrabold border-b-4 transition ${
+                    activeQueueTab === 'approved_sent'
+                      ? 'border-[#065F46] text-[#065F46] bg-white'
+                      : 'border-transparent text-slate-600 hover:text-slate-900'
+                  }`}
+                >
+                  <CheckCircle2 className="w-4 h-4" />
+                  <span>{t.tabApproved}</span>
+                  <span className="px-2 py-0.5 rounded-full bg-slate-200 text-slate-700 text-xs font-bold">
+                    {approvedCount}
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setActiveQueueTab('filtered_out')}
+                  className={`flex items-center gap-2.5 px-6 py-4 text-sm font-bold border-b-4 transition ${
+                    activeQueueTab === 'filtered_out'
+                      ? 'border-slate-600 text-slate-800 bg-white'
+                      : 'border-transparent text-slate-500 hover:text-slate-800'
+                  }`}
+                >
+                  <Trash2 className="w-4 h-4" />
+                  <span>{t.tabIgnored}</span>
+                  <span className="px-2 py-0.5 rounded-full bg-slate-200 text-slate-600 text-xs">
+                    {stats.filteredOutCount}
+                  </span>
+                </button>
               </div>
 
-              {/* Filter Tabs */}
-              <div className="flex flex-wrap items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setMailFilter('proposals')}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold border transition ${
-                    mailFilter === 'proposals'
-                      ? 'bg-[#101C24] text-white border-[#101C24]'
-                      : 'bg-white text-[#475569] border-[#CBD5E1] hover:bg-slate-50'
-                  }`}
-                >
-                  All Waste Proposals ({emails.filter((e) => e.isWasteProposal).length})
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setMailFilter('pending_approval')}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold border transition ${
-                    mailFilter === 'pending_approval'
-                      ? 'bg-[#0B7A53] text-white border-[#0B7A53]'
-                      : 'bg-white text-[#475569] border-[#CBD5E1] hover:bg-slate-50'
-                  }`}
-                >
-                  Needs Approval (
-                  {emails.filter((e) => e.isWasteProposal && e.status === 'pending_approval').length}
-                  )
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setMailFilter('approved_sent')}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold border transition ${
-                    mailFilter === 'approved_sent'
-                      ? 'bg-[#0B7A53] text-white border-[#0B7A53]'
-                      : 'bg-white text-[#475569] border-[#CBD5E1] hover:bg-slate-50'
-                  }`}
-                >
-                  Approved & Sent (
-                  {emails.filter((e) => e.isWasteProposal && e.status === 'approved_sent').length})
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setMailFilter('filtered_out')}
-                  className={`px-3.5 py-1.5 rounded-xl text-xs font-bold border transition flex items-center gap-1.5 ${
-                    mailFilter === 'filtered_out'
-                      ? 'bg-[#475569] text-white border-[#475569]'
-                      : 'bg-white text-[#64748B] border-[#CBD5E1] hover:bg-slate-50'
-                  }`}
-                >
-                  <ListFilter className="w-3.5 h-3.5" />
-                  Filtered Out ({stats.filteredOutCount})
-                </button>
-              </div>
-            </div>
-
-            {/* Vertically Stacked Mail Cards List (All Minimized by Default) */}
-            <div className="space-y-4 pb-10">
-              {displayedMails.length === 0 ? (
-                <div className="bg-white rounded-2xl border-2 border-[#CBD5E1] p-12 text-center space-y-2">
-                  <CheckCircle2 className="w-10 h-10 text-[#0B7A53] mx-auto" />
-                  <div className="text-base font-bold text-[#111827]">No mails in this filter</div>
-                  <p className="text-xs text-[#64748B]">
-                    Click "All Waste Proposals" or "Simulate Incoming Mail" above.
-                  </p>
+              {/* Gmail-Style Email Rows List with Horizontal Scroll Bar */}
+              {filteredEmails.length === 0 ? (
+                <div className="p-16 text-center space-y-2">
+                  <CheckCircle2 className="w-12 h-12 text-emerald-600 mx-auto" />
+                  <div className="text-lg font-extrabold text-slate-800">
+                    {t.noMailsTitle}
+                  </div>
+                  <p className="text-sm text-slate-500">{t.noMailsSub}</p>
                 </div>
               ) : (
-                displayedMails.map((mail) => (
-                  <MailCard
-                    key={mail.id}
-                    emailItem={mail}
-                    settings={settings}
-                    onUpdateEmail={updateEmailInList}
-                    onOpenPdfPreview={(att) => setPdfPreviewAttachment(att)}
-                    showToast={showToast}
-                  />
-                ))
+                <div className="overflow-x-auto pb-2">
+                  <div className="divide-y divide-slate-100 min-w-max">
+                    {filteredEmails.map((item) => {
+                      const isPending = item.status === 'pending_approval';
+                      const isStarred = starredIds.includes(item.id);
+                      const itemAr = ARABIC_PROPOSAL_TRANSLATIONS[item.id];
+                      const companyTitle =
+                        isRtl && itemAr?.companyNameAr
+                          ? itemAr.companyNameAr
+                          : item.companyName || item.fromName;
+                      const subjectTitle =
+                        isRtl && itemAr?.subjectAr ? itemAr.subjectAr : item.subject;
+                      const snippetText =
+                        isRtl && itemAr?.summaryAr?.[0]
+                          ? itemAr.summaryAr[0]
+                          : item.aiAnalysis?.executiveSummary?.[0] || item.bodyText;
+                      const itemValue =
+                        item.draft?.totalLabel ||
+                        item.aiAnalysis?.extractedDetails?.estimatedMonthlyValue ||
+                        '';
+                      const itemLocation =
+                        isRtl && itemAr?.locationAr
+                          ? itemAr.locationAr
+                          : item.aiAnalysis?.extractedDetails?.location || '';
+                      const itemWaste =
+                        isRtl && itemAr?.wasteTypeAr
+                          ? itemAr.wasteTypeAr
+                          : item.aiAnalysis?.extractedDetails?.wasteStreams || '';
+
+                      return (
+                        <div
+                          key={item.id}
+                          onClick={() => setOpenedEmailId(item.id)}
+                          className={`group px-5 py-4 flex items-center gap-4 cursor-pointer whitespace-nowrap transition ${
+                            isPending
+                              ? 'bg-white hover:bg-[#F0FDF4]'
+                              : 'bg-slate-50/60 hover:bg-slate-100/80'
+                          }`}
+                        >
+                          {/* Star Icon & Avatar */}
+                          <div className="flex items-center gap-3 shrink-0">
+                            <button
+                              type="button"
+                              onClick={(e) => toggleStar(e, item.id)}
+                              className="text-slate-300 hover:text-amber-400 transition"
+                            >
+                              <Star
+                                className={`w-5 h-5 ${
+                                  isStarred
+                                    ? 'fill-amber-400 text-amber-400'
+                                    : 'text-slate-300'
+                                }`}
+                              />
+                            </button>
+
+                            <span
+                              className={`w-9 h-9 rounded-xl text-xs font-extrabold flex items-center justify-center ${
+                                isPending
+                                  ? 'bg-[#065F46] text-white'
+                                  : 'bg-slate-200 text-slate-700'
+                              }`}
+                            >
+                              {item.initials || getInitials(item.companyName)}
+                            </span>
+                          </div>
+
+                          {/* Sender Company Name (Full Width, Not Truncated) */}
+                          <div className="min-w-[210px] shrink-0">
+                            <span
+                              className={`text-[15px] ${
+                                isPending
+                                  ? 'font-extrabold text-slate-900'
+                                  : 'font-semibold text-slate-700'
+                              }`}
+                            >
+                              {companyTitle}
+                            </span>
+                          </div>
+
+                          {/* Status Badge */}
+                          <div className="shrink-0">
+                            {item.status === 'pending_approval' && (
+                              <span className="px-2.5 py-1 rounded-lg bg-amber-100 text-amber-900 text-xs font-extrabold">
+                                {t.statusWaiting}
+                              </span>
+                            )}
+                            {item.status === 'approved_sent' && (
+                              <span className="px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-900 text-xs font-extrabold">
+                                {t.statusSent}
+                              </span>
+                            )}
+                            {item.status === 'filtered_out' && (
+                              <span className="px-2.5 py-1 rounded-lg bg-slate-200 text-slate-700 text-xs font-bold">
+                                {t.statusSpam}
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Extracted Mail Details Pills (Pricing, Location, Waste Stream) */}
+                          {item.isWasteProposal && (
+                            <div className="flex items-center gap-2 shrink-0">
+                              {itemValue && (
+                                <span className="px-3 py-1 rounded-lg bg-[#ECFDF5] border border-emerald-200 text-[#065F46] text-xs font-extrabold">
+                                  {itemValue}
+                                </span>
+                              )}
+                              {itemLocation && (
+                                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#FAF9F6] border border-slate-200 text-slate-700 text-xs font-bold">
+                                  <MapPin className="w-3.5 h-3.5 text-[#065F46]" />
+                                  <span>{itemLocation}</span>
+                                </span>
+                              )}
+                              {itemWaste && (
+                                <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-[#FAF9F6] border border-slate-200 text-slate-700 text-xs font-bold">
+                                  <Recycle className="w-3.5 h-3.5 text-[#065F46]" />
+                                  <span>{itemWaste}</span>
+                                </span>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Complete Subject + Summary Snippet (No Truncation) */}
+                          <div className="text-[15px] pe-6 shrink-0">
+                            <span
+                              className={
+                                isPending
+                                  ? 'font-extrabold text-slate-900'
+                                  : 'font-semibold text-slate-800'
+                              }
+                            >
+                              {subjectTitle}
+                            </span>
+                            <span className="text-slate-400 mx-2">—</span>
+                            <span className="text-slate-500 text-sm">{snippetText}</span>
+                          </div>
+
+                          {/* Time (Right End) */}
+                          <div className="flex items-center shrink-0 ms-auto ps-4">
+                            <span className="text-xs font-bold text-slate-500 text-end">
+                              {item.displayTime || '09:38'}
+                            </span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
               )}
             </div>
+          </div>
+        ) : (
+          /* =====================================================================
+             VIEW 2: INSIDE A MAIL (GOOGLE MAIL THREAD VIEW)
+             1. Top Back-to-Inbox Bar
+             2. Mail Subject & Sender Header
+             3. Minimized Original Mail Bar (Click to view complete original mail)
+             4. AI-Generated Summary of Complete Mail (Pricing, Location, Details)
+             5. AI-Generated Mail Response + AI Suggestion Box + Manual Editor + Respond Button
+             ===================================================================== */
+          <div className="flex-1 p-6 lg:p-8 max-w-[1300px] w-full mx-auto space-y-5">
+            {/* 1. Top Gmail Thread Navigation Toolbar */}
+            <div className="bg-white rounded-2xl border border-slate-200/90 px-5 py-3 shadow-sm flex flex-wrap items-center justify-between gap-4">
+              <button
+                type="button"
+                onClick={() => setOpenedEmailId(null)}
+                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-900 text-sm font-extrabold transition"
+              >
+                {isRtl ? (
+                  <ArrowRight className="w-4 h-4 text-[#065F46]" />
+                ) : (
+                  <ArrowLeft className="w-4 h-4 text-[#065F46]" />
+                )}
+                <span>{t.backToInbox}</span>
+              </button>
+
+              {/* Prev / Next Mail Navigation */}
+              <div className="flex items-center gap-3">
+                <span className="text-xs font-bold text-slate-500">
+                  {openedIndex >= 0
+                    ? `${openedIndex + 1} / ${filteredEmails.length}`
+                    : ''}
+                </span>
+                <button
+                  type="button"
+                  disabled={openedIndex <= 0}
+                  onClick={() => {
+                    if (openedIndex > 0) {
+                      setOpenedEmailId(filteredEmails[openedIndex - 1].id);
+                    }
+                  }}
+                  className="p-2 rounded-lg border border-slate-200 hover:bg-slate-100 disabled:opacity-40 transition"
+                  title={t.prevMail}
+                >
+                  {isRtl ? (
+                    <ChevronRight className="w-4 h-4" />
+                  ) : (
+                    <ChevronLeft className="w-4 h-4" />
+                  )}
+                </button>
+                <button
+                  type="button"
+                  disabled={
+                    openedIndex === -1 || openedIndex >= filteredEmails.length - 1
+                  }
+                  onClick={() => {
+                    if (openedIndex < filteredEmails.length - 1) {
+                      setOpenedEmailId(filteredEmails[openedIndex + 1].id);
+                    }
+                  }}
+                  className="p-2 rounded-lg border border-slate-200 hover:bg-slate-100 disabled:opacity-40 transition"
+                  title={t.nextMail}
+                >
+                  {isRtl ? (
+                    <ChevronLeft className="w-4 h-4" />
+                  ) : (
+                    <ChevronRight className="w-4 h-4" />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* 2. Mail Subject & Sender Header Card (Showing Mail-From and Mail-To) */}
+            <div className="bg-white rounded-3xl border border-slate-200/90 p-6 shadow-sm space-y-4">
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div className="flex items-start gap-4 w-full">
+                  <span className="w-12 h-12 rounded-2xl bg-[#06392A] text-amber-400 text-base font-extrabold flex items-center justify-center shrink-0 mt-0.5">
+                    {openedEmail.initials || getInitials(openedEmail.companyName)}
+                  </span>
+                  <div className="flex-1 min-w-0 space-y-2.5">
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      <h1 className="text-xl lg:text-2xl font-extrabold text-slate-900">
+                        {isRtl && arData?.subjectAr
+                          ? arData.subjectAr
+                          : openedEmail.subject}
+                      </h1>
+                      {openedEmail.status === 'pending_approval' && (
+                        <span className="px-3 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-extrabold">
+                          {t.statusWaiting}
+                        </span>
+                      )}
+                      {openedEmail.status === 'approved_sent' && (
+                        <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-900 text-xs font-extrabold">
+                          {t.statusSent}
+                        </span>
+                      )}
+                      <span className="text-xs font-bold text-slate-500 ms-auto">
+                        {openedEmail.displayTime || '09:38 AM'}
+                      </span>
+                    </div>
+
+                    {/* Explicit Mail-From & Mail-To Header Bar */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 pt-1">
+                      <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-50 border border-slate-200 text-xs">
+                        <span className="font-extrabold uppercase tracking-wider text-slate-500 shrink-0">
+                          {t.mailFromLabel}
+                        </span>
+                        <span className="font-extrabold text-slate-900 truncate">
+                          {isRtl && arData?.companyNameAr
+                            ? arData.companyNameAr
+                            : openedEmail.companyName || openedEmail.fromName}{' '}
+                          &lt;{openedEmail.fromEmail}&gt;
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#ECFDF5] border border-emerald-200 text-xs">
+                        <span className="font-extrabold uppercase tracking-wider text-[#065F46] shrink-0">
+                          {t.mailToLabel}
+                        </span>
+                        <span className="font-extrabold text-[#06392A] truncate">
+                          {openedEmail.toEmail ||
+                            openedEmail.syncedAccountEmail ||
+                            syncedGmailAccounts[0]?.email ||
+                            settings?.companyProfile?.email ||
+                            'proposals@pgsoman.com'}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 3. MINIMIZED ORIGINAL MAIL BAR (Click to view complete original mail) */}
+              <div className="rounded-2xl border-2 border-slate-200 bg-[#FAF9F6] overflow-hidden transition">
+                <div
+                  onClick={() =>
+                    setIsOriginalMailExpanded(!isOriginalMailExpanded)
+                  }
+                  className="px-5 py-3.5 flex flex-wrap items-center justify-between gap-3 cursor-pointer hover:bg-slate-100/80 transition"
+                >
+                  <div className="flex items-center gap-3">
+                    <Mail className="w-5 h-5 text-[#065F46] shrink-0" />
+                    <div>
+                      <span className="text-sm font-extrabold text-slate-900">
+                        {t.originalMailMinimizedTitle}
+                      </span>
+                      <span className="text-xs text-slate-500 ms-2 font-medium">
+                        —{' '}
+                        {isOriginalMailExpanded
+                          ? t.originalMailClickToHide
+                          : t.originalMailClickToView}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2.5">
+                    {openedEmail.attachments?.length > 0 && (
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setPdfPreviewAttachment(openedEmail.attachments[0]);
+                        }}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-slate-300 hover:border-[#065F46] text-xs font-bold text-slate-800 transition"
+                      >
+                        <Paperclip className="w-3.5 h-3.5 text-rose-600" />
+                        <span>
+                          {t.btnViewPdf} ({openedEmail.attachments[0].filename})
+                        </span>
+                      </button>
+                    )}
+
+                    <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-[#065F46] text-white text-xs font-bold">
+                      {isOriginalMailExpanded ? (
+                        <>
+                          <ChevronUp className="w-4 h-4" />
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown className="w-4 h-4" />
+                        </>
+                      )}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Expanded Complete Original Mail & PDF Text (Including Mail-From & Mail-To) */}
+                {isOriginalMailExpanded && (
+                  <div className="p-5 bg-white border-t border-slate-200 space-y-4">
+                    <div
+                      dir="ltr"
+                      className="p-3.5 rounded-xl bg-slate-100 border border-slate-200 text-xs space-y-1.5"
+                    >
+                      <div>
+                        <strong className="text-slate-600">Mail-From: </strong>
+                        <span className="font-bold text-slate-900">
+                          {openedEmail.fromName || openedEmail.companyName} &lt;
+                          {openedEmail.fromEmail}&gt;
+                        </span>
+                      </div>
+                      <div>
+                        <strong className="text-slate-600">Mail-To: </strong>
+                        <span className="font-bold text-[#065F46]">
+                          {openedEmail.toEmail ||
+                            openedEmail.syncedAccountEmail ||
+                            syncedGmailAccounts[0]?.email ||
+                            settings?.companyProfile?.email ||
+                            'proposals@pgsoman.com'}
+                        </span>
+                      </div>
+                      <div>
+                        <strong className="text-slate-600">Subject: </strong>
+                        <span className="font-bold text-slate-900">
+                          {openedEmail.subject}
+                        </span>
+                      </div>
+                    </div>
+
+                    <pre
+                      dir="ltr"
+                      className="text-sm text-slate-800 whitespace-pre-wrap font-sans leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-200"
+                    >
+                      {openedEmail.bodyText}
+                    </pre>
+
+                    {openedEmail.attachments?.length > 0 && (
+                      <div
+                        dir="ltr"
+                        className="p-4 rounded-xl bg-rose-50/40 border border-rose-200 space-y-2"
+                      >
+                        <div className="text-xs font-extrabold uppercase text-rose-800 flex items-center gap-1.5">
+                          <FileText className="w-4 h-4 text-rose-600" />
+                          Attached Document Content ({openedEmail.attachments[0].filename})
+                        </div>
+                        <pre className="text-xs text-slate-700 whitespace-pre-wrap font-mono leading-relaxed">
+                          {openedEmail.attachments[0].extractedText}
+                        </pre>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {!openedEmail.isWasteProposal ||
+            openedEmail.status === 'filtered_out' ? (
+              <div className="bg-white rounded-3xl border border-slate-200 p-8 text-center space-y-4 shadow-sm">
+                <div className="text-lg font-extrabold text-slate-800">
+                  {t.spamBannerTitle}
+                </div>
+                <button
+                  type="button"
+                  onClick={handleRestoreSpam}
+                  className="px-6 py-3 rounded-xl bg-[#065F46] text-white text-sm font-bold hover:bg-[#047857] transition"
+                >
+                  {t.btnRestoreSpam}
+                </button>
+              </div>
+            ) : (
+              <>
+                {/* =============================================================
+                    4. AI-GENERATED SUMMARY OF THE COMPLETE MAIL
+                    (Including Pricing, Location, Waste Stream, Volume, Duration + Bullet Summary)
+                   ============================================================= */}
+                <div className="bg-white rounded-3xl border border-slate-200/90 p-6 shadow-sm space-y-5">
+                  <div className="flex items-center gap-2.5 border-b border-slate-100 pb-3.5">
+                    <div className="p-2 rounded-xl bg-emerald-100 text-[#065F46]">
+                      <Sparkles className="w-5 h-5" />
+                    </div>
+                    <h2 className="text-lg font-extrabold text-slate-900">
+                      {t.aiSummaryHeader}
+                    </h2>
+                  </div>
+
+                  {/* Key Extracted Details Row (Pricing, Location, Waste Type, Volume, Duration) */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5">
+                    {/* Highlighted Pricing Card */}
+                    <div className="p-4 rounded-2xl bg-[#06392A] text-white shadow-sm">
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-amber-300">
+                        <Banknote className="w-4 h-4" />
+                        <span>{t.detailPricing}</span>
+                      </div>
+                      <div className="text-lg font-extrabold text-white mt-1.5">
+                        {pricingTotal}
+                      </div>
+                    </div>
+
+                    {/* Location */}
+                    <div className="p-4 rounded-2xl bg-[#FAF9F6] border border-slate-200">
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-slate-500">
+                        <MapPin className="w-4 h-4 text-[#065F46]" />
+                        <span>{t.detailLocation}</span>
+                      </div>
+                      <div className="text-sm font-extrabold text-slate-900 mt-1.5">
+                        {locationDisplay}
+                      </div>
+                    </div>
+
+                    {/* Waste Type */}
+                    <div className="p-4 rounded-2xl bg-[#FAF9F6] border border-slate-200">
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-slate-500">
+                        <Recycle className="w-4 h-4 text-[#065F46]" />
+                        <span>{t.detailWasteType}</span>
+                      </div>
+                      <div className="text-sm font-extrabold text-slate-900 mt-1.5">
+                        {wasteTypeDisplay}
+                      </div>
+                    </div>
+
+                    {/* Volume */}
+                    <div className="p-4 rounded-2xl bg-[#FAF9F6] border border-slate-200">
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-slate-500">
+                        <Truck className="w-4 h-4 text-[#065F46]" />
+                        <span>{t.detailVolume}</span>
+                      </div>
+                      <div className="text-sm font-extrabold text-slate-900 mt-1.5">
+                        {volumeDisplay}
+                      </div>
+                    </div>
+
+                    {/* Duration */}
+                    <div className="p-4 rounded-2xl bg-[#FAF9F6] border border-slate-200">
+                      <div className="flex items-center gap-1.5 text-xs font-bold text-slate-500">
+                        <Calendar className="w-4 h-4 text-[#065F46]" />
+                        <span>{t.detailDuration}</span>
+                      </div>
+                      <div className="text-sm font-extrabold text-slate-900 mt-1.5">
+                        {durationDisplay}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Bullet-Point Summary of the Complete Mail */}
+                  <div className="p-5 rounded-2xl bg-[#F0FDF4] border border-emerald-200 space-y-2.5">
+                    <ul className="space-y-2.5">
+                      {summaryPoints.map((point, idx) => (
+                        <li
+                          key={idx}
+                          className="flex items-start gap-3 text-[15px] text-slate-800 font-medium leading-relaxed"
+                        >
+                          <span className="w-6 h-6 rounded-full bg-[#065F46] text-white text-xs font-extrabold flex items-center justify-center shrink-0 mt-0.5">
+                            {idx + 1}
+                          </span>
+                          <span>{point}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                {/* =============================================================
+                    5. AI-GENERATED MAIL RESPONSE + SUGGESTION TO AI + MANUAL EDIT + SEND
+                   ============================================================= */}
+                <div className="bg-white rounded-3xl border-2 border-[#065F46]/30 p-6 shadow-md space-y-5">
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-3.5">
+                    <div className="flex items-center gap-2.5">
+                      <div className="p-2 rounded-xl bg-[#06392A] text-amber-400">
+                        <Send className="w-5 h-5" />
+                      </div>
+                      <h2 className="text-lg font-extrabold text-slate-900">
+                        {t.aiResponseHeader}
+                      </h2>
+                    </div>
+                  </div>
+
+                  {/* Option 1: Give Suggestion to AI to Generate / Modify the Mail Response */}
+                  <div className="p-5 rounded-2xl bg-[#FAF9F6] border-2 border-amber-400/50 space-y-3.5">
+                    <label className="block text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-amber-600" />
+                      <span>{t.aiSuggestionTitle}</span>
+                    </label>
+
+                    <div className="flex flex-col sm:flex-row gap-2.5">
+                      <input
+                        type="text"
+                        placeholder={t.aiSuggestionPlaceholder}
+                        value={aiSuggestionInput}
+                        onChange={(e) => setAiSuggestionInput(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            handleGenerateWithAi(selectedTone);
+                          }
+                        }}
+                        className="flex-1 px-4 py-3 rounded-xl bg-white border border-slate-300 text-sm font-medium text-slate-900 placeholder-slate-400 focus:border-[#065F46] focus:outline-none"
+                      />
+                      <button
+                        type="button"
+                        disabled={regenerating}
+                        onClick={() => handleGenerateWithAi(selectedTone)}
+                        className="px-6 py-3 rounded-xl bg-[#06392A] hover:bg-[#094D39] text-amber-300 text-sm font-extrabold flex items-center justify-center gap-2 shrink-0 transition shadow-sm"
+                      >
+                        {regenerating ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Sparkles className="w-4 h-4" />
+                        )}
+                        <span>
+                          {regenerating
+                            ? t.generatingWithAi
+                            : t.btnGenerateWithAi}
+                        </span>
+                      </button>
+                    </div>
+
+                    {/* Quick Response Type Buttons */}
+                    <div className="flex flex-wrap items-center gap-2 pt-1">
+                      <span className="text-xs font-bold text-slate-500 me-1">
+                        {t.quickSuggestionsLabel}
+                      </span>
+                      {QUICK_ACTIONS.map((act) => {
+                        const IconComp = act.icon;
+                        const active = selectedTone === act.id;
+                        return (
+                          <button
+                            key={act.id}
+                            type="button"
+                            disabled={regenerating}
+                            onClick={() => handleGenerateWithAi(act.id)}
+                            className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border text-xs font-extrabold transition ${
+                              active
+                                ? 'bg-[#065F46] text-white border-[#065F46]'
+                                : 'bg-white text-slate-700 border-slate-300 hover:border-[#065F46]'
+                            }`}
+                          >
+                            <IconComp className="w-3.5 h-3.5" />
+                            <span>{act.label}</span>
+                            {active && <Check className="w-3.5 h-3.5" />}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Option 2: Edit & Type Himself Directly in the AI-Generated Mail */}
+                  <div className="space-y-3">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                      {/* Mail-From (Sender Gmail ID) */}
+                      <div className="flex items-center px-4 py-2.5 rounded-xl bg-[#ECFDF5] border border-emerald-200">
+                        <span className="text-[#065F46] font-extrabold me-2 shrink-0">
+                          {t.mailFromLabel}
+                        </span>
+                        {syncedGmailAccounts.length > 1 ? (
+                          <select
+                            value={draftFrom}
+                            onChange={(e) => setDraftFrom(e.target.value)}
+                            className="flex-1 font-extrabold text-[#06392A] bg-transparent focus:outline-none"
+                          >
+                            {syncedGmailAccounts.map((acc) => (
+                              <option key={acc.id || acc.email} value={acc.email}>
+                                {acc.email}
+                              </option>
+                            ))}
+                          </select>
+                        ) : (
+                          <input
+                            type="email"
+                            value={draftFrom}
+                            onChange={(e) => setDraftFrom(e.target.value)}
+                            className="flex-1 font-extrabold text-[#06392A] bg-transparent focus:outline-none"
+                          />
+                        )}
+                      </div>
+
+                      {/* Mail-To (Recipient Client Email) */}
+                      <div className="flex items-center px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200">
+                        <span className="text-slate-500 font-extrabold me-2 shrink-0">
+                          {t.mailToLabel}
+                        </span>
+                        <input
+                          type="email"
+                          value={draftTo}
+                          onChange={(e) => setDraftTo(e.target.value)}
+                          className="flex-1 font-bold text-slate-900 bg-transparent focus:outline-none"
+                        />
+                      </div>
+
+                      <div className="flex items-center px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200">
+                        <span className="text-slate-500 font-bold me-2">
+                          {t.labelCc}
+                        </span>
+                        <input
+                          type="text"
+                          value={draftCc}
+                          onChange={(e) => setDraftCc(e.target.value)}
+                          className="flex-1 font-semibold text-slate-800 bg-transparent focus:outline-none"
+                        />
+                      </div>
+
+                      <div className="flex items-center px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200">
+                        <span className="text-slate-500 font-bold me-2">
+                          {t.labelSubject}
+                        </span>
+                        <input
+                          type="text"
+                          value={draftSubject}
+                          onChange={(e) => setDraftSubject(e.target.value)}
+                          className="flex-1 font-extrabold text-slate-900 bg-transparent focus:outline-none"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-extrabold uppercase tracking-wider text-slate-500 mb-1.5">
+                        {t.labelBody}
+                      </label>
+                      <textarea
+                        rows={12}
+                        dir="ltr"
+                        value={draftBody}
+                        onChange={(e) => setDraftBody(e.target.value)}
+                        className="w-full p-5 rounded-2xl bg-[#FCFBF9] border-2 border-slate-300 focus:border-[#065F46] text-[15px] text-slate-900 font-sans leading-relaxed focus:outline-none shadow-inner"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Final Action Bar: Respond to Mail with Generated Draft */}
+                  <div className="pt-3 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <button
+                      type="button"
+                      onClick={handleSaveToGmailDrafts}
+                      disabled={savingGmailDraft}
+                      className="flex items-center gap-2 px-5 py-3 rounded-xl border border-slate-300 hover:bg-slate-100 text-xs font-extrabold text-slate-700 transition"
+                    >
+                      <Save className="w-4 h-4 text-[#065F46]" />
+                      <span>
+                        {savingGmailDraft
+                          ? '...'
+                          : openedEmail.gmailDraftSynced
+                          ? t.btnSavedGmailDraft
+                          : t.btnSaveGmailDraft}
+                      </span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={handleRespondAndSend}
+                      disabled={approvingSend}
+                      className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-[#065F46] hover:bg-[#047857] text-white text-base font-extrabold flex items-center justify-center gap-3 shadow-lg shadow-emerald-900/20 disabled:opacity-50 transition"
+                    >
+                      {approvingSend ? (
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                      ) : (
+                        <Send className="w-5 h-5" />
+                      )}
+                      <span>
+                        {approvingSend
+                          ? t.sendingEmail
+                          : openedEmail.status === 'approved_sent'
+                          ? t.btnRespondResend
+                          : t.btnRespondSend}
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
           </div>
         )}
       </div>
@@ -1184,23 +1659,26 @@ export default function App() {
       {/* PDF Attachment Full Preview Modal */}
       {pdfPreviewAttachment && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-xl w-full p-6 space-y-4">
+          <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 max-w-xl w-full p-6 space-y-4">
             <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-              <div className="flex items-center gap-2">
-                <FileText className="w-5 h-5 text-rose-600" />
-                <h3 className="text-base font-bold text-slate-900">
+              <div className="flex items-center gap-2.5">
+                <FileText className="w-6 h-6 text-rose-600" />
+                <h3 className="text-lg font-extrabold text-slate-900">
                   {pdfPreviewAttachment.filename}
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setPdfPreviewAttachment(null)}
-                className="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-700"
+                className="px-4 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-xs font-bold text-slate-700"
               >
-                Close Preview
+                Close
               </button>
             </div>
-            <pre className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-800 whitespace-pre-wrap font-mono leading-relaxed max-h-96 overflow-y-auto">
+            <pre
+              dir="ltr"
+              className="p-5 rounded-2xl bg-slate-50 border border-slate-200 text-sm text-slate-800 whitespace-pre-wrap font-mono leading-relaxed max-h-96 overflow-y-auto"
+            >
               {pdfPreviewAttachment.extractedText}
             </pre>
           </div>
@@ -1214,6 +1692,18 @@ export default function App() {
         settings={settings}
         onSaveSettings={handleSaveSettings}
         showToast={showToast}
+        initialTab={settingsInitialTab}
+        initialEditEmail={settingsEditEmail}
+      />
+
+      {/* Email Extraction & AI Filter Rules Modal */}
+      <ExtractionRulesModal
+        isOpen={extractionRulesModalOpen}
+        onClose={() => setExtractionRulesModalOpen(false)}
+        settings={settings}
+        onSaveSettings={handleSaveSettings}
+        showToast={showToast}
+        lang={lang}
       />
 
       {/* Simulate Incoming Proposal Modal */}
@@ -1224,7 +1714,10 @@ export default function App() {
           setEmails(data.emails || []);
           if (data.stats) setStats(data.stats);
           if (data.email) {
-            setMailFilter(data.email.isWasteProposal ? 'proposals' : 'filtered_out');
+            setActiveQueueTab(
+              data.email.isWasteProposal ? 'all_proposals' : 'filtered_out'
+            );
+            setOpenedEmailId(data.email.id);
           }
         }}
         showToast={showToast}

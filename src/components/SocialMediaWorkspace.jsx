@@ -17,10 +17,11 @@ import {
   Building2,
   Globe,
   Hash,
-  Layers,
   Sliders,
   ExternalLink,
   X,
+  FileImage,
+  Layers,
 } from 'lucide-react';
 
 const CAMPAIGN_PRESETS = [
@@ -148,54 +149,70 @@ function drawGeneratedSceneIllustration(ctx, sceneType, x, y, w, h) {
 
   // Glowing sun / industrial radial accent
   const glow = ctx.createRadialGradient(x + w * 0.78, y + h * 0.25, 10, x + w * 0.78, y + h * 0.25, 220);
-  glow.addColorStop(0, 'rgba(52, 211, 153, 0.35)');
-  glow.addColorStop(1, 'rgba(52, 211, 153, 0)');
+  glow.addColorStop(0, 'rgba(253, 224, 71, 0.45)');
+  glow.addColorStop(1, 'rgba(253, 224, 71, 0)');
   ctx.fillStyle = glow;
   ctx.fillRect(x, y, w, h);
 
-  // Distant industrial skyline / warehouses
-  ctx.fillStyle = 'rgba(15, 23, 42, 0.35)';
-  ctx.fillRect(x + 40, y + h - 150, 160, 95);
-  ctx.fillRect(x + 210, y + h - 180, 210, 125);
-  ctx.fillRect(x + 440, y + h - 140, 190, 85);
-
-  // Road surface
-  ctx.fillStyle = '#0f172a';
-  ctx.fillRect(x, y + h - 62, w, 62);
-  ctx.strokeStyle = '#fbbf24';
-  ctx.lineWidth = 4;
-  ctx.setLineDash([24, 18]);
+  // Distant mountain silhouette (representing Oman's Hajar Mountains landscape)
   ctx.beginPath();
-  ctx.moveTo(x + 20, y + h - 30);
-  ctx.lineTo(x + w - 20, y + h - 30);
+  ctx.moveTo(x, y + h * 0.68);
+  ctx.lineTo(x + w * 0.2, y + h * 0.48);
+  ctx.lineTo(x + w * 0.45, y + h * 0.62);
+  ctx.lineTo(x + w * 0.7, y + h * 0.42);
+  ctx.lineTo(x + w * 0.9, y + h * 0.58);
+  ctx.lineTo(x + w, y + h * 0.52);
+  ctx.lineTo(x + w, y + h);
+  ctx.lineTo(x, y + h);
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(15, 23, 42, 0.55)';
+  ctx.fill();
+
+  // Modern Industrial Facility / Logistics Ground
+  ctx.fillStyle = '#1e293b';
+  ctx.fillRect(x, y + h * 0.64, w, h * 0.36);
+
+  // Concrete Road & Safety Markings
+  ctx.fillStyle = '#0f172a';
+  ctx.fillRect(x, y + h * 0.76, w, h * 0.24);
+
+  ctx.strokeStyle = '#f59e0b';
+  ctx.lineWidth = 6;
+  ctx.setLineDash([28, 22]);
+  ctx.beginPath();
+  ctx.moveTo(x, y + h * 0.88);
+  ctx.lineTo(x + w, y + h * 0.88);
   ctx.stroke();
   ctx.setLineDash([]);
 
-  // Foreground Heavy RoRo / Skip Loader Truck + Branded Container
-  const truckX = x + 90;
-  const truckY = y + h - 195;
+  // Prominent PGS Waste Management Truck & Skip Container Illustration
+  const truckX = x + w * 0.18;
+  const truckY = y + h * 0.52;
 
-  // Container body (30 CBM RoRo Green Container)
-  drawRoundedRect(ctx, truckX, truckY, 340, 110, 10);
-  ctx.fillStyle = '#10b981';
+  // Heavy Skip / RoRo Container (Emerald Green)
+  drawRoundedRect(ctx, truckX + 35, truckY - 10, 290, 118, 14);
+  const containerGrad = ctx.createLinearGradient(truckX + 35, truckY, truckX + 325, truckY + 118);
+  containerGrad.addColorStop(0, '#059669');
+  containerGrad.addColorStop(1, '#047857');
+  ctx.fillStyle = containerGrad;
   ctx.fill();
   ctx.lineWidth = 3;
-  ctx.strokeStyle = '#ecfdf5';
+  ctx.strokeStyle = '#34d399';
   ctx.stroke();
 
   // Container ribs
-  ctx.fillStyle = 'rgba(6, 78, 59, 0.35)';
-  for (let rx = truckX + 35; rx < truckX + 310; rx += 45) {
-    ctx.fillRect(rx, truckY + 12, 12, 86);
+  ctx.fillStyle = 'rgba(255,255,255,0.18)';
+  for (let rib = truckX + 75; rib < truckX + 300; rib += 42) {
+    ctx.fillRect(rib, truckY, 8, 98);
   }
 
-  // Container Label Badge
-  drawRoundedRect(ctx, truckX + 45, truckY + 30, 245, 48, 8);
-  ctx.fillStyle = '#064e3b';
-  ctx.fill();
+  // Large White "PGS OMAN" on Skip
   ctx.fillStyle = '#ffffff';
-  ctx.font = 'bold 20px Inter, sans-serif';
-  ctx.fillText('PGS OMAN • 30 CBM RoRo', truckX + 62, truckY + 61);
+  ctx.font = '900 26px Inter, sans-serif';
+  ctx.fillText('PGS OMAN', truckX + 90, truckY + 62);
+  ctx.font = '700 12px Inter, sans-serif';
+  ctx.fillStyle = '#a7f3d0';
+  ctx.fillText('WASTE & RECYCLING SERVICES', truckX + 90, truckY + 84);
 
   // Truck Cab
   drawRoundedRect(ctx, truckX + 348, truckY + 25, 115, 85, 12);
@@ -264,9 +281,9 @@ export default function SocialMediaWorkspace({
   const [generating, setGenerating] = useState(false);
   const [publishing, setPublishing] = useState(false);
 
-  // Active right-side preview tab: 'preview' | 'customize'
-  const [activeRightTab, setActiveRightTab] = useState('preview');
-  const [previewPlatform, setPreviewPlatform] = useState('both'); // 'both' | 'linkedin' | 'instagram'
+  // Target platforms state (controlled via top LinkedIn / Instagram buttons)
+  const [activePlatforms, setActivePlatforms] = useState(['linkedin', 'instagram']);
+  const [selectedHistoryTab, setSelectedHistoryTab] = useState('all'); // 'all' | 'linkedin' | 'instagram'
 
   // Social Account Modal state
   const [accountModalOpen, setAccountModalOpen] = useState(false);
@@ -287,6 +304,7 @@ export default function SocialMediaWorkspace({
 
   // Rendered Poster DataURL from HTML5 Canvas
   const canvasRef = useRef(null);
+  const fileInputRef = useRef(null);
   const [posterDataUrl, setPosterDataUrl] = useState('');
 
   const selectedPost =
@@ -297,6 +315,13 @@ export default function SocialMediaWorkspace({
       setSocialAccountsForm(settings.socialAccounts);
     }
   }, [settings?.socialAccounts]);
+
+  // Keep selectedPostId updated if posts change
+  useEffect(() => {
+    if (!selectedPostId && socialPosts.length > 0) {
+      setSelectedPostId(socialPosts[0].id);
+    }
+  }, [socialPosts, selectedPostId]);
 
   // Render the 1080x1080 Branded Social Media Poster on Canvas whenever selectedPost or companyProfile changes
   useEffect(() => {
@@ -311,7 +336,7 @@ export default function SocialMediaWorkspace({
     canvas.height = H;
 
     const vConfig = selectedPost.visualConfig || {};
-    const style = vConfig.templateStyle || 'executive-emerald';
+    const style = vConfig.templateStyle || templateStyle || 'executive-emerald';
     const companyProfile = settings?.companyProfile || {};
     const photos = vConfig.uploadedPhotos || [];
 
@@ -373,14 +398,13 @@ export default function SocialMediaWorkspace({
       ctx.fillStyle = '#6ee7b7';
       ctx.fillText(badgeText, W - 56 - badgeWidth + 22, 85);
 
-      // 3. Center Visual Area (Uploaded Manager Photos OR Generated Waste Fleet Scene)
+      // 3. Center Visual Area (Uploaded Photos OR Generated Waste Fleet Scene)
       const visualX = 56;
       const visualY = 142;
       const visualW = W - 112;
       const visualH = 430;
 
       if (photos.length > 0) {
-        // Load uploaded images and draw them in a clean frame or split grid
         const loadedImgs = await Promise.all(
           photos.slice(0, 3).map(
             (p) =>
@@ -405,7 +429,6 @@ export default function SocialMediaWorkspace({
           ctx.drawImage(img, visualX + (visualW - dw) / 2, visualY + (visualH - dh) / 2, dw, dh);
           ctx.restore();
         } else if (validImgs.length >= 2) {
-          // 2-Photo Split Showcase
           const halfW = (visualW - 16) / 2;
           validImgs.slice(0, 2).forEach((img, idx) => {
             const cellX = visualX + idx * (halfW + 16);
@@ -422,7 +445,6 @@ export default function SocialMediaWorkspace({
           drawGeneratedSceneIllustration(ctx, vConfig.sceneIllustration, visualX, visualY, visualW, visualH);
         }
 
-        // Subtle border around photo frame
         drawRoundedRect(ctx, visualX, visualY, visualW, visualH, 24);
         ctx.lineWidth = 3;
         ctx.strokeStyle = 'rgba(255,255,255,0.18)';
@@ -511,11 +533,12 @@ export default function SocialMediaWorkspace({
     return () => {
       isCancelled = true;
     };
-  }, [selectedPost, settings?.companyProfile]);
+  }, [selectedPost, templateStyle, settings?.companyProfile]);
 
-  // Handle uploading 1 or more reference photos from manager's computer
+  // Handle uploading photos from manager's computer
   const handlePhotoUpload = (e) => {
     const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
     files.forEach((file) => {
       const reader = new FileReader();
       reader.onload = (ev) => {
@@ -529,35 +552,14 @@ export default function SocialMediaWorkspace({
       };
       reader.readAsDataURL(file);
     });
+    showToast(`Uploaded ${files.length} photo(s)`, 'success');
   };
 
-  // Also allow adding photos directly to the currently selected post
-  const handleAddPhotoToCurrentPost = (e) => {
-    if (!selectedPost) return;
-    const files = Array.from(e.target.files || []);
-    files.forEach((file) => {
-      const reader = new FileReader();
-      reader.onload = async (ev) => {
-        const updatedPhotos = [
-          ...(selectedPost.visualConfig?.uploadedPhotos || []),
-          { name: file.name, dataUrl: ev.target.result },
-        ];
-        await handleUpdateCurrentPost({
-          visualConfig: {
-            ...selectedPost.visualConfig,
-            uploadedPhotos: updatedPhotos,
-          },
-        });
-      };
-      reader.readAsDataURL(file);
-    });
-  };
-
-  // Generate new Social Media Post + Image
+  // Generate new Social Media Post + Media Graphic
   const handleGenerateCampaign = async (e) => {
     if (e) e.preventDefault();
     if (!promptInput.trim() && uploadedImages.length === 0) {
-      showToast('Please enter a post idea/prompt or upload a photo first.', 'warning');
+      showToast('Please type a prompt in the input bar or upload a file first.', 'warning');
       return;
     }
 
@@ -569,19 +571,21 @@ export default function SocialMediaWorkspace({
         body: JSON.stringify({
           prompt:
             promptInput.trim() ||
-            'Showcase our waste management fleet and environmental services in action across Oman.',
+            'Showcase our waste management fleet, 24/7 skip collection and ISO 14001 compliance across Oman.',
           uploadedImages,
           templateStyle,
           aspectRatio: '1:1',
-          platforms: ['linkedin', 'instagram'],
+          platforms: activePlatforms.length > 0 ? activePlatforms : ['linkedin', 'instagram'],
         }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to generate campaign');
+      if (!res.ok) throw new Error(data.error || 'Failed to generate post');
 
       onUpdateSocialPosts(data.socialPosts, data.stats);
       setSelectedPostId(data.post.id);
-      showToast(data.message, 'success');
+      setPromptInput('');
+      setUploadedImages([]);
+      showToast(data.message || 'Post & media successfully generated!', 'success');
     } catch (err) {
       showToast(err.message, 'error');
     } finally {
@@ -589,29 +593,11 @@ export default function SocialMediaWorkspace({
     }
   };
 
-  // Save edits to current post
-  const handleUpdateCurrentPost = async (partialUpdate) => {
-    if (!selectedPost) return;
-    try {
-      const res = await fetch(`/api/social/${selectedPost.id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(partialUpdate),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Update failed');
-      onUpdateSocialPosts(data.socialPosts, data.stats);
-    } catch (err) {
-      showToast(err.message, 'error');
-    }
-  };
-
   // Publish to LinkedIn / Instagram
-  const handlePublishPost = async (platforms = ['linkedin', 'instagram']) => {
-    if (!selectedPost) return;
+  const handlePublishPost = async (postId, platforms = ['linkedin', 'instagram']) => {
     setPublishing(true);
     try {
-      const res = await fetch(`/api/social/${selectedPost.id}/publish`, {
+      const res = await fetch(`/api/social/${postId}/publish`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ platforms }),
@@ -619,7 +605,7 @@ export default function SocialMediaWorkspace({
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Publish failed');
       onUpdateSocialPosts(data.socialPosts, data.stats);
-      showToast(data.message, 'success');
+      showToast(data.message || 'Post published successfully!', 'success');
     } catch (err) {
       showToast(err.message, 'error');
     } finally {
@@ -627,14 +613,37 @@ export default function SocialMediaWorkspace({
     }
   };
 
+  // Delete a social post
+  const handleDeletePost = async (postId) => {
+    if (!window.confirm('Are you sure you want to delete this generated post from history?')) {
+      return;
+    }
+    try {
+      const res = await fetch(`/api/social/${postId}`, {
+        method: 'DELETE',
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Delete failed');
+      onUpdateSocialPosts(data.socialPosts, data.stats);
+      if (selectedPostId === postId) {
+        const remaining = socialPosts.filter((p) => p.id !== postId);
+        setSelectedPostId(remaining[0]?.id || null);
+      }
+      showToast('Post removed from history.', 'success');
+    } catch (err) {
+      showToast(err.message, 'error');
+    }
+  };
+
   // Download generated HD poster image
-  const handleDownloadPoster = () => {
-    if (!posterDataUrl) return;
+  const handleDownloadPoster = (postToDownload = selectedPost) => {
+    if (!posterDataUrl && !postToDownload?.visualConfig?.posterDataUrl) return;
+    const url = posterDataUrl || postToDownload?.visualConfig?.posterDataUrl;
     const link = document.createElement('a');
-    link.download = `PGSOman_Social_Post_${selectedPost?.id || Date.now()}.png`;
-    link.href = posterDataUrl;
+    link.download = `PGSOman_SocialMedia_${postToDownload?.id || Date.now()}.png`;
+    link.href = url;
     link.click();
-    showToast('Downloaded High-Resolution 1080×1080 Social Post Image (PNG)!', 'success');
+    showToast('Downloaded High-Resolution 1080×1080 Graphic (PNG)!', 'success');
   };
 
   const handleCopyText = (text, label) => {
@@ -647,721 +656,510 @@ export default function SocialMediaWorkspace({
     try {
       await onSaveSettings({ socialAccounts: socialAccountsForm });
       setAccountModalOpen(false);
-      showToast('LinkedIn & Instagram account settings saved!', 'success');
+      showToast('LinkedIn & Instagram accounts updated!', 'success');
     } catch (err) {
       showToast(err.message, 'error');
     }
+  };
+
+  const togglePlatform = (p) => {
+    setActivePlatforms((prev) =>
+      prev.includes(p) ? (prev.length > 1 ? prev.filter((item) => item !== p) : prev) : [...prev, p]
+    );
   };
 
   const linkedinAcc = settings?.socialAccounts?.linkedin || {};
   const instagramAcc = settings?.socialAccounts?.instagram || {};
 
   return (
-    <div className="flex-1 flex flex-col">
-      {/* Hidden High-Res 1080x1080 Canvas used for rendering the downloadable & previewable marketing image */}
+    <div className="flex-1 flex flex-col p-6 lg:p-8 max-w-[1400px] w-full mx-auto space-y-6">
+      {/* Hidden High-Res 1080x1080 Canvas used for rendering downloadable & previewable media graphics */}
       <canvas ref={canvasRef} className="hidden" />
 
-      {/* Top Connected Social Accounts Strip */}
-      <section className="bg-white border-b border-slate-200 px-6 py-3.5 shadow-sm">
-        <div className="max-w-[1600px] mx-auto flex flex-wrap items-center justify-between gap-4">
-          <div className="flex flex-wrap items-center gap-3">
-            {/* LinkedIn Account Pill */}
-            <div className="flex items-center gap-3 px-4 py-2 rounded-xl bg-blue-50/80 border border-blue-200">
-              <div className="w-8 h-8 rounded-lg bg-[#0A66C2] text-white font-black text-sm flex items-center justify-center">
-                in
-              </div>
-              <div>
-                <div className="flex items-center gap-1.5">
-                  <span className="text-xs font-extrabold text-slate-900">
-                    {linkedinAcc.companyPageName || 'PGS Oman LinkedIn Page'}
-                  </span>
-                  <span
-                    className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
-                      linkedinAcc.connected
-                        ? 'bg-emerald-100 text-emerald-800'
-                        : 'bg-slate-200 text-slate-600'
-                    }`}
-                  >
-                    {linkedinAcc.connected ? '● Connected' : 'Not Connected'}
-                  </span>
-                </div>
-                <div className="text-[11px] text-slate-500">{linkedinAcc.handle}</div>
+      {/* =========================================================================
+          TOP ROW: [ LinkedIn ]  [ Instagram ] BUTTONS (Exact Wireframe Top Container)
+          ========================================================================= */}
+      <div className="bg-white rounded-2xl border-2 border-slate-300 p-3 shadow-sm flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          {/* LinkedIn Button */}
+          <button
+            type="button"
+            onClick={() => togglePlatform('linkedin')}
+            className={`group flex items-center gap-3 px-6 py-3 rounded-xl border-2 font-bold text-sm transition shadow-sm ${
+              activePlatforms.includes('linkedin')
+                ? 'bg-[#0A66C2] text-white border-[#0A66C2] ring-2 ring-blue-400/30'
+                : 'bg-slate-50 text-slate-700 border-slate-300 hover:bg-slate-100'
+            }`}
+          >
+            <span
+              className={`w-7 h-7 rounded flex items-center justify-center font-black text-xs ${
+                activePlatforms.includes('linkedin')
+                  ? 'bg-white text-[#0A66C2]'
+                  : 'bg-[#0A66C2] text-white'
+              }`}
+            >
+              in
+            </span>
+            <div className="text-left">
+              <div className="text-sm font-extrabold leading-tight">LinkedIn</div>
+              <div className="text-[10px] opacity-80">
+                {activePlatforms.includes('linkedin') ? '✓ Active Platform' : 'Click to Target'}
               </div>
             </div>
+          </button>
 
-            {/* Instagram Account Pill */}
-            <div className="flex items-center gap-3 px-4 py-2 rounded-xl bg-pink-50/80 border border-pink-200">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-amber-500 via-pink-600 to-purple-600 text-white font-bold text-xs flex items-center justify-center">
-                IG
-              </div>
-              <div>
-                <div className="flex items-center gap-1.5">
-                  <span className="text-xs font-extrabold text-slate-900">
-                    {instagramAcc.username || '@pgs.oman.official'}
-                  </span>
-                  <span
-                    className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
-                      instagramAcc.connected
-                        ? 'bg-emerald-100 text-emerald-800'
-                        : 'bg-slate-200 text-slate-600'
-                    }`}
-                  >
-                    {instagramAcc.connected ? '● Connected' : 'Not Connected'}
-                  </span>
-                </div>
-                <div className="text-[11px] text-slate-500">{instagramAcc.bioName}</div>
+          {/* Instagram Button */}
+          <button
+            type="button"
+            onClick={() => togglePlatform('instagram')}
+            className={`group flex items-center gap-3 px-6 py-3 rounded-xl border-2 font-bold text-sm transition shadow-sm ${
+              activePlatforms.includes('instagram')
+                ? 'bg-gradient-to-r from-amber-500 via-pink-600 to-purple-600 text-white border-pink-500 ring-2 ring-pink-400/30'
+                : 'bg-slate-50 text-slate-700 border-slate-300 hover:bg-slate-100'
+            }`}
+          >
+            <span
+              className={`w-7 h-7 rounded flex items-center justify-center font-black text-xs ${
+                activePlatforms.includes('instagram')
+                  ? 'bg-white text-pink-600'
+                  : 'bg-gradient-to-r from-amber-500 via-pink-600 to-purple-600 text-white'
+              }`}
+            >
+              IG
+            </span>
+            <div className="text-left">
+              <div className="text-sm font-extrabold leading-tight">Instagram</div>
+              <div className="text-[10px] opacity-80">
+                {activePlatforms.includes('instagram') ? '✓ Active Platform' : 'Click to Target'}
               </div>
             </div>
+          </button>
+        </div>
+
+        {/* Account Details & Setup Modal Trigger */}
+        <div className="flex items-center gap-3">
+          <div className="hidden sm:flex flex-col text-right">
+            <span className="text-xs font-bold text-slate-800">
+              {linkedinAcc.companyPageName || 'PGS Oman Official'}
+            </span>
+            <span className="text-[11px] text-slate-500">
+              {instagramAcc.username || '@pgs.oman.official'} • Ready
+            </span>
           </div>
-
           <button
             type="button"
             onClick={() => setAccountModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800 transition"
+            className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold border border-slate-300 transition"
+            title="Configure Connected Accounts"
           >
-            <Share2 className="w-4 h-4 text-emerald-400" />
-            Manage LinkedIn & Instagram Accounts
+            <Share2 className="w-3.5 h-3.5 text-slate-600" />
+            <span>Accounts</span>
           </button>
         </div>
-      </section>
+      </div>
 
-      {/* Main 12-Column Social Media Studio Workspace */}
-      <div className="flex-1 max-w-[1600px] w-full mx-auto px-6 py-5 grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
-        {/* LEFT COLUMN (4 Cols): AI Prompt & Photo Uploader + Saved Campaigns */}
-        <div className="lg:col-span-4 space-y-5">
-          {/* AI Post & Image Creator Card */}
-          <form
-            onSubmit={handleGenerateCampaign}
-            className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
-          >
-            <div className="px-5 py-3.5 bg-slate-900 text-white flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-emerald-400" />
-                <h2 className="text-sm font-bold">1. Tell AI What You Want to Post</h2>
-              </div>
-              <span className="text-[11px] text-emerald-300 font-semibold">Image + Copy AI</span>
-            </div>
-
-            <div className="p-5 space-y-4">
-              {/* 1-Click Preset Ideas */}
-              <div>
-                <label className="block text-[11px] font-extrabold uppercase tracking-wider text-slate-500 mb-2">
-                  Quick-Fill Campaign Ideas (1-Click):
-                </label>
-                <div className="grid grid-cols-2 gap-1.5">
-                  {CAMPAIGN_PRESETS.map((preset, i) => (
-                    <button
-                      key={i}
-                      type="button"
-                      onClick={() => {
-                        setPromptInput(preset.prompt);
-                        setTemplateStyle(preset.templateStyle);
-                      }}
-                      className="px-2.5 py-2 rounded-xl border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/50 text-left text-xs font-bold text-slate-800 transition truncate"
-                    >
-                      {preset.title}
-                    </button>
-                  ))}
+      {/* =========================================================================
+          MAIN MIDDLE CONTAINER (Large Outer Box in Wireframe Diagram)
+          ========================================================================= */}
+      <div className="bg-white rounded-3xl border-2 border-slate-400/90 shadow-md p-6 lg:p-8 flex flex-col items-center">
+        
+        {/* CENTER BOX: Generating Media.... */}
+        <div className="w-full max-w-xl mx-auto mb-6">
+          <div className="relative rounded-2xl border-2 border-slate-400 bg-slate-50 overflow-hidden shadow-inner flex flex-col items-center justify-center min-h-[340px] md:min-h-[380px]">
+            {generating ? (
+              /* Generating State */
+              <div className="p-8 flex flex-col items-center justify-center text-center space-y-4">
+                <div className="relative">
+                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/30 animate-pulse">
+                    <Loader2 className="w-10 h-10 text-white animate-spin" />
+                  </div>
+                  <Sparkles className="w-6 h-6 text-amber-400 absolute -top-2 -right-2 animate-bounce" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-black text-slate-900 tracking-wide">
+                    Generating Media....
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-1 max-w-xs">
+                    Designing 1080×1080 HD graphics with PGS Oman brand styling, certified fleet stamps, and executive captions...
+                  </p>
                 </div>
               </div>
-
-              {/* Manager's Prompt Box */}
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Describe Your Post Idea, Project Milestone, or Service:
-                </label>
-                <textarea
-                  rows={4}
-                  placeholder="Example: We just deployed 15 new RoRo skip containers for a construction project in Al Khuwair. Create a post highlighting our fast 24-hour delivery and Be'ah compliance..."
-                  value={promptInput}
-                  onChange={(e) => setPromptInput(e.target.value)}
-                  className="w-full p-3 rounded-xl border border-slate-300 text-xs sm:text-sm text-slate-900 leading-relaxed focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+            ) : posterDataUrl ? (
+              /* Display Generated Media Image */
+              <div className="relative w-full h-full flex flex-col items-center justify-center group">
+                <img
+                  src={posterDataUrl}
+                  alt="Generating Media"
+                  className="max-h-[380px] w-auto object-contain rounded-xl shadow-md"
                 />
-              </div>
 
-              {/* Upload 1 or More Photos */}
-              <div className="p-3.5 rounded-xl bg-slate-50 border border-dashed border-slate-300 space-y-2.5">
-                <label className="flex items-center justify-between cursor-pointer">
-                  <div className="flex items-center gap-2.5">
-                    <div className="p-2 rounded-lg bg-emerald-100 text-emerald-700">
-                      <Upload className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <div className="text-xs font-bold text-slate-800">
-                        Upload Site / Equipment Photos (Optional)
-                      </div>
-                      <div className="text-[11px] text-slate-500">
-                        Upload 1 or more photos — AI will integrate them into the post image
-                      </div>
-                    </div>
-                  </div>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    onChange={handlePhotoUpload}
-                    className="hidden"
-                  />
-                  <span className="px-3 py-1.5 rounded-lg bg-white border border-slate-300 text-xs font-bold text-slate-700 hover:bg-slate-100 shrink-0">
-                    + Add Photos
-                  </span>
-                </label>
+                {/* Overlay Floating Badge and Actions */}
+                <div className="absolute top-3 left-3 bg-slate-950/80 backdrop-blur-md text-white text-[11px] font-extrabold px-3 py-1.5 rounded-lg border border-white/20 flex items-center gap-1.5">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Generated Media (1080×1080 HD)</span>
+                </div>
 
-                {uploadedImages.length > 0 && (
-                  <div className="grid grid-cols-3 gap-2 pt-1">
-                    {uploadedImages.map((img, idx) => (
-                      <div
-                        key={idx}
-                        className="relative group rounded-lg overflow-hidden border border-slate-300 h-16 bg-slate-200"
-                      >
-                        <img src={img.dataUrl} alt={img.name} className="w-full h-full object-cover" />
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setUploadedImages((prev) => prev.filter((_, i) => i !== idx))
-                          }
-                          className="absolute top-1 right-1 p-1 rounded-full bg-slate-900/80 text-white hover:bg-rose-600 transition"
-                        >
-                          <X className="w-3 h-3" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* Poster Visual Theme Selector */}
-              <div>
-                <label className="block text-[11px] font-extrabold uppercase tracking-wider text-slate-500 mb-1.5">
-                  Brand Poster Theme:
-                </label>
-                <div className="grid grid-cols-2 gap-2">
-                  {TEMPLATE_STYLES.map((t) => (
-                    <button
-                      key={t.id}
-                      type="button"
-                      onClick={() => setTemplateStyle(t.id)}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-xs font-bold transition ${
-                        templateStyle === t.id
-                          ? 'border-emerald-600 bg-emerald-50 text-emerald-900 ring-2 ring-emerald-500/20'
-                          : 'border-slate-200 text-slate-700 hover:bg-slate-50'
-                      }`}
-                    >
-                      <span className={`w-3 h-3 rounded-full ${t.badge}`} />
-                      <span className="truncate">{t.name}</span>
-                    </button>
-                  ))}
+                <div className="absolute bottom-3 right-3 flex items-center gap-2 opacity-95 group-hover:opacity-100 transition">
+                  <button
+                    type="button"
+                    onClick={() => handleDownloadPoster(selectedPost)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-lg transition"
+                    title="Download HD PNG"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Download</span>
+                  </button>
                 </div>
               </div>
+            ) : (
+              /* Empty Ready State */
+              <div className="p-8 flex flex-col items-center justify-center text-center space-y-3">
+                <div className="w-16 h-16 rounded-2xl bg-emerald-100/80 text-emerald-700 flex items-center justify-center">
+                  <ImageIcon className="w-8 h-8" />
+                </div>
+                <div className="text-base font-extrabold text-slate-800">
+                  Generating Media....
+                </div>
+                <p className="text-xs text-slate-500 max-w-sm">
+                  Type your campaign idea below and attach reference photos to render high-resolution branded media for LinkedIn & Instagram.
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
 
+        {/* COMBINED HORIZONTAL BAR: [ Type prompt... ] + [ File Upload ] */}
+        <div className="w-full max-w-3xl mb-5">
+          <form onSubmit={handleGenerateCampaign} className="w-full">
+            <div className="flex items-center rounded-2xl border-2 border-slate-400 bg-white shadow-sm overflow-hidden p-1.5 focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-500/20 transition">
+              {/* Text Input: Type prompt... */}
+              <input
+                type="text"
+                value={promptInput}
+                onChange={(e) => setPromptInput(e.target.value)}
+                placeholder="Type prompt..."
+                className="flex-1 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none bg-transparent"
+              />
+
+              {/* Uploaded Photos Count Indicator if any */}
+              {uploadedImages.length > 0 && (
+                <div className="flex items-center gap-1 bg-emerald-50 border border-emerald-300 px-2.5 py-1.5 rounded-lg text-emerald-800 text-xs font-bold mr-2">
+                  <FileImage className="w-3.5 h-3.5" />
+                  <span>{uploadedImages.length} photo{uploadedImages.length > 1 ? 's' : ''}</span>
+                  <button
+                    type="button"
+                    onClick={() => setUploadedImages([])}
+                    className="ml-1 hover:text-rose-600"
+                    title="Remove attached photos"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              )}
+
+              {/* File Upload Button (Inside the bar on the right side) */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handlePhotoUpload}
+                className="hidden"
+              />
               <button
-                type="submit"
-                disabled={generating}
-                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-sm font-extrabold shadow-lg shadow-emerald-600/25 disabled:opacity-50 transition"
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-extrabold border border-slate-300 shrink-0 transition"
               >
-                {generating ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    AI is Designing Image & Writing Posts...
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="w-4 h-4" />
-                    Generate Post Image & Social Captions
-                  </>
-                )}
+                <Upload className="w-4 h-4 text-slate-600" />
+                <span>File Upload</span>
               </button>
             </div>
           </form>
 
-          {/* Recent Generated Posts History */}
-          <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-            <div className="px-4 py-3 bg-slate-50 border-b border-slate-200 flex items-center justify-between">
-              <span className="text-xs font-extrabold uppercase tracking-wider text-slate-700">
-                Generated Social Campaigns ({socialPosts.length})
-              </span>
-            </div>
-            <div className="divide-y divide-slate-100 max-h-72 overflow-y-auto">
-              {socialPosts.map((post) => {
-                const isSelected = selectedPost?.id === post.id;
-                return (
-                  <button
-                    key={post.id}
-                    type="button"
-                    onClick={() => setSelectedPostId(post.id)}
-                    className={`w-full text-left p-3.5 transition flex items-start justify-between gap-2 ${
-                      isSelected
-                        ? 'bg-emerald-50/90 border-l-4 border-l-emerald-600'
-                        : 'hover:bg-slate-50'
-                    }`}
-                  >
-                    <div className="min-w-0">
-                      <div className="text-xs font-bold text-slate-900 truncate">
-                        {post.visualConfig?.headline || post.prompt}
-                      </div>
-                      <div className="text-[11px] text-slate-500 line-clamp-1 mt-0.5">
-                        {post.prompt}
-                      </div>
-                      <div className="flex items-center gap-1.5 mt-1.5">
-                        <span
-                          className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                            post.status === 'published'
-                              ? 'bg-emerald-100 text-emerald-800'
-                              : 'bg-amber-100 text-amber-800'
-                          }`}
-                        >
-                          {post.status === 'published' ? '✓ Published' : 'Draft Ready'}
-                        </span>
-                        <span className="text-[10px] text-slate-400">
-                          LinkedIn & Instagram
-                        </span>
-                      </div>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
+          {/* Prompt Presets / Inspiration Pills */}
+          <div className="flex items-center gap-2 mt-3 overflow-x-auto pb-1 text-xs">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 shrink-0">
+              Quick Ideas:
+            </span>
+            {CAMPAIGN_PRESETS.map((preset, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => {
+                  setPromptInput(preset.prompt);
+                  setTemplateStyle(preset.templateStyle);
+                }}
+                className="px-3 py-1 rounded-lg bg-slate-100 hover:bg-emerald-50 hover:text-emerald-800 border border-slate-200 text-slate-600 font-semibold text-[11px] shrink-0 transition"
+              >
+                {preset.title}
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* RIGHT WORKSPACE (8 Cols): Generated Poster Image + Live LinkedIn & Instagram Previews */}
-        {selectedPost && (
-          <div className="lg:col-span-8 bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
-            {/* Top Workspace Header */}
-            <div className="px-6 py-3.5 bg-slate-900 text-white flex flex-wrap items-center justify-between gap-3">
-              <div className="flex items-center gap-2.5">
-                <ImageIcon className="w-4 h-4 text-emerald-400" />
-                <h2 className="text-sm font-bold">
-                  2. Review AI-Generated Post Image & Social Media Copy
-                </h2>
-              </div>
+        {/* CENTERED BUTTON DIRECTLY BELOW THE BAR: [ Generate Post ] */}
+        <div className="flex justify-center w-full">
+          <button
+            type="button"
+            disabled={generating}
+            onClick={handleGenerateCampaign}
+            className="flex items-center gap-2.5 px-8 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-base font-black shadow-lg shadow-emerald-600/30 hover:shadow-emerald-600/40 active:scale-[0.99] disabled:opacity-50 transition"
+          >
+            {generating ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                <span>Generating Post & Media...</span>
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-5 h-5 text-amber-300" />
+                <span>Generate Post</span>
+              </>
+            )}
+          </button>
+        </div>
 
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setActiveRightTab('preview')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
-                    activeRightTab === 'preview'
-                      ? 'bg-emerald-600 text-white'
-                      : 'bg-slate-800 text-slate-300 hover:text-white'
-                  }`}
-                >
-                  Live Social Previews
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveRightTab('customize')}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
-                    activeRightTab === 'customize'
-                      ? 'bg-emerald-600 text-white'
-                      : 'bg-slate-800 text-slate-300 hover:text-white'
-                  }`}
-                >
-                  <Sliders className="w-3.5 h-3.5" />
-                  Edit Image Text & Captions
-                </button>
-              </div>
-            </div>
+      </div>
 
-            <div className="p-6 space-y-6">
-              {/* Top Row: Generated HD Marketing Poster Preview + Quick Visual Controls */}
-              <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-center bg-slate-50 p-5 rounded-2xl border border-slate-200">
-                {/* Poster Image Preview */}
-                <div className="xl:col-span-6 flex flex-col items-center">
-                  <div className="w-full max-w-[380px] aspect-square rounded-2xl overflow-hidden shadow-xl border-2 border-slate-300 bg-slate-900 relative">
-                    {posterDataUrl ? (
-                      <img
-                        src={posterDataUrl}
-                        alt="Generated Social Media Post Graphic"
-                        className="w-full h-full object-contain"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center text-white text-xs">
-                        Rendering HD Poster...
+      {/* =========================================================================
+          BOTTOM CONTAINER: Post Histories (Full-Width Box in Wireframe Diagram)
+          ========================================================================= */}
+      <div className="bg-white rounded-3xl border-2 border-slate-400/90 shadow-md p-6 lg:p-7 flex flex-col">
+        {/* Header */}
+        <div className="flex flex-wrap items-center justify-between pb-4 border-b border-slate-200 gap-3">
+          <div className="flex items-center gap-3">
+            <h3 className="text-lg font-black text-slate-900 tracking-tight">
+              Post Histories
+            </h3>
+            <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-extrabold">
+              {socialPosts.length} Generated
+            </span>
+          </div>
+
+          {/* Quick Platform Filter in History */}
+          <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl">
+            <button
+              type="button"
+              onClick={() => setSelectedHistoryTab('all')}
+              className={`px-3 py-1 rounded-lg text-xs font-bold transition ${
+                selectedHistoryTab === 'all'
+                  ? 'bg-white text-slate-900 shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              All Posts
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedHistoryTab('linkedin')}
+              className={`px-3 py-1 rounded-lg text-xs font-bold transition ${
+                selectedHistoryTab === 'linkedin'
+                  ? 'bg-[#0A66C2] text-white shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              LinkedIn
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedHistoryTab('instagram')}
+              className={`px-3 py-1 rounded-lg text-xs font-bold transition ${
+                selectedHistoryTab === 'instagram'
+                  ? 'bg-pink-600 text-white shadow-sm'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Instagram
+            </button>
+          </div>
+        </div>
+
+        {/* List of Generated Posts History */}
+        {socialPosts.length === 0 ? (
+          <div className="py-12 text-center text-slate-400">
+            <ImageIcon className="w-10 h-10 mx-auto mb-2 text-slate-300" />
+            <p className="text-sm font-semibold">No generated posts in history yet.</p>
+            <p className="text-xs text-slate-400 mt-1">Use the Generate Post studio above to create your first campaign!</p>
+          </div>
+        ) : (
+          <div className="divide-y divide-slate-100 mt-2">
+            {socialPosts
+              .filter((post) => {
+                if (selectedHistoryTab === 'linkedin') return (post.platforms || []).includes('linkedin');
+                if (selectedHistoryTab === 'instagram') return (post.platforms || []).includes('instagram');
+                return true;
+              })
+              .map((post) => {
+                const isSelected = selectedPost?.id === post.id;
+                return (
+                  <div
+                    key={post.id}
+                    className={`py-5 transition rounded-2xl p-4 my-2 ${
+                      isSelected
+                        ? 'bg-emerald-50/70 border-2 border-emerald-500'
+                        : 'hover:bg-slate-50 border border-transparent'
+                    }`}
+                  >
+                    <div className="flex flex-col lg:flex-row items-start gap-5">
+                      {/* Left: Thumbnail & Selection */}
+                      <button
+                        type="button"
+                        onClick={() => setSelectedPostId(post.id)}
+                        className="relative group shrink-0 rounded-xl overflow-hidden border-2 border-slate-300 w-36 h-36 bg-slate-900 shadow-sm"
+                        title="Click to view and preview in Generating Media box"
+                      >
+                        {post.visualConfig?.posterDataUrl || (isSelected && posterDataUrl) ? (
+                          <img
+                            src={post.visualConfig?.posterDataUrl || posterDataUrl}
+                            alt="Post Thumbnail"
+                            className="w-full h-full object-cover group-hover:scale-105 transition"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex flex-col items-center justify-center p-2 text-center text-white">
+                            <ImageIcon className="w-6 h-6 text-emerald-400 mb-1" />
+                            <span className="text-[10px] font-bold line-clamp-2">
+                              {post.visualConfig?.headline || 'PGS Graphic'}
+                            </span>
+                          </div>
+                        )}
+                        <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-xs font-bold transition">
+                          View
+                        </div>
+                      </button>
+
+                      {/* Middle: Content details & Captions */}
+                      <div className="flex-1 min-w-0 space-y-3">
+                        <div className="flex flex-wrap items-center justify-between gap-2">
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-black text-slate-900">
+                              {post.visualConfig?.headline || post.prompt}
+                            </span>
+                            <span
+                              className={`px-2 py-0.5 rounded text-[10px] font-extrabold ${
+                                post.status === 'published'
+                                  ? 'bg-emerald-100 text-emerald-800'
+                                  : 'bg-amber-100 text-amber-800'
+                              }`}
+                            >
+                              {post.status === 'published' ? '✓ Published' : 'Draft'}
+                            </span>
+                          </div>
+
+                          {/* Platform Badges */}
+                          <div className="flex items-center gap-1.5">
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-[#0A66C2]">
+                              LinkedIn
+                            </span>
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-pink-100 text-pink-700">
+                              Instagram
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Prompt summary */}
+                        <p className="text-xs text-slate-600 line-clamp-2">
+                          <span className="font-bold text-slate-700">Prompt: </span>
+                          {post.prompt}
+                        </p>
+
+                        {/* Dual Caption Boxes with 1-Click Copy */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+                          {/* LinkedIn Caption */}
+                          <div className="p-3 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[11px] font-extrabold text-[#0A66C2] flex items-center gap-1">
+                                <span className="w-4 h-4 rounded bg-[#0A66C2] text-white text-[9px] flex items-center justify-center font-bold">in</span>
+                                LinkedIn Copy
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => handleCopyText(post.linkedinCaption, 'LinkedIn Caption')}
+                                className="flex items-center gap-1 text-[11px] font-bold text-slate-600 hover:text-[#0A66C2] transition"
+                              >
+                                <Copy className="w-3 h-3" />
+                                <span>Copy</span>
+                              </button>
+                            </div>
+                            <p className="text-xs text-slate-800 line-clamp-3 leading-relaxed whitespace-pre-wrap">
+                              {post.linkedinCaption}
+                            </p>
+                          </div>
+
+                          {/* Instagram Caption */}
+                          <div className="p-3 rounded-xl bg-white border border-slate-200 shadow-2xs space-y-2">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[11px] font-extrabold text-pink-700 flex items-center gap-1">
+                                <span className="w-4 h-4 rounded bg-gradient-to-tr from-amber-500 to-pink-600 text-white text-[9px] flex items-center justify-center font-bold">IG</span>
+                                Instagram Copy & Hashtags
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  handleCopyText(
+                                    `${post.instagramCaption}\n\n${(post.hashtags || []).join(' ')}`,
+                                    'Instagram Caption'
+                                  )
+                                }
+                                className="flex items-center gap-1 text-[11px] font-bold text-slate-600 hover:text-pink-600 transition"
+                              >
+                                <Copy className="w-3 h-3" />
+                                <span>Copy</span>
+                              </button>
+                            </div>
+                            <p className="text-xs text-slate-800 line-clamp-3 leading-relaxed whitespace-pre-wrap">
+                              {post.instagramCaption}
+                            </p>
+                            <div className="text-[10px] text-pink-700 font-semibold line-clamp-1">
+                              {(post.hashtags || []).join(' ')}
+                            </div>
+                          </div>
+                        </div>
                       </div>
-                    )}
-                  </div>
-                </div>
 
-                {/* Right Controls for the Generated Image */}
-                <div className="xl:col-span-6 space-y-4">
-                  <div>
-                    <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[11px] font-bold mb-1">
-                      <Sparkles className="w-3.5 h-3.5" />
-                      1080 × 1080 HD Ready-to-Post Visual
-                    </span>
-                    <h3 className="text-base font-extrabold text-slate-900">
-                      {selectedPost.visualConfig?.headline}
-                    </h3>
-                    <p className="text-xs text-slate-500 mt-0.5">
-                      Automatically branded with your company name, permits, and contact details.
-                    </p>
-                  </div>
-
-                  {/* Switch Poster Color Theme Instantly */}
-                  <div>
-                    <label className="block text-[11px] font-bold uppercase tracking-wider text-slate-500 mb-1.5">
-                      Switch Poster Color Theme:
-                    </label>
-                    <div className="flex flex-wrap gap-2">
-                      {TEMPLATE_STYLES.map((t) => (
+                      {/* Right: Actions Column */}
+                      <div className="flex lg:flex-col items-center gap-2 shrink-0 w-full lg:w-auto justify-end pt-2 lg:pt-0">
                         <button
-                          key={t.id}
                           type="button"
-                          onClick={() =>
-                            handleUpdateCurrentPost({
-                              visualConfig: {
-                                ...selectedPost.visualConfig,
-                                templateStyle: t.id,
-                              },
-                            })
-                          }
-                          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-xs font-bold transition ${
-                            selectedPost.visualConfig?.templateStyle === t.id
-                              ? 'bg-slate-900 text-white border-slate-900'
-                              : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-100'
-                          }`}
+                          onClick={() => handleDownloadPoster(post)}
+                          className="flex-1 lg:flex-none flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold border border-slate-300 transition"
+                          title="Download Image"
                         >
-                          <span className={`w-2.5 h-2.5 rounded-full ${t.badge}`} />
-                          {t.name}
+                          <Download className="w-3.5 h-3.5" />
+                          <span>Download</span>
                         </button>
-                      ))}
-                    </div>
-                  </div>
 
-                  {/* Upload / Replace Photo on Current Poster */}
-                  <div className="flex flex-wrap items-center gap-2">
-                    <label className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white border border-slate-300 hover:bg-slate-100 text-xs font-bold text-slate-800 cursor-pointer transition">
-                      <Upload className="w-3.5 h-3.5 text-emerald-600" />
-                      Add / Change Photo on Poster
-                      <input
-                        type="file"
-                        accept="image/*"
-                        multiple
-                        onChange={handleAddPhotoToCurrentPost}
-                        className="hidden"
-                      />
-                    </label>
+                        <button
+                          type="button"
+                          disabled={publishing}
+                          onClick={() => handlePublishPost(post.id, ['linkedin', 'instagram'])}
+                          className="flex-1 lg:flex-none flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition shadow-sm"
+                          title="Publish directly to LinkedIn & Instagram"
+                        >
+                          <Send className="w-3.5 h-3.5" />
+                          <span>Publish</span>
+                        </button>
 
-                    {selectedPost.visualConfig?.uploadedPhotos?.length > 0 && (
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleUpdateCurrentPost({
-                            visualConfig: {
-                              ...selectedPost.visualConfig,
-                              uploadedPhotos: [],
-                            },
-                          })
-                        }
-                        className="px-3 py-2 rounded-xl border border-rose-200 bg-rose-50 text-rose-700 text-xs font-bold hover:bg-rose-100 transition"
-                      >
-                        Use AI Fleet Illustration Instead
-                      </button>
-                    )}
-                  </div>
-
-                  {/* Download HD Image Button */}
-                  <div className="pt-1 flex flex-wrap gap-2.5">
-                    <button
-                      type="button"
-                      onClick={handleDownloadPoster}
-                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold shadow-sm transition"
-                    >
-                      <Download className="w-4 h-4 text-emerald-400" />
-                      Download HD Post Image (PNG)
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {activeRightTab === 'customize' ? (
-                /* Edit Poster Headline, Highlights & Captions Directly */
-                <div className="space-y-4 p-5 rounded-2xl bg-slate-50 border border-slate-200">
-                  <h4 className="text-xs font-extrabold uppercase tracking-wider text-slate-700">
-                    Customize Poster Headline & Social Media Captions
-                  </h4>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-bold text-slate-600 mb-1">
-                        Poster Top Badge
-                      </label>
-                      <input
-                        type="text"
-                        value={selectedPost.visualConfig?.categoryBadge || ''}
-                        onChange={(e) =>
-                          handleUpdateCurrentPost({
-                            visualConfig: {
-                              ...selectedPost.visualConfig,
-                              categoryBadge: e.target.value,
-                            },
-                          })
-                        }
-                        className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs font-bold bg-white"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-slate-600 mb-1">
-                        Poster Main Headline
-                      </label>
-                      <input
-                        type="text"
-                        value={selectedPost.visualConfig?.headline || ''}
-                        onChange={(e) =>
-                          handleUpdateCurrentPost({
-                            visualConfig: {
-                              ...selectedPost.visualConfig,
-                              headline: e.target.value,
-                            },
-                          })
-                        }
-                        className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs font-bold bg-white"
-                      />
-                    </div>
-                    <div className="md:col-span-2">
-                      <label className="block text-xs font-bold text-slate-600 mb-1">
-                        Poster Subtitle
-                      </label>
-                      <input
-                        type="text"
-                        value={selectedPost.visualConfig?.subheadline || ''}
-                        onChange={(e) =>
-                          handleUpdateCurrentPost({
-                            visualConfig: {
-                              ...selectedPost.visualConfig,
-                              subheadline: e.target.value,
-                            },
-                          })
-                        }
-                        className="w-full px-3 py-2 rounded-lg border border-slate-300 text-xs bg-white"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                    <div>
-                      <label className="block text-xs font-bold text-blue-800 mb-1">
-                        LinkedIn Post Copy
-                      </label>
-                      <textarea
-                        rows={8}
-                        value={selectedPost.linkedinCaption || ''}
-                        onChange={(e) =>
-                          handleUpdateCurrentPost({ linkedinCaption: e.target.value })
-                        }
-                        className="w-full p-3 rounded-xl border border-slate-300 text-xs bg-white leading-relaxed"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-xs font-bold text-pink-700 mb-1">
-                        Instagram Caption Copy
-                      </label>
-                      <textarea
-                        rows={8}
-                        value={selectedPost.instagramCaption || ''}
-                        onChange={(e) =>
-                          handleUpdateCurrentPost({ instagramCaption: e.target.value })
-                        }
-                        className="w-full p-3 rounded-xl border border-slate-300 text-xs bg-white leading-relaxed"
-                      />
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                /* Side-by-Side Live LinkedIn & Instagram Feed Previews */
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  {/* LINKEDIN POST PREVIEW CARD */}
-                  <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden flex flex-col">
-                    <div className="px-4 py-3 bg-[#0A66C2] text-white flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="w-6 h-6 rounded bg-white text-[#0A66C2] font-black text-xs flex items-center justify-center">
-                          in
-                        </span>
-                        <span className="text-xs font-bold">LinkedIn Company Post</span>
+                        <button
+                          type="button"
+                          onClick={() => handleDeletePost(post.id)}
+                          className="p-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 transition"
+                          title="Delete Post"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleCopyText(
-                            `${selectedPost.linkedinCaption}\n\n${(selectedPost.hashtags || []).join(' ')}`,
-                            'LinkedIn post text'
-                          )
-                        }
-                        className="px-2.5 py-1 rounded bg-white/15 hover:bg-white/25 text-[11px] font-semibold flex items-center gap-1 transition"
-                      >
-                        <Copy className="w-3 h-3" />
-                        Copy Text
-                      </button>
-                    </div>
-
-                    <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
-                      <div className="space-y-3">
-                        {/* Author Header */}
-                        <div className="flex items-center gap-2.5">
-                          <div className="w-9 h-9 rounded-lg bg-emerald-600 text-white font-bold text-sm flex items-center justify-center">
-                            PGS
-                          </div>
-                          <div>
-                            <div className="text-xs font-bold text-slate-900">
-                              {linkedinAcc.companyPageName || 'PGS Oman — Environmental Services'}
-                            </div>
-                            <div className="text-[10px] text-slate-500">
-                              Official Company Update • Sultanate of Oman 🌐
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Caption Text */}
-                        <div className="text-xs text-slate-800 whitespace-pre-wrap leading-relaxed max-h-52 overflow-y-auto pr-1">
-                          {selectedPost.linkedinCaption}
-                          <div className="mt-2 text-blue-700 font-semibold">
-                            {(selectedPost.hashtags || []).join(' ')}
-                          </div>
-                        </div>
-
-                        {/* Embedded Poster Thumbnail */}
-                        {posterDataUrl && (
-                          <div className="rounded-xl overflow-hidden border border-slate-200">
-                            <img
-                              src={posterDataUrl}
-                              alt="LinkedIn visual"
-                              className="w-full h-48 object-cover"
-                            />
-                          </div>
-                        )}
-                      </div>
-
-                      <button
-                        type="button"
-                        disabled={publishing}
-                        onClick={() => handlePublishPost(['linkedin'])}
-                        className="w-full py-2.5 rounded-xl bg-[#0A66C2] hover:bg-[#084e96] text-white text-xs font-bold flex items-center justify-center gap-1.5 transition"
-                      >
-                        <Send className="w-3.5 h-3.5" />
-                        Publish to LinkedIn Page
-                      </button>
                     </div>
                   </div>
-
-                  {/* INSTAGRAM POST PREVIEW CARD */}
-                  <div className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden flex flex-col">
-                    <div className="px-4 py-3 bg-gradient-to-r from-amber-500 via-pink-600 to-purple-600 text-white flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <span className="w-6 h-6 rounded bg-white text-pink-600 font-black text-xs flex items-center justify-center">
-                          IG
-                        </span>
-                        <span className="text-xs font-bold">Instagram Feed Post</span>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleCopyText(
-                            `${selectedPost.instagramCaption}\n.\n.\n${(selectedPost.hashtags || []).join(' ')}`,
-                            'Instagram caption'
-                          )
-                        }
-                        className="px-2.5 py-1 rounded bg-white/15 hover:bg-white/25 text-[11px] font-semibold flex items-center gap-1 transition"
-                      >
-                        <Copy className="w-3 h-3" />
-                        Copy Caption
-                      </button>
-                    </div>
-
-                    <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
-                      <div className="space-y-3">
-                        {/* IG Author Header */}
-                        <div className="flex items-center gap-2.5">
-                          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-amber-500 to-pink-600 p-0.5">
-                            <div className="w-full h-full rounded-full bg-slate-900 text-white text-xs font-bold flex items-center justify-center">
-                              PGS
-                            </div>
-                          </div>
-                          <div>
-                            <div className="text-xs font-bold text-slate-900">
-                              {instagramAcc.username || '@pgs.oman.official'}
-                            </div>
-                            <div className="text-[10px] text-slate-500">
-                              Muscat & Sohar, Sultanate of Oman
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Square IG Image */}
-                        {posterDataUrl && (
-                          <div className="rounded-xl overflow-hidden border border-slate-200">
-                            <img
-                              src={posterDataUrl}
-                              alt="Instagram visual"
-                              className="w-full h-48 object-cover"
-                            />
-                          </div>
-                        )}
-
-                        {/* IG Caption */}
-                        <div className="text-xs text-slate-800 whitespace-pre-wrap leading-relaxed max-h-52 overflow-y-auto pr-1">
-                          <span className="font-bold mr-1">
-                            {instagramAcc.username || '@pgs.oman.official'}
-                          </span>
-                          {selectedPost.instagramCaption}
-                          <div className="mt-2 text-pink-700 font-semibold">
-                            {(selectedPost.hashtags || []).join(' ')}
-                          </div>
-                        </div>
-                      </div>
-
-                      <button
-                        type="button"
-                        disabled={publishing}
-                        onClick={() => handlePublishPost(['instagram'])}
-                        className="w-full py-2.5 rounded-xl bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition"
-                      >
-                        <Send className="w-3.5 h-3.5" />
-                        Publish to Instagram Feed
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Bottom 1-Click Publish to Both Platforms Bar */}
-              <div className="pt-2 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
-                <div className="text-xs text-slate-500">
-                  {selectedPost.status === 'published' ? (
-                    <span className="text-emerald-700 font-bold flex items-center gap-1.5">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                      Published to LinkedIn & Instagram{' '}
-                      {selectedPost.publishedAt
-                        ? `on ${new Date(selectedPost.publishedAt).toLocaleString()}`
-                        : ''}
-                    </span>
-                  ) : (
-                    <span>
-                      Ready for Manager Approval • Will post image + tailored captions to LinkedIn & Instagram
-                    </span>
-                  )}
-                </div>
-
-                <button
-                  type="button"
-                  disabled={publishing}
-                  onClick={() => handlePublishPost(['linkedin', 'instagram'])}
-                  className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-sm font-extrabold shadow-lg shadow-emerald-600/25 transition"
-                >
-                  {publishing ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <CheckCircle2 className="w-5 h-5" />
-                  )}
-                  Approve & Publish to LinkedIn + Instagram
-                </button>
-              </div>
-            </div>
+                );
+              })}
           </div>
         )}
       </div>
 
-      {/* Modal to Connect / Configure Manager's LinkedIn & Instagram Accounts */}
+      {/* =========================================================================
+          MODAL: Configure Manager's LinkedIn & Instagram Accounts
+          ========================================================================= */}
       {accountModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
           <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 max-w-xl w-full overflow-hidden">
@@ -1371,7 +1169,7 @@ export default function SocialMediaWorkspace({
                 <div>
                   <h3 className="text-base font-bold">Connect LinkedIn & Instagram Accounts</h3>
                   <p className="text-xs text-slate-300">
-                    Configure the company profiles where AI-generated posts and images will be shared
+                    Set company profile handles where AI-generated posts and media will be shared
                   </p>
                 </div>
               </div>
@@ -1458,10 +1256,10 @@ export default function SocialMediaWorkspace({
               <div className="p-4 rounded-xl bg-pink-50/60 border border-pink-200 space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="w-6 h-6 rounded bg-gradient-to-tr from-amber-500 to-pink-600 text-white font-black text-xs flex items-center justify-center">
+                    <span className="w-6 h-6 rounded bg-gradient-to-tr from-amber-500 via-pink-600 to-purple-600 text-white font-bold text-xs flex items-center justify-center">
                       IG
                     </span>
-                    <span className="text-sm font-bold text-slate-900">Instagram Business Account</span>
+                    <span className="text-sm font-bold text-slate-900">Instagram Professional Profile</span>
                   </div>
                   <label className="flex items-center gap-1.5 text-xs font-bold text-slate-700 cursor-pointer">
                     <input
@@ -1476,16 +1274,16 @@ export default function SocialMediaWorkspace({
                           },
                         })
                       }
-                      className="rounded text-emerald-600"
+                      className="rounded text-pink-600"
                     />
                     Connected
                   </label>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div className="grid grid-cols-1 gap-2.5">
                   <div>
                     <label className="block text-[11px] font-bold text-slate-600 mb-1">
-                      Instagram Handle (@username)
+                      Instagram Username / Handle
                     </label>
                     <input
                       type="text"
@@ -1504,7 +1302,7 @@ export default function SocialMediaWorkspace({
                   </div>
                   <div>
                     <label className="block text-[11px] font-bold text-slate-600 mb-1">
-                      Profile Display Title
+                      Business Display / Bio Name
                     </label>
                     <input
                       type="text"
@@ -1528,15 +1326,15 @@ export default function SocialMediaWorkspace({
                 <button
                   type="button"
                   onClick={() => setAccountModalOpen(false)}
-                  className="px-4 py-2 rounded-xl border border-slate-300 text-slate-700 text-xs font-bold hover:bg-slate-100"
+                  className="px-4 py-2 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-md shadow-emerald-600/20"
+                  className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow transition"
                 >
-                  Save Connected Accounts
+                  Save Accounts
                 </button>
               </div>
             </form>

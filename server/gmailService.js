@@ -73,6 +73,8 @@ export async function fetchRecentGmailEmails({ email, appPassword, maxEmails = 1
       const fromObj = parsed.from?.value?.[0] || {};
       const fromEmail = fromObj.address || '';
       const fromName = fromObj.name || fromEmail;
+      const toObj = parsed.to?.value?.[0] || {};
+      const toEmail = toObj.address || email.trim();
 
       // Skip emails sent by the manager themselves
       if (fromEmail.toLowerCase() === email.trim().toLowerCase()) {
@@ -93,10 +95,12 @@ export async function fetchRecentGmailEmails({ email, appPassword, maxEmails = 1
       }
 
       fetchedEmails.push({
-        id: `msg-${Date.now()}-${msg.uid}`,
+        id: `msg-${Date.now()}-${msg.uid}-${Math.floor(Math.random() * 1000)}`,
         messageId,
         fromName,
         fromEmail,
+        toEmail,
+        syncedAccountEmail: email.trim(),
         subject: parsed.subject || '(No Subject)',
         receivedAt: parsed.date ? parsed.date.toISOString() : new Date().toISOString(),
         bodyText: (parsed.text || parsed.html?.replace(/<[^>]+>/g, ' ') || '').trim(),
@@ -112,14 +116,33 @@ export async function fetchRecentGmailEmails({ email, appPassword, maxEmails = 1
   return fetchedEmails.reverse();
 }
 
+function resolveGmailAccount(gmailSettings, preferredEmail) {
+  const accounts = Array.isArray(gmailSettings?.accounts) ? gmailSettings.accounts : [];
+  if (preferredEmail) {
+    const matched = accounts.find(
+      (acc) => acc.email && acc.email.trim().toLowerCase() === preferredEmail.trim().toLowerCase()
+    );
+    if (matched && matched.email && matched.appPassword) {
+      return matched;
+    }
+  }
+  const firstValid = accounts.find((acc) => acc.email && acc.appPassword);
+  if (firstValid) return firstValid;
+  if (gmailSettings?.email && gmailSettings?.appPassword) {
+    return { email: gmailSettings.email, appPassword: gmailSettings.appPassword };
+  }
+  return null;
+}
+
 /**
  * Save a draft email directly into the user's Gmail [Gmail]/Drafts folder via IMAP
  */
-export async function saveDraftToGmail({ gmailSettings, companyProfile, draft, originalMessageId }) {
-  const { email, appPassword } = gmailSettings || {};
-  if (!email || !appPassword) {
+export async function saveDraftToGmail({ gmailSettings, companyProfile, draft, originalMessageId, accountEmail }) {
+  const activeAccount = resolveGmailAccount(gmailSettings, draft?.from || accountEmail);
+  if (!activeAccount || !activeAccount.email || !activeAccount.appPassword) {
     throw new Error('Gmail credentials not configured.');
   }
+  const { email, appPassword } = activeAccount;
 
   const mailOptions = {
     from: `"${companyProfile.companyName}" <${email.trim()}>`,
@@ -159,17 +182,18 @@ export async function saveDraftToGmail({ gmailSettings, companyProfile, draft, o
     await client.logout().catch(() => {});
   }
 
-  return { success: true };
+  return { success: true, accountEmail: email.trim() };
 }
 
 /**
  * Send the manager-approved draft email directly to the recipient via Gmail SMTP
  */
-export async function sendApprovedEmailViaGmail({ gmailSettings, companyProfile, draft, originalMessageId }) {
-  const { email, appPassword } = gmailSettings || {};
+export async function sendApprovedEmailViaGmail({ gmailSettings, companyProfile, draft, originalMessageId, accountEmail }) {
+  const activeAccount = resolveGmailAccount(gmailSettings, draft?.from || accountEmail);
 
   // If Gmail credentials are configured, send live via SMTP
-  if (email && appPassword) {
+  if (activeAccount && activeAccount.email && activeAccount.appPassword) {
+    const { email, appPassword } = activeAccount;
     const transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
       port: 465,
@@ -193,6 +217,7 @@ export async function sendApprovedEmailViaGmail({ gmailSettings, companyProfile,
     return {
       sentLive: true,
       smtpMessageId: info.messageId,
+      senderEmail: email.trim(),
       message: `Email successfully sent via Gmail (${email.trim()}) to ${draft.to}`,
     };
   }

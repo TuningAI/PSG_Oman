@@ -61,12 +61,41 @@ app.get('/api/state', (req, res) => {
   }
 });
 
-// 2. Update settings (Gmail, AI Provider, Social Accounts, Company Profile & Rate Card)
+// 2. Update settings (Gmail, AI Provider, Social Accounts, Company Profile, Rate Card & Filter Rules)
 app.put('/api/settings', (req, res) => {
   try {
     const db = getDb();
-    const { gmail, ai, socialAccounts, companyProfile } = req.body;
-    if (gmail) db.settings.gmail = { ...db.settings.gmail, ...gmail };
+    const { gmail, ai, socialAccounts, companyProfile, filterRules } = req.body;
+    if (gmail) {
+      const mergedGmail = { ...db.settings.gmail, ...gmail };
+      if (Array.isArray(gmail.accounts)) {
+        mergedGmail.accounts = gmail.accounts.filter((a) => a && a.email && a.email.trim());
+        mergedGmail.email = mergedGmail.accounts[0]?.email || '';
+        mergedGmail.appPassword = mergedGmail.accounts[0]?.appPassword || '';
+      } else if (gmail.email !== undefined) {
+        if (gmail.email.trim()) {
+          const existingAccounts = Array.isArray(mergedGmail.accounts) ? [...mergedGmail.accounts] : [];
+          const idx = existingAccounts.findIndex(
+            (a) => a.email.trim().toLowerCase() === gmail.email.trim().toLowerCase()
+          );
+          if (idx >= 0) {
+            existingAccounts[idx] = {
+              ...existingAccounts[idx],
+              email: gmail.email.trim(),
+              appPassword: gmail.appPassword || existingAccounts[idx].appPassword,
+            };
+          } else {
+            existingAccounts.push({
+              id: `gmail-${Date.now()}`,
+              email: gmail.email.trim(),
+              appPassword: gmail.appPassword || '',
+            });
+          }
+          mergedGmail.accounts = existingAccounts;
+        }
+      }
+      db.settings.gmail = mergedGmail;
+    }
     if (ai) db.settings.ai = { ...db.settings.ai, ...ai };
     if (socialAccounts) {
       db.settings.socialAccounts = {
@@ -81,6 +110,12 @@ app.put('/api/settings', (req, res) => {
       };
     }
     if (companyProfile) db.settings.companyProfile = { ...db.settings.companyProfile, ...companyProfile };
+    if (filterRules) {
+      db.settings.filterRules = {
+        ...(db.settings.filterRules || {}),
+        ...filterRules,
+      };
+    }
     saveDb(db);
     res.json({
       message: 'Settings saved successfully.',
@@ -102,29 +137,35 @@ app.post('/api/gmail/test', async (req, res) => {
   }
 });
 
-// 4. Sync / Collect Emails from Gmail Inbox
-app.post('/api/gmail/sync', async (req, res) => {
-  try {
-    const db = getDb();
-    const { email, appPassword, maxEmailsPerSync, syncToGmailDrafts } = db.settings.gmail;
+// Core Gmail sync routine used by both manual button and automatic background worker
+async function performGmailSyncCore(db) {
+  const { email, appPassword, accounts = [], maxEmailsPerSync, syncToGmailDrafts } = db.settings.gmail;
 
-    if (!email || !appPassword) {
-      return res.status(400).json({
-        error:
-          'Gmail address and App Password are not set yet. Go to "Settings & Rate Card" to connect your Gmail, or use "Simulate Incoming Mail" to test immediately.',
-      });
-    }
+  const activeAccounts = Array.isArray(accounts) && accounts.length > 0
+    ? accounts.filter((a) => a && a.email && a.appPassword)
+    : email && appPassword
+    ? [{ id: 'gmail-1', email, appPassword }]
+    : [];
 
-    const existingMessageIds = new Set(db.emails.map((e) => e.messageId));
+  if (activeAccounts.length === 0) {
+    return { activeAccounts: [], processedNew: [], syncedAccountNames: [] };
+  }
+
+  const existingMessageIds = new Set(db.emails.map((e) => e.messageId));
+  const processedNew = [];
+  const syncedAccountNames = [];
+
+  for (const acc of activeAccounts) {
     const rawNewEmails = await fetchRecentGmailEmails({
-      email,
-      appPassword,
-      maxEmails: Number(maxEmailsPerSync) || 10,
+      email: acc.email,
+      appPassword: acc.appPassword,
+      maxEmails: Number(maxEmailsPerSync) || 12,
       existingMessageIds,
     });
+    syncedAccountNames.push(acc.email);
 
-    const processedNew = [];
     for (const rawMail of rawNewEmails) {
+      existingMessageIds.add(rawMail.messageId);
       const analysis = await analyzeEmailAndGenerateDraft({
         emailData: rawMail,
         settings: db.settings,
@@ -132,8 +173,11 @@ app.post('/api/gmail/sync', async (req, res) => {
       });
 
       const isWaste = Boolean(analysis.isWasteProposal);
+      const receivingAddress = rawMail.toEmail || acc.email;
       const emailRecord = {
         ...rawMail,
+        toEmail: receivingAddress,
+        syncedAccountEmail: acc.email,
         companyName: analysis.companyName || rawMail.fromName,
         isWasteProposal: isWaste,
         category: analysis.category || (isWaste ? 'New Proposal / RFP' : 'Unrelated / Marketing'),
@@ -156,6 +200,7 @@ app.post('/api/gmail/sync', async (req, res) => {
         },
         draft: isWaste
           ? {
+              from: acc.email,
               to: rawMail.fromEmail,
               cc: '',
               subject: analysis.draftSubject || `Re: ${rawMail.subject}`,
@@ -173,6 +218,7 @@ app.post('/api/gmail/sync', async (req, res) => {
             companyProfile: db.settings.companyProfile,
             draft: emailRecord.draft,
             originalMessageId: emailRecord.messageId,
+            accountEmail: acc.email,
           });
           emailRecord.gmailDraftSynced = true;
         } catch (draftErr) {
@@ -182,25 +228,45 @@ app.post('/api/gmail/sync', async (req, res) => {
 
       processedNew.push(emailRecord);
     }
+  }
 
+  if (processedNew.length > 0) {
     db.emails = [...processedNew, ...db.emails];
     db.syncHistory = [
       {
         timestamp: new Date().toISOString(),
         fetchedCount: processedNew.length,
         proposalsFound: processedNew.filter((e) => e.isWasteProposal).length,
+        accountsSynced: syncedAccountNames,
       },
       ...(db.syncHistory || []).slice(0, 19),
     ];
     saveDb(db);
+  }
+
+  return { activeAccounts, processedNew, syncedAccountNames };
+}
+
+// 4. Sync / Collect Emails from ALL Connected Gmail Accounts Together (Manual trigger)
+app.post('/api/gmail/sync', async (req, res) => {
+  try {
+    const db = getDb();
+    const { activeAccounts, processedNew, syncedAccountNames } = await performGmailSyncCore(db);
+
+    if (activeAccounts.length === 0) {
+      return res.status(400).json({
+        error:
+          'No Gmail accounts are connected yet. Click "Connect Gmail" or "Edit" to add one or more Gmail IDs and App Passwords.',
+      });
+    }
 
     res.json({
       message:
         processedNew.length > 0
-          ? `Collected ${processedNew.length} new email(s); ${
+          ? `Synced ${syncedAccountNames.join(', ')}: Collected ${processedNew.length} new email(s); ${
               processedNew.filter((e) => e.isWasteProposal).length
             } identified as Waste Management Proposals.`
-          : 'Inbox is up to date. No new unprocessed emails found.',
+          : `Synced (${syncedAccountNames.join(', ')}): Inbox is up to date. No new unprocessed emails found.`,
       newEmails: processedNew,
       emails: db.emails,
       stats: computeStats(db.emails, db.socialPosts),
@@ -308,9 +374,17 @@ app.put('/api/emails/:id/draft', (req, res) => {
       return res.status(404).json({ error: 'Email not found' });
     }
 
-    const { to, cc, subject, body, introText, pricingTable, totalLabel, outroText, tonePreset } = req.body;
+    const { from, to, cc, subject, body, introText, pricingTable, totalLabel, outroText, tonePreset } = req.body;
     emailItem.draft = {
       ...(emailItem.draft || {}),
+      from:
+        from !== undefined
+          ? from
+          : emailItem.draft?.from ||
+            emailItem.syncedAccountEmail ||
+            emailItem.toEmail ||
+            db.settings.gmail?.email ||
+            db.settings.companyProfile?.email,
       to: to !== undefined ? to : emailItem.draft?.to || emailItem.fromEmail,
       cc: cc !== undefined ? cc : emailItem.draft?.cc || 'operations@pgsoman.com',
       subject: subject !== undefined ? subject : emailItem.draft?.subject || `Re: ${emailItem.subject}`,
@@ -350,6 +424,12 @@ app.post('/api/emails/:id/regenerate', async (req, res) => {
 
     emailItem.draft = {
       ...(emailItem.draft || {}),
+      from:
+        emailItem.draft?.from ||
+        emailItem.syncedAccountEmail ||
+        emailItem.toEmail ||
+        db.settings.gmail?.email ||
+        db.settings.companyProfile?.email,
       to: emailItem.draft?.to || emailItem.fromEmail,
       cc: emailItem.draft?.cc || 'operations@pgsoman.com',
       subject: analysis.draftSubject || `Re: ${emailItem.subject}`,
@@ -389,17 +469,22 @@ app.post('/api/emails/:id/save-gmail-draft', async (req, res) => {
       emailItem.draft = { ...emailItem.draft, ...req.body.draft, lastUpdatedAt: new Date().toISOString() };
     }
 
-    if (db.settings.gmail?.email && db.settings.gmail?.appPassword) {
-      await saveDraftToGmail({
+    const hasGmailAccounts =
+      (Array.isArray(db.settings.gmail?.accounts) && db.settings.gmail.accounts.length > 0) ||
+      (db.settings.gmail?.email && db.settings.gmail?.appPassword);
+
+    if (hasGmailAccounts) {
+      const savedRes = await saveDraftToGmail({
         gmailSettings: db.settings.gmail,
         companyProfile: db.settings.companyProfile,
         draft: emailItem.draft,
         originalMessageId: emailItem.messageId,
+        accountEmail: emailItem.draft?.from || emailItem.syncedAccountEmail || emailItem.toEmail,
       });
       emailItem.gmailDraftSynced = true;
       saveDb(db);
       return res.json({
-        message: 'Draft saved directly to your Gmail [Gmail]/Drafts folder!',
+        message: `Draft saved directly to Gmail Drafts (${savedRes.accountEmail || db.settings.gmail.email})!`,
         email: emailItem,
       });
     } else {
@@ -437,6 +522,7 @@ app.post('/api/emails/:id/approve-send', async (req, res) => {
       companyProfile: db.settings.companyProfile,
       draft: emailItem.draft,
       originalMessageId: emailItem.messageId,
+      accountEmail: emailItem.draft?.from || emailItem.syncedAccountEmail || emailItem.toEmail,
     });
 
     emailItem.status = 'approved_sent';
@@ -678,4 +764,25 @@ app.listen(PORT, () => {
   console.log(`  PGS Oman — Complete Manager Virtual Assistant Dashboard`);
   console.log(`  Backend API Server listening on http://localhost:${PORT}`);
   console.log(`==================================================================`);
+
+  // Start background auto-sync worker
+  let isAutoSyncRunning = false;
+  setInterval(async () => {
+    if (isAutoSyncRunning) return;
+    try {
+      const db = getDb();
+      const filterRules = db.settings?.filterRules || {};
+      if (filterRules.autoSyncEnabled === false) return;
+
+      isAutoSyncRunning = true;
+      const { processedNew, syncedAccountNames } = await performGmailSyncCore(db);
+      if (processedNew && processedNew.length > 0) {
+        console.log(`[Auto-Sync Worker] Automatically collected ${processedNew.length} new email(s) from ${syncedAccountNames.join(', ')}.`);
+      }
+    } catch (err) {
+      console.warn('[Auto-Sync Worker] Notice:', err.message);
+    } finally {
+      isAutoSyncRunning = false;
+    }
+  }, 60000);
 });

@@ -29,6 +29,14 @@ export const DEFAULT_SETTINGS = {
       autoHashtags: true,
     },
   },
+  filterRules: {
+    customPrompt:
+      'Extract all waste management proposals, RFQs, tenders, quotation inquiries, skip hire, bin service requests, and environmental contract documentation. Automatically filter out unrelated marketing emails, security alerts, newsletter updates, and spam.',
+    allowedDomains: ['beah.om', 'pdo.co.om', 'omanlng.com', 'soharport.om', 'asyad.om'],
+    allowedSenders: [],
+    autoSyncEnabled: true,
+    autoSyncIntervalSeconds: 60,
+  },
   companyProfile: {
     companyName: 'PGS Oman',
     fullLegalName: 'PGS Oman — Premier Green Environmental & Waste Management LLC',

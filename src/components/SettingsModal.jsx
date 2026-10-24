@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   X,
   Building2,
@@ -12,16 +12,70 @@ import {
   ShieldCheck,
   HelpCircle,
   Save,
+  Edit3,
 } from 'lucide-react';
 
-export default function SettingsModal({ isOpen, onClose, settings, onSaveSettings, showToast }) {
-  const [activeTab, setActiveTab] = useState('company'); // 'company' | 'gmail' | 'ai'
+export default function SettingsModal({
+  isOpen,
+  onClose,
+  settings,
+  onSaveSettings,
+  showToast,
+  initialTab = 'company',
+  initialEditEmail = null,
+}) {
+  const [activeTab, setActiveTab] = useState(initialTab); // 'company' | 'gmail' | 'ai'
   const [gmail, setGmail] = useState(settings?.gmail || {});
   const [ai, setAi] = useState(settings?.ai || {});
   const [companyProfile, setCompanyProfile] = useState(settings?.companyProfile || {});
   const [saving, setSaving] = useState(false);
   const [testingGmail, setTestingGmail] = useState(false);
   const [gmailTestStatus, setGmailTestStatus] = useState(null);
+
+  // Multi-Gmail Account Editor state
+  const [editingAccountId, setEditingAccountId] = useState(null);
+  const [accountEmailInput, setAccountEmailInput] = useState('');
+  const [accountPasswordInput, setAccountPasswordInput] = useState('');
+
+  useEffect(() => {
+    if (settings) {
+      const g = settings.gmail || {};
+      const accounts =
+        Array.isArray(g.accounts) && g.accounts.length > 0
+          ? g.accounts
+          : g.email
+          ? [{ id: 'gmail-1', email: g.email, appPassword: g.appPassword || '' }]
+          : [];
+      setGmail({ ...g, accounts });
+      setAi(settings.ai || {});
+      setCompanyProfile(settings.companyProfile || {});
+
+      if (initialEditEmail) {
+        const found = accounts.find(
+          (a) => a.email.toLowerCase() === initialEditEmail.toLowerCase()
+        );
+        if (found) {
+          setEditingAccountId(found.id);
+          setAccountEmailInput(found.email);
+          setAccountPasswordInput(found.appPassword || '');
+        } else {
+          setEditingAccountId(null);
+          setAccountEmailInput('');
+          setAccountPasswordInput('');
+        }
+      } else {
+        setEditingAccountId(null);
+        setAccountEmailInput('');
+        setAccountPasswordInput('');
+      }
+    }
+  }, [settings, isOpen, initialEditEmail]);
+
+  useEffect(() => {
+    if (isOpen && initialTab) {
+      setActiveTab(initialTab);
+    }
+  }, [isOpen, initialTab]);
 
   if (!isOpen) return null;
 
@@ -51,6 +105,8 @@ export default function SettingsModal({ isOpen, onClose, settings, onSaveSetting
   };
 
   const handleTestGmail = async () => {
+    const emailToTest = accountEmailInput.trim() || gmail.accounts?.[0]?.email || gmail.email;
+    const passToTest = accountPasswordInput.trim() || gmail.accounts?.[0]?.appPassword || gmail.appPassword;
     setTestingGmail(true);
     setGmailTestStatus(null);
     try {
@@ -58,8 +114,8 @@ export default function SettingsModal({ isOpen, onClose, settings, onSaveSetting
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: gmail.email,
-          appPassword: gmail.appPassword,
+          email: emailToTest,
+          appPassword: passToTest,
         }),
       });
       const data = await res.json();
@@ -72,11 +128,98 @@ export default function SettingsModal({ isOpen, onClose, settings, onSaveSetting
     }
   };
 
+  const buildUpdatedGmailAccounts = () => {
+    const currentAccounts = Array.isArray(gmail.accounts) ? [...gmail.accounts] : [];
+    const trimmedEmail = accountEmailInput.trim();
+    const trimmedPass = accountPasswordInput.trim();
+    if (trimmedEmail) {
+      if (editingAccountId) {
+        const idx = currentAccounts.findIndex((a) => a.id === editingAccountId);
+        if (idx >= 0) {
+          currentAccounts[idx] = {
+            ...currentAccounts[idx],
+            email: trimmedEmail,
+            appPassword: trimmedPass || currentAccounts[idx].appPassword,
+          };
+        } else {
+          currentAccounts.push({
+            id: `gmail-${Date.now()}`,
+            email: trimmedEmail,
+            appPassword: trimmedPass,
+          });
+        }
+      } else {
+        const existingIdx = currentAccounts.findIndex(
+          (a) => a.email.toLowerCase() === trimmedEmail.toLowerCase()
+        );
+        if (existingIdx >= 0) {
+          currentAccounts[existingIdx] = {
+            ...currentAccounts[existingIdx],
+            email: trimmedEmail,
+            appPassword: trimmedPass || currentAccounts[existingIdx].appPassword,
+          };
+        } else {
+          currentAccounts.push({
+            id: `gmail-${Date.now()}`,
+            email: trimmedEmail,
+            appPassword: trimmedPass,
+          });
+        }
+      }
+    }
+    return currentAccounts;
+  };
+
+  const handleAddOrUpdateAccountInList = async () => {
+    if (!accountEmailInput.trim() || !accountPasswordInput.trim()) {
+      showToast('Please enter both the Gmail address and 16-character App Password.', 'error');
+      return;
+    }
+    const updatedAccounts = buildUpdatedGmailAccounts();
+    const updatedGmail = {
+      ...gmail,
+      accounts: updatedAccounts,
+      email: updatedAccounts[0]?.email || '',
+      appPassword: updatedAccounts[0]?.appPassword || '',
+    };
+    setGmail(updatedGmail);
+    setEditingAccountId(null);
+    setAccountEmailInput('');
+    setAccountPasswordInput('');
+    await onSaveSettings({ gmail: updatedGmail, ai, companyProfile });
+    showToast('Gmail account saved and synced!', 'success');
+  };
+
+  const handleDeleteAccountFromList = async (accId, accEmail) => {
+    const updatedAccounts = (gmail.accounts || []).filter((a) => a.id !== accId && a.email !== accEmail);
+    const updatedGmail = {
+      ...gmail,
+      accounts: updatedAccounts,
+      email: updatedAccounts[0]?.email || '',
+      appPassword: updatedAccounts[0]?.appPassword || '',
+    };
+    setGmail(updatedGmail);
+    if (editingAccountId === accId) {
+      setEditingAccountId(null);
+      setAccountEmailInput('');
+      setAccountPasswordInput('');
+    }
+    await onSaveSettings({ gmail: updatedGmail, ai, companyProfile });
+    showToast(`Removed Gmail account ${accEmail}`, 'success');
+  };
+
   const handleSaveAll = async () => {
     setSaving(true);
     try {
-      await onSaveSettings({ gmail, ai, companyProfile });
-      showToast('All settings & rate card saved successfully!', 'success');
+      const updatedAccounts = buildUpdatedGmailAccounts();
+      const updatedGmail = {
+        ...gmail,
+        accounts: updatedAccounts,
+        email: updatedAccounts[0]?.email || '',
+        appPassword: updatedAccounts[0]?.appPassword || '',
+      };
+      await onSaveSettings({ gmail: updatedGmail, ai, companyProfile });
+      showToast('All settings & Gmail accounts saved successfully!', 'success');
       onClose();
     } catch (err) {
       showToast(err.message || 'Failed to save settings', 'error');
@@ -316,10 +459,155 @@ export default function SettingsModal({ isOpen, onClose, settings, onSaveSetting
 
           {activeTab === 'gmail' && (
             <div className="space-y-6">
+              {/* List of All Synced Gmail Accounts with Edit & Delete Buttons */}
+              <div className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-extrabold text-slate-900 uppercase tracking-wider">
+                    Synced Gmail Accounts ({(gmail.accounts || []).length})
+                  </h3>
+                  {editingAccountId && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setEditingAccountId(null);
+                        setAccountEmailInput('');
+                        setAccountPasswordInput('');
+                      }}
+                      className="text-xs font-bold text-emerald-700 hover:underline"
+                    >
+                      + Switch to Add New Gmail Account
+                    </button>
+                  )}
+                </div>
+
+                {(gmail.accounts || []).length === 0 ? (
+                  <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-xs font-semibold text-amber-900">
+                    No Gmail accounts connected yet. Enter a Gmail address and 16-character App Password below to sync one or more Gmail accounts together.
+                  </div>
+                ) : (
+                  <div className="space-y-2.5">
+                    {(gmail.accounts || []).map((acc, idx) => (
+                      <div
+                        key={acc.id || acc.email || idx}
+                        className={`flex flex-wrap items-center justify-between gap-4 p-4 rounded-xl border-2 transition ${
+                          editingAccountId === acc.id
+                            ? 'bg-amber-50/70 border-amber-400'
+                            : 'bg-emerald-50/70 border-emerald-300'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="p-2.5 rounded-xl bg-emerald-600 text-white">
+                            <CheckCircle2 className="w-5 h-5" />
+                          </div>
+                          <div>
+                            <div className="text-[11px] font-bold uppercase tracking-wider text-emerald-700">
+                              Synced Gmail Account #{idx + 1}
+                            </div>
+                            <div className="text-base font-extrabold text-slate-900">
+                              {acc.email}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <span className="px-3 py-1 rounded-full bg-emerald-600 text-white text-xs font-extrabold">
+                            Synced ✓
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEditingAccountId(acc.id);
+                              setAccountEmailInput(acc.email);
+                              setAccountPasswordInput(acc.appPassword || '');
+                            }}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white hover:bg-emerald-100 border border-emerald-400 text-emerald-900 text-xs font-extrabold transition"
+                          >
+                            <Edit3 className="w-3.5 h-3.5" />
+                            <span>Edit</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteAccountFromList(acc.id, acc.email)}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white hover:bg-rose-100 border border-rose-300 text-rose-700 text-xs font-extrabold transition"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                            <span>Delete</span>
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Add New Gmail Account or Edit Selected Gmail Account Box */}
+              <div className="p-5 rounded-2xl bg-slate-50 border-2 border-slate-200 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="text-sm font-extrabold text-slate-900 flex items-center gap-2">
+                    <Mail className="w-4 h-4 text-emerald-700" />
+                    <span>
+                      {editingAccountId
+                        ? `Edit Synced Gmail Account (${accountEmailInput})`
+                        : '+ Add / Connect Another Gmail Account (Sync Multiple Gmail IDs Together)'}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
+                      Gmail Address
+                    </label>
+                    <input
+                      type="email"
+                      placeholder="manager@gmail.com"
+                      value={accountEmailInput}
+                      onChange={(e) => setAccountEmailInput(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 bg-white text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
+                      16-Character Gmail App Password
+                    </label>
+                    <input
+                      type="password"
+                      placeholder="xxxx xxxx xxxx xxxx"
+                      value={accountPasswordInput}
+                      onChange={(e) => setAccountPasswordInput(e.target.value)}
+                      className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 bg-white text-sm font-mono focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+                  <button
+                    type="button"
+                    onClick={handleTestGmail}
+                    disabled={testingGmail}
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 disabled:opacity-50 transition"
+                  >
+                    {testingGmail ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
+                    Test Gmail Connection
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleAddOrUpdateAccountInList}
+                    className="flex items-center gap-2 px-5 py-2 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-extrabold shadow-sm transition"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>
+                      {editingAccountId ? 'Update Synced Gmail ID' : 'Add & Sync This Gmail ID'}
+                    </span>
+                  </button>
+                </div>
+              </div>
+
               <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-950 space-y-2">
                 <div className="flex items-center gap-2 font-bold text-blue-900">
                   <HelpCircle className="w-4 h-4 text-blue-600" />
-                  Easy 3-Step Gmail Setup Guide for the Manager:
+                  Easy 3-Step Gmail Setup Guide (Works for 2 or More Gmail IDs Together):
                 </div>
                 <ol className="list-decimal list-inside space-y-1 text-xs text-blue-900">
                   <li>
@@ -330,36 +618,9 @@ export default function SettingsModal({ isOpen, onClose, settings, onSaveSetting
                     Type a name like <strong>"Waste Assistant"</strong> and click <strong>Create</strong>.
                   </li>
                   <li>
-                    Copy the <strong>16-letter App Password</strong> shown on screen and paste it below.
+                    Copy the <strong>16-letter App Password</strong> shown on screen and paste it above. You can add multiple Gmail IDs and sync all of them together.
                   </li>
                 </ol>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
-                    Manager's Gmail Address
-                  </label>
-                  <input
-                    type="email"
-                    placeholder="manager@gmail.com"
-                    value={gmail.email || ''}
-                    onChange={(e) => setGmail({ ...gmail, email: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">
-                    16-Character Gmail App Password
-                  </label>
-                  <input
-                    type="password"
-                    placeholder="xxxx xxxx xxxx xxxx"
-                    value={gmail.appPassword || ''}
-                    onChange={(e) => setGmail({ ...gmail, appPassword: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm font-mono focus:ring-2 focus:ring-emerald-500 focus:outline-none"
-                  />
-                </div>
               </div>
 
               <div className="flex flex-wrap items-center justify-between gap-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
@@ -374,19 +635,9 @@ export default function SettingsModal({ isOpen, onClose, settings, onSaveSetting
                     Automatically save AI-generated replies to Gmail's "Drafts" folder as well
                   </label>
                   <p className="text-xs text-slate-500 pl-6">
-                    When enabled, every new proposal draft will also appear inside your Gmail Drafts folder before approval.
+                    When enabled, every new proposal draft will also appear inside the receiving Gmail account's Drafts folder before approval.
                   </p>
                 </div>
-
-                <button
-                  type="button"
-                  onClick={handleTestGmail}
-                  disabled={testingGmail}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 disabled:opacity-50 transition"
-                >
-                  {testingGmail ? <Loader2 className="w-4 h-4 animate-spin" /> : <ShieldCheck className="w-4 h-4" />}
-                  Test Gmail Connection
-                </button>
               </div>
 
               {gmailTestStatus && (

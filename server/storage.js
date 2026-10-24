@@ -25,9 +25,28 @@ function ensureDb() {
   try {
     const raw = fs.readFileSync(DB_PATH, 'utf8');
     const parsed = JSON.parse(raw);
+    const rawGmail = { ...DEFAULT_SETTINGS.gmail, ...(parsed.settings?.gmail || {}) };
+    let accounts = Array.isArray(rawGmail.accounts) ? rawGmail.accounts : null;
+    if (!accounts) {
+      if (rawGmail.email && rawGmail.email.trim()) {
+        accounts = [
+          {
+            id: 'gmail-1',
+            email: rawGmail.email.trim(),
+            appPassword: rawGmail.appPassword || '',
+          },
+        ];
+      } else {
+        accounts = [];
+      }
+    }
+    rawGmail.accounts = accounts;
+    rawGmail.email = accounts[0]?.email || '';
+    rawGmail.appPassword = accounts[0]?.appPassword || '';
+
     return {
       settings: {
-        gmail: { ...DEFAULT_SETTINGS.gmail, ...(parsed.settings?.gmail || {}) },
+        gmail: rawGmail,
         ai: { ...DEFAULT_SETTINGS.ai, ...(parsed.settings?.ai || {}) },
         socialAccounts: {
           linkedin: {
@@ -38,6 +57,10 @@ function ensureDb() {
             ...DEFAULT_SETTINGS.socialAccounts.instagram,
             ...(parsed.settings?.socialAccounts?.instagram || {}),
           },
+        },
+        filterRules: {
+          ...DEFAULT_SETTINGS.filterRules,
+          ...(parsed.settings?.filterRules || {}),
         },
         companyProfile: {
           ...DEFAULT_SETTINGS.companyProfile,
