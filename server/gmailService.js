@@ -48,6 +48,7 @@ export async function fetchRecentGmailEmails({ email, appPassword, maxEmails = 1
     },
     logger: false,
   });
+  client.on('error', (err) => console.warn('[IMAP Connection Warning]', err?.message || err));
 
   const fetchedEmails = [];
 
@@ -167,6 +168,7 @@ export async function saveDraftToGmail({ gmailSettings, companyProfile, draft, o
     },
     logger: false,
   });
+  client.on('error', (err) => console.warn('[IMAP Connection Warning]', err?.message || err));
 
   await client.connect();
   try {

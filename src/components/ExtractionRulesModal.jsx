@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
   X,
   SlidersHorizontal,
+  Filter,
   Bot,
   Sparkles,
   Globe,
@@ -135,12 +136,13 @@ export default function ExtractionRulesModal({
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 bg-[#06392A] text-white">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-amber-400 text-[#06392A]">
-              <SlidersHorizontal className="w-5 h-5" />
+            <div className="relative p-2.5 rounded-xl bg-amber-400 text-[#06392A] flex items-center justify-center">
+              <Filter className="w-5 h-5" />
+              <Sparkles className="w-3 h-3 text-[#06392A] absolute -top-1 -right-1" />
             </div>
             <div>
               <h2 className="text-lg font-extrabold">
-                {isAr ? 'شروط وقواعد استخراج الرسائل من البريد' : 'Email Extraction & AI Filter Rules'}
+                {isAr ? 'قواعد فرز البريد بالذكاء الاصطناعي' : 'AI Mail Filter Rules'}
               </h2>
               <p className="text-xs text-emerald-200">
                 {isAr

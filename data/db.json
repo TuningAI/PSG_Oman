@@ -105,6 +105,212 @@
   },
   "emails": [
     {
+      "id": "msg-sim-1793040806031",
+      "messageId": "<sim-1793040806031@client.om>",
+      "fromName": "Eng. Salim Al-Rawahi",
+      "fromEmail": "s.rawahi@duqmport-logistics.om",
+      "companyName": "Duqm Port Industrial Services LLC",
+      "subject": "RFP: 24-Month Waste Collection & RoRo Skip Contract at Duqm Freezone",
+      "receivedAt": "2026-10-26T18:53:26.031Z",
+      "bodyText": "Dear Contracts Manager,\r\n\r\nWe are seeking a licensed environmental contractor for a 24-month waste management contract at our Duqm Special Economic Zone port terminal and warehouse complex.\r\n\r\nScope of Work required:\r\n1. 10 x 1.1 CBM Galvanized Wheelie Bins for daily municipal solid waste collection.\r\n2. 3 x 20 CBM RoRo containers for industrial timber, packaging scrap, and construction debris (approx. 10 trips per month).\r\n3. 2 x 7 CBM chain-lift skips for workshop general waste (8 pulls per month).\r\n4. Cardboard and plastic recyclable collection with monthly recycling diversion reports.\r\n\r\nKindly send us your commercial proposal with unit rates, Be'ah registration confirmation, and payment terms so we can present it to our tender committee this week.\r\n\r\nRegards,\r\nEng. Salim Al-Rawahi\r\nProcurement & Contracts Lead\r\nDuqm Port Industrial Services LLC",
+      "attachments": [],
+      "isDemo": true,
+      "isWasteProposal": true,
+      "category": "New Proposal / RFP",
+      "urgency": "High",
+      "status": "pending_approval",
+      "gmailDraftSynced": false,
+      "aiAnalysis": {
+        "relevanceScore": 99,
+        "relevanceReason": "Matched waste management RFQ and contract scope.",
+        "executiveSummary": [
+          "Duqm Port Industrial Services LLC needs waste collection at Ghala & Rusayl.",
+          "Collect general waste 3× weekly and cardboard weekly; remove 2 skips monthly.",
+          "12 months from 1 Nov 2026. Please submit quotation prior to deadline."
+        ],
+        "extractedDetails": {
+          "wasteStreamsLabel": "General + cardboard",
+          "siteLocationsLabel": "Ghala & Rusayl",
+          "binsVolumeLabel": "8 × 1,100 L; 2 × 6 m³",
+          "contractDurationLabel": "12 months from 1 Nov 2026",
+          "estimatedMonthlyValue": "2,129 OMR/month"
+        },
+        "usedProvider": "Built-in Smart Waste-AI Engine"
+      },
+      "draft": {
+        "to": "s.rawahi@duqmport-logistics.om",
+        "cc": "",
+        "subject": "Quotation | Ghala & Rusayl waste collection",
+        "tonePreset": "Accept & Send Quotation",
+        "body": "Dear Salim,\n\nThank you for your RFQ. We are pleased to quote for your Ghala & Rusayl facilities for 12 months from 1 Nov 2026.\n\n• General waste · 6 bins × 208: 1,248.000 OMR\n• Cardboard · 2 bins × 240.500: 481.000 OMR\n• 6 m³ skips · 2 lifts × 200: 400.000 OMR\nTotal · excluding VAT: 2,129 OMR/month\n\nGeneral waste: 3× weekly; cardboard: weekly; skips: 2 lifts/month. Payment: 30 days. Please confirm to arrange mobilisation.\n\nKind regards, Tuning AI\nGeneral Manager · PGS Oman",
+        "lastUpdatedAt": "2026-10-26T18:53:26.034Z"
+      }
+    },
+    {
+      "id": "msg-1793027054101-352-712",
+      "messageId": "<724949162.16039933.1793025130556@ltx1-app91238.prod.linkedin.com>",
+      "fromName": "LinkedIn",
+      "fromEmail": "updates-noreply@linkedin.com",
+      "toEmail": "tuningsai@gmail.com",
+      "syncedAccountEmail": "tuningsai@gmail.com",
+      "subject": "Dr. Vivek Bindra - Founder and CEO just posted something that might be of interest to you",
+      "receivedAt": "2026-10-26T14:32:10.000Z",
+      "bodyText": "Dr. Vivek Bindra shared a post: ज़िंदगी में सूर्य की तरह चमकना आसान नहीं होता,\nइसके लिए आग में तपना पड़ता है और मुश्किलों से गुजरना पड़ता है।\n\nलेकिन जो संघर्षों से घबराने के बजाय…\nLIKE EMPATHY APPRECIATION 199, 7 Comments\n\n\nRead more: https://www.linkedin.com/comm/feed/update/urn:li:activity:7518909919543181312?highlightedUpdateUrn=urn%3Ali%3Aactivity%3A7518909919543181312&showCommentBox=true&origin=NETWORK_CONVERSATIONS&lipi=urn%3Ali%3Apage%3Aemail_email_network_conversations_01%3BY%2FjggYYMS5m8zsIOR4xk0g%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=3HOCZKenBE_ss1&trk=eml-email_network_conversations_01-network~post~cta~text-0-read~more&trkEmail=eml-email_network_conversations_01-network~post~cta~text-0-read~more-null-qp7fa8~mvpcv7yk~ls-null-null&eid=qp7fa8-mvpcv7yk-ls&otpToken=YjNjMDVlZmE2MDE4MmVmYWVkNmM2NTk1NTUyODMxMTZhMjRlNmY3YWU1NTg4ODgzYTE4ZDI5YzhkOGIyMzc0ZDBkZDVhNjg0OWUyYWJjNTM2NjQyMmQ1ZDBlNGJmZmM4Yzk0OTIyNmExZDYwMjM4NzM1YzJlYTg2N2I0MmIxMTM5ODgxOGE2N2YxZjYzNzZiZjksMiwx\n        \n\n\nSee more on LinkedIn: https://www.linkedin.com/comm/feed/?lipi=urn%3Ali%3Apage%3Aemail_email_network_conversations_01%3BY%2FjggYYMS5m8zsIOR4xk0g%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=3HOCZKenBE_ss1&trk=eml-email_network_conversations_01-footer_promo-0-footer_see_all&trkEmail=eml-email_network_conversations_01-footer_promo-0-footer_see_all-null-qp7fa8~mvpcv7yk~ls-null-null&eid=qp7fa8-mvpcv7yk-ls&otpToken=YjNjMDVlZmE2MDE4MmVmYWVkNmM2NTk1NTUyODMxMTZhMjRlNmY3YWU1NTg4ODgzYTE4ZDI5YzhkOGIyMzc0ZDBkZDVhNjg0OWUyYWJjNTM2NjQyMmQ1ZDBlNGJmZmM4Yzk0OTIyNmExZDYwMjM4NzM1YzJlYTg2N2I0MmIxMTM5ODgxOGE2N2YxZjYzNzZiZjksMiwx\n\n----------------------------------------\n\nSee messages instantly with the app\nStay updated on new messages, job openings, and more.\nDownload for free: https://www.linkedinmobileapp.com/comm/feed/?appType=FLAGSHIP&lipi=urn%3Ali%3Apage%3Aemail_email_network_conversations_01%3BY%2FjggYYMS5m8zsIOR4xk0g%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=3HOCZKenBE_ss1&trk=eml-email_network_conversations_01-smart~tile-0-app~download~cta&trkEmail=eml-email_network_conversations_01-smart~tile-0-app~download~cta-null-qp7fa8~mvpcv7yk~ls-null-null&eid=qp7fa8-mvpcv7yk-ls&otpToken=YjNjMDVlZmE2MDE4MmVmYWVkNmM2NTk1NTUyODMxMTZhMjRlNmY3YWU1NTg4ODgzYTE4ZDI5YzhkOGIyMzc0ZDBkZDVhNjg0OWUyYWJjNTM2NjQyMmQ1ZDBlNGJmZmM4Yzk0OTIyNmExZDYwMjM4NzM1YzJlYTg2N2I0MmIxMTM5ODgxOGE2N2YxZjYzNzZiZjksMiwx\n\n----------------------------------------\n\nThis email was intended for Emza S S (Entrepreneur)\nLearn why we included this: https://www.linkedin.com/help/linkedin/answer/4788?lang=en&lipi=urn%3Ali%3Apage%3Aemail_email_network_conversations_01%3BY%2FjggYYMS5m8zsIOR4xk0g%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=3HOCZKenBE_ss1&trk=eml-email_network_conversations_01-SecurityHelp-0-textfooterglimmer&trkEmail=eml-email_network_conversations_01-SecurityHelp-0-textfooterglimmer-null-qp7fa8~mvpcv7yk~ls-null-null&eid=qp7fa8-mvpcv7yk-ls&otpToken=YjNjMDVlZmE2MDE4MmVmYWVkNmM2NTk1NTUyODMxMTZhMjRlNmY3YWU1NTg4ODgzYTE4ZDI5YzhkOGIyMzc0ZDBkZDVhNjg0OWUyYWJjNTM2NjQyMmQ1ZDBlNGJmZmM4Yzk0OTIyNmExZDYwMjM4NzM1YzJlYTg2N2I0MmIxMTM5ODgxOGE2N2YxZjYzNzZiZjksMiwx\nYou are receiving Network Conversations emails. Some content may be automatically translated based on\n      <a href=\"https://www.linkedin.com/mypreferences/d/language-for-translation\" target=\"_blank\" class=\"link-no-visited-state\" data-tracking-will-navigate data-tracking-control-name=\"email_network_conversations_content_settings_link\" style=\"cursor: pointer; display: inline-block; text-decoration: none; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; font-weight: 600; color: #0a66c2;\">your settings</a>.\n\n\nUnsubscribe: https://www.linkedin.com/comm/mypreferences/u/emailunsub?action=updateEmailSubscription&lipi=urn%3Ali%3Apage%3Aemail_email_network_conversations_01%3BY%2FjggYYMS5m8zsIOR4xk0g%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=3HOCZKenBE_ss1&trk=eml-email_network_conversations_01-unsubscribe-0-textfooterglimmer&trkEmail=eml-email_network_conversations_01-unsubscribe-0-textfooterglimmer-null-qp7fa8~mvpcv7yk~ls-null-null&eid=qp7fa8-mvpcv7yk-ls&loid=AQGvgIpm1qvFBQAAAaF4oD7BfgdRviepdzXdecFULJvzi1ZcSwUBfEo0CcrDIgd0Kgb6QfAsdVPs27Uj-u48wksXqa4dVwsf1Lltg3rC41S8ea_0znSH1A7UFQ\nHelp: https://www.linkedin.com/help/linkedin/answer/67?lang=en&lipi=urn%3Ali%3Apage%3Aemail_email_network_conversations_01%3BY%2FjggYYMS5m8zsIOR4xk0g%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=3HOCZKenBE_ss1&trk=eml-email_network_conversations_01-help-0-textfooterglimmer&trkEmail=eml-email_network_conversations_01-help-0-textfooterglimmer-null-qp7fa8~mvpcv7yk~ls-null-null&eid=qp7fa8-mvpcv7yk-ls&otpToken=YjNjMDVlZmE2MDE4MmVmYWVkNmM2NTk1NTUyODMxMTZhMjRlNmY3YWU1NTg4ODgzYTE4ZDI5YzhkOGIyMzc0ZDBkZDVhNjg0OWUyYWJjNTM2NjQyMmQ1ZDBlNGJmZmM4Yzk0OTIyNmExZDYwMjM4NzM1YzJlYTg2N2I0MmIxMTM5ODgxOGE2N2YxZjYzNzZiZjksMiwx\n\n© 2026 LinkedIn Corporation, 1zwnj000 West Maude Avenue, Sunnyvale, CA 94085.\nLinkedIn and the LinkedIn logo are registered trademarks of LinkedIn.",
+      "attachments": [],
+      "isDemo": false,
+      "companyName": "Linkedin LLC",
+      "isWasteProposal": true,
+      "category": "New Proposal / RFP",
+      "urgency": "High",
+      "status": "pending_approval",
+      "gmailDraftSynced": true,
+      "aiAnalysis": {
+        "relevanceScore": 99,
+        "relevanceReason": "Matched waste management RFQ and contract scope.",
+        "executiveSummary": [
+          "Linkedin LLC needs waste collection at Ghala & Rusayl.",
+          "Collect general waste 3× weekly and cardboard weekly; remove 2 skips monthly.",
+          "12 months from 1 Nov 2026. Please submit quotation prior to deadline."
+        ],
+        "extractedDetails": {
+          "wasteStreamsLabel": "General + cardboard",
+          "siteLocationsLabel": "Ghala & Rusayl",
+          "binsVolumeLabel": "8 × 1,100 L; 2 × 6 m³",
+          "contractDurationLabel": "12 months from 1 Nov 2026",
+          "estimatedMonthlyValue": "2,129 OMR/month"
+        },
+        "usedProvider": "Built-in Smart Waste-AI Engine"
+      },
+      "draft": {
+        "from": "tuningsai@gmail.com",
+        "to": "updates-noreply@linkedin.com",
+        "cc": "",
+        "subject": "Quotation | Ghala & Rusayl waste collection",
+        "tonePreset": "Accept & Send Quotation",
+        "body": "Dear LinkedIn,\n\nThank you for your RFQ. We are pleased to quote for your Ghala & Rusayl facilities for 12 months from 1 Nov 2026.\n\n• General waste · 6 bins × 208: 1,248.000 OMR\n• Cardboard · 2 bins × 240.500: 481.000 OMR\n• 6 m³ skips · 2 lifts × 200: 400.000 OMR\nTotal · excluding VAT: 2,129 OMR/month\n\nGeneral waste: 3× weekly; cardboard: weekly; skips: 2 lifts/month. Payment: 30 days. Please confirm to arrange mobilisation.\n\nKind regards, Tuning AI\nGeneral Manager · PGS Oman",
+        "lastUpdatedAt": "2026-10-26T15:04:14.230Z"
+      }
+    },
+    {
+      "id": "msg-1793018009356-351-483",
+      "messageId": "<846753484.17207634.1793017932640@lva2-app68929.prod.linkedin.com>",
+      "fromName": "Mohammed Nihal on LinkedIn",
+      "fromEmail": "messages-noreply@linkedin.com",
+      "toEmail": "tuningsai@gmail.com",
+      "syncedAccountEmail": "tuningsai@gmail.com",
+      "subject": "👤 You may know Mohammed Nihal",
+      "receivedAt": "2026-10-26T12:32:12.000Z",
+      "bodyText": "Do you know Mohammed Nihal?1 mutual connection\n\nYes, connect: https://www.linkedin.com/comm/mynetwork/send-invite/mohammed-nihal-077529390/?lipi=urn%3Ali%3Apage%3Aemail_email_pymk_02%3BT25JXIIoQUK6h0MLHNZX2w%3D%3D&midSig=236Su2Mw3M_cs1&midToken=AQHoAQYH_HgxWA&trkEmail=eml-email_pymk_02-pymkCard-0-pymk_cta%3A+urn%3Ali%3Amember%3A1613732635-null-qp7fa8%7Emvp8kwr6%7Ee4-null-null&trk=eml-email_pymk_02-pymkCard-0-pymk_cta%3A+urn%3Ali%3Amember%3A1613732635&_sig=2s1gZmG_3M_cs1\n\n\nMore people you may know\n            \n    Huyen Nguyen\nAI Engineer | Applied Scientist @ NVIDIA \nhttps://www.linkedin.com/comm/mynetwork/send-invite/huyenntx308/?lipi=urn%3Ali%3Apage%3Aemail_email_pymk_02%3BT25JXIIoQUK6h0MLHNZX2w%3D%3D&midSig=236Su2Mw3M_cs1&midToken=AQHoAQYH_HgxWA&trkEmail=eml-email_pymk_02-pymkCard-0-pymk_cta%3A+urn%3Ali%3Amember%3A712500624-null-qp7fa8%7Emvp8kwr6%7Ee4-null-null&trk=eml-email_pymk_02-pymkCard-0-pymk_cta%3A+urn%3Ali%3Amember%3A712500624&_sig=18Aej2VM_M_cs11 mutual connection\n            \n    Ajanya P Sukruthan\nAI Ad Creator | AI Filim maker | Creative Designer | Social Media Ads | Video Editing | Canva & Photoshop | Gen AI Content Creator\n\nhttps://www.linkedin.com/comm/mynetwork/send-invite/ajanya-p-sukruthan-7961b0226/?lipi=urn%3Ali%3Apage%3Aemail_email_pymk_02%3BT25JXIIoQUK6h0MLHNZX2w%3D%3D&midSig=236Su2Mw3M_cs1&midToken=AQHoAQYH_HgxWA&trkEmail=eml-email_pymk_02-pymkCard-0-pymk_cta%3A+urn%3Ali%3Amember%3A950020962-null-qp7fa8%7Emvp8kwr6%7Ee4-null-null&trk=eml-email_pymk_02-pymkCard-0-pymk_cta%3A+urn%3Ali%3Amember%3A950020962&_sig=3FX0ZgTDLM_cs11 mutual connection\n            \n    Rausina P C\nResearch Scholar | DST- INSPIRE Scholar | Water Quality Chemist and Analyst | MSc Chemistry |\nhttps://www.linkedin.com/comm/mynetwork/send-invite/rausina-p-c-845355375/?lipi=urn%3Ali%3Apage%3Aemail_email_pymk_02%3BT25JXIIoQUK6h0MLHNZX2w%3D%3D&midSig=236Su2Mw3M_cs1&midToken=AQHoAQYH_HgxWA&trkEmail=eml-email_pymk_02-pymkCard-0-pymk_cta%3A+urn%3Ali%3Amember%3A1556557685-null-qp7fa8%7Emvp8kwr6%7Ee4-null-null&trk=eml-email_pymk_02-pymkCard-0-pymk_cta%3A+urn%3Ali%3Amember%3A1556557685&_sig=0xadgMribM_cs11 mutual connection\n            \n    Ancy John Scott\nHuman Resources | Talent Attraction | Talent Acquisition | IJP [Internal Job Posting] | 5 year Integrated MBA \nhttps://www.linkedin.com/comm/mynetwork/send-invite/ancyjohnscott/?lipi=urn%3Ali%3Apage%3Aemail_email_pymk_02%3BT25JXIIoQUK6h0MLHNZX2w%3D%3D&midSig=236Su2Mw3M_cs1&midToken=AQHoAQYH_HgxWA&trkEmail=eml-email_pymk_02-pymkCard-0-pymk_cta%3A+urn%3Ali%3Amember%3A1058504987-null-qp7fa8%7Emvp8kwr6%7Ee4-null-null&trk=eml-email_pymk_02-pymkCard-0-pymk_cta%3A+urn%3Ali%3Amember%3A1058504987&_sig=2DOnL7Dy_M_cs11 mutual connection\n            \n    Athira Aravind\nMBA Student | Startup Co-founder | Freelance Web Designer | Business Analytics |\nhttps://www.linkedin.com/comm/mynetwork/send-invite/athira-aravind-291b45426/?lipi=urn%3Ali%3Apage%3Aemail_email_pymk_02%3BT25JXIIoQUK6h0MLHNZX2w%3D%3D&midSig=236Su2Mw3M_cs1&midToken=AQHoAQYH_HgxWA&trkEmail=eml-email_pymk_02-pymkCard-0-pymk_cta%3A+urn%3Ali%3Amember%3A1812335437-null-qp7fa8%7Emvp8kwr6%7Ee4-null-null&trk=eml-email_pymk_02-pymkCard-0-pymk_cta%3A+urn%3Ali%3Amember%3A1812335437&_sig=30YVAUwLXM_cs11 mutual connection\n\nSee more people you might know:https://www.linkedin.com/comm/mynetwork/add-connections/?lipi=urn%3Ali%3Apage%3Aemail_email_pymk_02%3BT25JXIIoQUK6h0MLHNZX2w%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=236Su2Mw3M_cs1&trk=eml-email_pymk_02-see_more-0-cta~text&trkEmail=eml-email_pymk_02-see_more-0-cta~text-null-qp7fa8~mvp8kwr6~e4-null-null&eid=qp7fa8-mvp8kwr6-e4&otpToken=NDZmNjBiOWNmMmI2YzY5NTBjZWVhYTQ2YWI2ZDVkZTU4OTlhOWE3YTFlZDJmZTYzYThmNGU3OWI4OWZkNjFkNjQ4NTk1NGYzYWFlYzQ1MjIwNzcyYWJkM2YxZjAyMDczYjQxMjJhOWI0MDM2NzY4MDM1OWU5YzExMjllNDYzYWYyNWY5MDBiZjEzYTgwYmFiZmEsMiwx\n      \n\n----------------------------------------\n\nSee messages instantly with the app\nStay updated on new messages, job openings, and more.\nDownload for free: https://www.linkedinmobileapp.com/comm/feed/?appType=FLAGSHIP&lipi=urn%3Ali%3Apage%3Aemail_email_pymk_02%3BT25JXIIoQUK6h0MLHNZX2w%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=236Su2Mw3M_cs1&trk=eml-email_pymk_02-smart~tile-0-app~download~cta&trkEmail=eml-email_pymk_02-smart~tile-0-app~download~cta-null-qp7fa8~mvp8kwr6~e4-null-null&eid=qp7fa8-mvp8kwr6-e4&otpToken=NDZmNjBiOWNmMmI2YzY5NTBjZWVhYTQ2YWI2ZDVkZTU4OTlhOWE3YTFlZDJmZTYzYThmNGU3OWI4OWZkNjFkNjQ4NTk1NGYzYWFlYzQ1MjIwNzcyYWJkM2YxZjAyMDczYjQxMjJhOWI0MDM2NzY4MDM1OWU5YzExMjllNDYzYWYyNWY5MDBiZjEzYTgwYmFiZmEsMiwx\n\n----------------------------------------\n\nThis email was intended for Emza S S (Entrepreneur)\nLearn why we included this: https://www.linkedin.com/help/linkedin/answer/4788?lang=en&lipi=urn%3Ali%3Apage%3Aemail_email_pymk_02%3BT25JXIIoQUK6h0MLHNZX2w%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=236Su2Mw3M_cs1&trk=eml-email_pymk_02-SecurityHelp-0-textfooterglimmer&trkEmail=eml-email_pymk_02-SecurityHelp-0-textfooterglimmer-null-qp7fa8~mvp8kwr6~e4-null-null&eid=qp7fa8-mvp8kwr6-e4&otpToken=NDZmNjBiOWNmMmI2YzY5NTBjZWVhYTQ2YWI2ZDVkZTU4OTlhOWE3YTFlZDJmZTYzYThmNGU3OWI4OWZkNjFkNjQ4NTk1NGYzYWFlYzQ1MjIwNzcyYWJkM2YxZjAyMDczYjQxMjJhOWI0MDM2NzY4MDM1OWU5YzExMjllNDYzYWYyNWY5MDBiZjEzYTgwYmFiZmEsMiwx\nYou are receiving People You May Know notification emails.\n\n\nUnsubscribe: https://www.linkedin.com/comm/mypreferences/u/emailunsub?action=updateEmailSubscription&lipi=urn%3Ali%3Apage%3Aemail_email_pymk_02%3BT25JXIIoQUK6h0MLHNZX2w%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=236Su2Mw3M_cs1&trk=eml-email_pymk_02-unsubscribe-0-textfooterglimmer&trkEmail=eml-email_pymk_02-unsubscribe-0-textfooterglimmer-null-qp7fa8~mvp8kwr6~e4-null-null&eid=qp7fa8-mvp8kwr6-e4&loid=AQEGaqHMUmJUCgAAAaF4MmgBUTozfzu4bfwNpSIoLMJQ-kBwFkOLlWl1jfm0MuzcACi27z1erseSp9M7kl2faakKiUmGoIwT8LhFFswD4A\nHelp: https://www.linkedin.com/help/linkedin/answer/67?lang=en&lipi=urn%3Ali%3Apage%3Aemail_email_pymk_02%3BT25JXIIoQUK6h0MLHNZX2w%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=236Su2Mw3M_cs1&trk=eml-email_pymk_02-help-0-textfooterglimmer&trkEmail=eml-email_pymk_02-help-0-textfooterglimmer-null-qp7fa8~mvp8kwr6~e4-null-null&eid=qp7fa8-mvp8kwr6-e4&otpToken=NDZmNjBiOWNmMmI2YzY5NTBjZWVhYTQ2YWI2ZDVkZTU4OTlhOWE3YTFlZDJmZTYzYThmNGU3OWI4OWZkNjFkNjQ4NTk1NGYzYWFlYzQ1MjIwNzcyYWJkM2YxZjAyMDczYjQxMjJhOWI0MDM2NzY4MDM1OWU5YzExMjllNDYzYWYyNWY5MDBiZjEzYTgwYmFiZmEsMiwx\n\n© 2026 LinkedIn Corporation, 1zwnj000 West Maude Avenue, Sunnyvale, CA 94085.\nLinkedIn and the LinkedIn logo are registered trademarks of LinkedIn.",
+      "attachments": [],
+      "isDemo": false,
+      "companyName": "Linkedin LLC",
+      "isWasteProposal": false,
+      "category": "Unrelated / Marketing",
+      "urgency": "Low",
+      "status": "filtered_out",
+      "gmailDraftSynced": false,
+      "aiAnalysis": {
+        "relevanceScore": 5,
+        "relevanceReason": "Not related to waste management proposals or extraction rules.",
+        "executiveSummary": [
+          "Automatically filtered out by AI: Unrelated marketing or non-proposal email."
+        ],
+        "extractedDetails": {},
+        "usedProvider": "Built-in Smart Waste-AI Engine"
+      },
+      "draft": null
+    },
+    {
+      "id": "msg-1792906379885-350-964",
+      "messageId": "<dd482ed047d4ee1b19b940ce46269544d06d341f-20402505-111839281@google.com>",
+      "fromName": "Google AI Studio",
+      "fromEmail": "googleaistudio-noreply@google.com",
+      "toEmail": "tuningsai@gmail.com",
+      "syncedAccountEmail": "tuningsai@gmail.com",
+      "subject": "Access premium vibe coding features with your Google AI subscription",
+      "receivedAt": "2026-10-25T05:32:32.000Z",
+      "bodyText": "Email not displaying correctly? View it online<https://notifications.google.com/g/vib/AAuDWvk0RtHQ5Uj5e3J_aR-hyVqc8-e2jidxGtR_ugjupY_XD_Q7kVNRpL3DPpsLMIGEY10u6MggT5BlHzcmOYNOeeUa184a4lFnIkkMC6RvMlq8fWEtbI-hn0XMIP1WN4Nhlfs>\n\nGoogle AI Studio<https://c.gle/AAuDWvkeYEKvnmTbBrJPKeFu30lOf_HwIPuSlJpkjgitLmBtYeU63BtBB2_0TFc3DXfugCdehuzenij_Vk975UUDZX55cXh5LfHGh_FYM0tSt_d_xSuGUSa46edUyy15G5Z7J0EElg5VmkMk0AWG52w01M98cT0>\n\nAccess premium vibe coding features with your Google AI subscription\n\nStart vibe coding in AI Studio<https://c.gle/AAuDWvlPC-mTflSpy6xejujvObIY487iOFzOPtkysYbAiLjCgKcDazgaNk6srnn88EnkA59H99Ys8LNs5b4DCdhO-tf7UuYk4HDDrYuWT_YhffEkAoif4OIQFw0bjE-VqYyjaFDVHKCdHGfCQuD6Yp6dMfVQ1r2u_N0x8IntINKB1pNcquWV>\n\nHi Tuning,\n\nWe are excited to share that your Google AI plan subscription now unlocks access to paid pro models and higher usage limits in Google AI Studio:\n\n- Pro models access<https://c.gle/AAuDWvmw9LOr4CNnbOOIsoKMyutstKLzciJAgmHJOJDMQHyGi-87zafqGLBwxr2kMlaJv1-IjF20mVzA0uUM20NsFD19yBVE1ExBxMpEGzdgi-Fn6sK7CzgmZEndfhrogBMwfuQXPy6mYmk_7FPojgMKFmJBKwsKxQ4> includes paid Nano Banana Pro 🍌, Lyria Pro and Gemini Pro.\n\n- Higher usage limits<https://c.gle/AAuDWvnmZZE2zwgaxXrpzYxFmjeGqE9-1Zx2so93tp0xcZmCE_RssbZAMHHUohqe7vvyidrwE0fskPiYqkXOF9czP8bOxu3lp4fi_o0dlsGuA4s8e8IJX6TJ4H1o3pyFCRa8gpe8op3CQnoZpO8MAiN6AW6lJAvbfQ> to vibe code without an API key.\n\nSign in to Google AI Studio with your linked Google AI subscription account today to get started!\n\nHappy building,\n\nThe Google AI Studio team\n\nPrompt models<https://c.gle/AAuDWvnTMvj2lCBsx4h-W5pRphBQ0s_SagGO3ftLQfa4RoBv6xtG9WCBgUo195eikbqwLmi7LQcHsIzokZ-g88jmqKUFvreE3kAVSgummIv9ZhirG9hQVEqF3MoNzx1Ep_4S5y0sd8LtqOa6BjF9uQlJuSxlJdknkBzBcQdZoubVUavlAPEOSB_4UO6Pd0VX2UCCA3zM0z4gYS_Bq_Gz2ddXSdNsN3UkMo13STSB1N5s28ZWO7WZRHuFakyM8JbPVbtfcg>\n\nManage API keys<https://c.gle/AAuDWvnMrj0Cyw3ix5WKJer1WAJABQbkkUrku6f0uBU5kaPajb_9hzWkhMi1G_e5gp0ovEhbalFHk_MQyAIWPTsNJzb97Vc3PRGqjISauhNYhclKbIh2KfHftk-rF98N6yR3vfu1Znh941OIDaWyZf6fvaD3MV__GcMHPMgvWHlbyoVzjFBzNWzHHRS4NbEeFxNl3aV4M2k_nI1v_A3mPCdlnRDgK7nVlG40TMzClJnicA3lpt8kOg>\n\nVibe code<https://c.gle/AAuDWvlL4TYqJhgB-QXTcbHEUgoXfNoTDdsLpIRe0xFow7uY7ZFqILW3BBDOh5ClSLuJc0-eDvhMXkN5tSwmj3DHXdZT1y8c3hrtCiGrQmeNVue_Af8HOxXtMk5iTe4HbiBU2AmhAD3YTzvpF5v4yrAEvPdhxNvzkySHBvjJ6pgmjDYq9Exis3TWpkrfqL_FdIUU-1OnZC1hq3LsLHqwIcrXyu1VJwysU0H1Go_QIsw>\n\nX<https://c.gle/AAuDWvmoJ9AHf1tdZmcn3WL7H5YcCM4o1Oj0T53TtQw3FUh0qUqT8c_NrYMB5Efj1R8h6SNf5jmAqZ6LirW9mJSB9gkGHCIrIdM4pzPbCb4MKI5_Kxx0Z-lIBoxgyCoW27DWtrA>\n\nLatest product updates<https://c.gle/AAuDWvnyAF8kU618gr9kVrkwhDisfIS5EeTXnRSGC1ADFDi_4wtVP-BfW8dPUasGTSfqjakpyTS78vycWALWFWqGoHliJIspOkYBN1Wq3I9cITLv-tjvf-WMxfY8FaoCgWLnYIucEBPQU_ongomsXU6-UuInItwy-nI>\n\nUpcoming global events icon<https://c.gle/AAuDWvk7S14zLAshzOsdAH_sDNZl3La36UvjeHULxvF5rZtrvWdDOxX8A1LyQTG-PMf56vIcsVO8XDA9WZn5LY8ZZY4cKpCpqfM-QRVF-ADTV1rapVd6jcURQJx-xD74MfsvvpxJN57Kr3b72vPONCneNm2lqP-_snmyVg>\n\nUpcoming global events<https://c.gle/AAuDWvnpwBt8hnlozKVh1ROKlQdrQyGaEqqBMzS-wN0qAUh0380TXfTou8VDAKJcZYPEteiyaih8_VUtyerruxab5dbMGNP3mN61z9ttOogHymOu-_ILysOzMFX1KXnseG_lbF-XeivB-296gVFY9Mmep-Bl20k>\n\n© 2026 Google LLC 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA\n\nThis email was sent to tuningsai@gmail.com because you signed up to receive emails about Google AI. If you do not wish to receive these emails, please unsubscribe<https://myaccount.google.com/communication-preferences/unsubscribe/gt/AAuDWvl94LkQofWTijEHyhX7rwSCKYxh6rLo9sXW6YR-Q76mmoEZ2BPXtM38--7GCiCIeMiehxy0TTeTxo2-IUY5MvpeCGRi9JDYsth5jFxmsSXBNlSTZtjTlQ-ryiqj_u7MzNr9AZoykn_HEK03pGEKogdxXZBeCy4WgV5AwFKbzaqLIosxBKgQDzxF0KJZVNJahU-dtUmEC-oagx619LrWoFO4ksscAltGdYeU1wumla8?utm_source=gm&utm_medium=email&auto=true>.",
+      "attachments": [],
+      "isDemo": false,
+      "companyName": "Google LLC",
+      "isWasteProposal": true,
+      "category": "New Proposal / RFP",
+      "urgency": "High",
+      "status": "pending_approval",
+      "gmailDraftSynced": true,
+      "aiAnalysis": {
+        "relevanceScore": 99,
+        "relevanceReason": "Matched waste management RFQ and contract scope.",
+        "executiveSummary": [
+          "Google LLC needs waste collection at Ghala & Rusayl.",
+          "Collect general waste 3× weekly and cardboard weekly; remove 2 skips monthly.",
+          "12 months from 1 Nov 2026. Please submit quotation prior to deadline."
+        ],
+        "extractedDetails": {
+          "wasteStreamsLabel": "General + cardboard",
+          "siteLocationsLabel": "Ghala & Rusayl",
+          "binsVolumeLabel": "8 × 1,100 L; 2 × 6 m³",
+          "contractDurationLabel": "12 months from 1 Nov 2026",
+          "estimatedMonthlyValue": "2,129 OMR/month"
+        },
+        "usedProvider": "Built-in Smart Waste-AI Engine"
+      },
+      "draft": {
+        "from": "tuningsai@gmail.com",
+        "to": "googleaistudio-noreply@google.com",
+        "cc": "operations@pgsoman.com",
+        "subject": "Quotation | Ghala & Rusayl waste collection",
+        "tonePreset": "Accept & Send Quotation",
+        "body": "Dear Google,\n\nThank you for your RFQ. We are pleased to quote for your Ghala & Rusayl facilities for 12 months from 1 Nov 2026.\n\n• General waste · 6 bins × 208: 1,248.000 OMR\n• Cardboard · 2 bins × 240.500: 481.000 OMR\n• 6 m³ skips · 2 lifts × 200: 400.000 OMR\nTotal · excluding VAT: 2,129 OMR/month\n\nGeneral waste: 3× weekly; cardboard: weekly; skips: 2 lifts/month. Payment: 30 days. Please confirm to arrange mobilisation.\n\nKind regards, Tuning AI\nGeneral Manager · PGS Oman",
+        "lastUpdatedAt": "2026-10-26T12:12:33.995Z"
+      }
+    },
+    {
+      "id": "msg-1792905959885-349-114",
+      "messageId": "<bx6QX1FeTdur7T03NG-OJg@geopod-ismtpd-3>",
+      "fromName": "ChatGPT",
+      "fromEmail": "noreply@email.openai.com",
+      "toEmail": "tuningsai@gmail.com",
+      "syncedAccountEmail": "tuningsai@gmail.com",
+      "subject": "Translate anything, your way",
+      "receivedAt": "2026-10-25T02:36:39.000Z",
+      "bodyText": "Use text, voice, images, and more.\n ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌ ‌\n\nChatGPT [https://persistent.oaistatic.com/chatgpt/icons/chatgpt_logo.png]\nhttps://r.openai.com/uni/ls/click?upn=u001.I-2FaYIbqhsKngReUOKrmuwZSO4NkXeh7XGoFSaLpi7cstJVy4y1QtssGiTwSeteZPRE3zlQE0XfAE-2Frt84Lwxj61iTVY0BtU3wyDF3FZeBJEWYeZtjWilXqEdi2Ep7eddUJNPDc2uxaxsu0GG1svE23-2BUN21rUVVfUlucxNG111q5zew9pEN8jBjBFm9L9BnTOld6X-2FYikBCM767bsfZRQ5tvSwTGSa4nRddKehpqwF-2F-2BDLVUzbx9iWXpxEpgfD0uNFXwL0M4uC1bNkvjvg6wjKM8Az472-2FXtKAe50-2FPiVtXw5cd0xB1aboHSap9U0BjeJOJe2jupBQoGeOfKpkh1fTt9x4SfzYCpjSRgEjcMYl9KEM2P8TYlTgUXe8UVc2Z0-2BQRVPJ6dMFPG1QP-2B2dsrtQWrbRWZ87X-2FNX9Tm1FuQYI9aUm7SbM2TlRmC2qczgpmw3do3wXYJRoDZcHzeyjkf5AkvYOfl9u0WWYNkgQPU2lW7pkJqvyPu0mf4-2FN14NpcAMmgnqxpLzD5eEjXqQoBqe1gSN5tV9X4LaKT6qnfZfXA2ICkm6FyZNyXKuE6BlqZDbUeUicnakO3rQfrbxFryBvVfxQuN1QkZVumusVZNhp2xs7nif28U9MOaaaSUi6Up8kWue4nsAv9pZT7csjxXip-2F9bwAStTZrxC9pYhA9BeCDLnnBqm5Aki-2By1SS9HJAXOpP_3FJB13Yp1OwfKOOyrp01RUislrYivoLY6r7KpJ-2Fj52GbMGplhQCatpYw2Vd7LdeTLD9Xxol5gLya8D6qi-2Fq4ihlXjlWw-2BUtAYfXlJFZrQ-2FtcylAIY-2Bi0F20l1Vcn7XsAIK-2B9GWOGHMF-2BS5u3Qdw8jM1NsstbGk1QZhFPfEe5FGt0f9DZUAzMcnEFXsujAYuStAQY0BP23gD1PgZ0pd9rzagV5CxqtQDd9EisYaBVZ4Cfq9Gio2eP-2Frb6PekVUbxRSr-2BtqI3rR7FyZKVWc6E-2BZWllmAtruLSM0R2LEuhKjQ7tz-2FlBc4QbShAA29omR5B0TQrM-2Bir7mHQQLxs2-2Fct1nkwER9OPNyD3olbCKKi4ZUh42kd90F7Kr9Nzg5Z7odvipoo-2FYtDRRDTpK83UMBvLBwWElXZ0m2ljYckB5F8-2ByDy76Iz9Ws8HQCfKFK3AwHq5bpGR3eSofP70mz48uAcwjAYsSeLQzBcE-2BsY-2Bcv-2FGjm2YKJzN6QfokVp3uYDHfFTDIS4qWLqNm0hRyYaj3KGMrVi2IFvlMovmGiiymupbNy7nCGy9RO4zFixeYlRWAMJuJWPPYJLr7Zl6OXbMa1Qx-2F-2B9mmDUEyisbR54Z4QZlL3-2BwtAaEbjmZ58q8UNr6Kz1-2FSTffX1wEjEisJUnfca0PMXKxHZ1luWeeLspFRltVd-2BIJpaUIPuQrE8oBu7IVML2714BDvomcLWZX2RpGNusJeNXbmb8Mk5qCNirYoAJLPEUsiZHistvVw1SQiU2tk9nIVBSdI5WX6mCmZxy0SP0xA9RI0XB2LZentKjh2fuG4ehll1QZ2r5bLDnwDCkYXhXNufPWuN2Uqs5fZ0-2FtY-2BvV4KIYbn-2FizE1BAza2SL1VQJK5DREY89hqfSsViseJTEq8-2B4TZoU-2BeHytjKU6aLONCSEf9cw9YuvI6M-2FaV1tpjfiGDGZTwSo5OLkbMFSzd4SYz2ErLlojFi-2BH2a3WdyGHvOwsNa0qK-2BkCQkWP76-2FogQvj7JLmlZwJA1ziMDw-2F3NPypw-2Fg5Wck3g8gvNNJJd1y2E9Hwv1hQaqND93lK9VH-2BVLoLtw4uGEjTS57qZUjWte97r1E8dJ644tY0UvjJ9aeApQnJxCxIc3qe0NA0n7BwipLRLYvmxNsUtVSlGVkSQpPY1LVyPLY-2FdcRDVA5-2Fsm-2FThg-3D-3D\n\n\nYOUR PERSONAL TRANSLATOR\n\nUse voice or a photo to translate anything, then ask follow-up questions.\n\nStart translating\n[https://r.openai.com/uni/ls/click?upn=u001.I-2FaYIbqhsKngReUOKrmuwZSO4NkXeh7XGoFSaLpi7cstJVy4y1QtssGiTwSeteZPRE3zlQE0XfAE-2Frt84Lwxj61iTVY0BtU3wyDF3FZeBJEWYeZtjWilXqEdi2Ep7eddUJNPDc2uxaxsu0GG1svE23-2BUN21rUVVfUlucxNG111q5zew9pEN8jBjBFm9L9BnTOld6X-2FYikBCM767bsfZRQ5tvSwTGSa4nRddKehpqwF-2F-2BDLVUzbx9iWXpxEpgfD0uNFXwL0M4uC1bNkvjvg6wjKM8Az472-2FXtKAe50-2FPiVtXw5cd0xB1aboHSap9U0BjeJOJe2jupBQoGeOfKpkh1fTt9x4SfzYCpjSRgEjcMYl9KEM2P8TYlTgUXe8UVc2Z0-2BQRVPJ6dMFPG1QP-2B2dsrtQWrbRWZ87X-2FNX9Tm1FuQYI9aUm7SbM2TlRmC2qczgpmw3do3wXYJRoDZcHzeyjkfy7oXd2f6ZHuNxE69VlFV8TBU5Vg22sMhJPdbjWs-2Fr4KKTWI2bwMvH5Zo9V2UcGz0FMCaOb0ZrXd-2FIZ9hQ-2FJKvK09INhJHqwQexDt3SCy-2BgdoyDQkfJCNIhAUcMQaJsLQNNsmVS7nbs2lgY4Bqj0G-2BRDwYdCbHc2Bkm8MA44IuiRpa3NXXXPwUMp4fdKmIQfIaMW-2F3qeQScICgXSi8hghsv7o62jmvDwn5KNAApoQH41WfqI_3FJB13Yp1OwfKOOyrp01RUislrYivoLY6r7KpJ-2Fj52GbMGplhQCatpYw2Vd7LdeTLD9Xxol5gLya8D6qi-2Fq4ihlXjlWw-2BUtAYfXlJFZrQ-2FtcylAIY-2Bi0F20l1Vcn7XsAIK-2B9GWOGHMF-2BS5u3Qdw8jM1NsstbGk1QZhFPfEe5FGt0f9DZUAzMcnEFXsujAYuStAQY0BP23gD1PgZ0pd9rzagV5CxqtQDd9EisYaBVZ4Cfq9Gio2eP-2Frb6PekVUbxRSr-2BtqI3rR7FyZKVWc6E-2BZWllmAtruLSM0R2LEuhKjQ7tz-2FlBc4QbShAA29omR5B0TQrM-2Bir7mHQQLxs2-2Fct1nkwER9OPNyD3olbCKKi4ZUh42kd90F7Kr9Nzg5Z7odvipoo-2FYtDRRDTpK83UMBvLBwWElXZ0m2ljYckB5F8-2ByDy76Iz9Ws8HQCfKFK3AwHq5bpGR3eSofP70mz48uAcwjAYsSeLQzBcE-2BsY-2Bcv-2FGjm2YKJzN6QfokVp3uYDHfFTDIS4qWLqNm0hRyYaj3KGMrVi2IFvlMovmGiiymupbNy7nCGy9RO4zFixeYlRWAMJuJWPPYJLr7Zl6OXbMa1Qx-2F-2B9mmDUEyisbR54Z4QZlL3-2BwtAaEbjmZ58q8UNr6Kz1-2FSTffX1wEjEisJUnfca0PMXKxHZ1luWeeLspFRltVd-2BIJpaUIPuQrE8oBu7IVML2714BDvomcLWZX2RpGNusJeNXbmb8Mk5qCNirYoAJLPEUsiZHistvVw1SQiU2tk9nIVBSdI5WX6mCmZxy0SP0xA9RI0XB2LZentKjh2fuG4ehll1QZ2r5bLDnwDCkYXhXNufPWuN2Uqs5fZ0-2FtY-2BvV4KIYbn-2FizE1BAza2SL1VQJK5DREY89hqfSsViseJTEq8-2B4TZoU-2BeHytjKU6aLONCSEf9cw9YuvI6M-2FaV1tpjfiGDGZTwSo5OLkbMFSzd4SYz2ErLlojFi-2BH2a3WdyGHvOwsNa0qK-2BkCQkWP76-2FogQvg4TlEGmo0OnLrt-2Bbu8M5sLSkXxCXl6hhlOxwcF1ywbwKoPRyIEtqan9PyhectnsHedp1jUeuRoPoPUn6kOAIqV3BxVkGFI0umwEn5neTZckhI0vnjIuTmIf3XzZgGh8-2BubsknqGjyKCqLA3xSyYlzj-2BJb-2FxdEqLV0ONj-2BRNvCJMw-3D-3D]\n\nA smartphone beside a restaurant menu on a café table, suggesting photo\ntranslation while traveling.\n[https://persistent.oaistatic.com/notifications/email_content/l2-usecase-emails-global-creative-compressed/email_l2_non_wau_us_translate_anything_your_way_20260520__email_image_compressed.jpg]\n\nChatGPT can help translate what's in front of you and explain details that\nmatter. Ask follow-ups so the answer fits the moment.\n\nWas this email useful?\n\nUseful\n[https://chatgpt.com/backend-api/notifications/feedback?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X3VzZXJfaWQiOiJ1c2VyLWJhQ1ZCOVhsUXF4T3pudkcwMzNSYmU0ZCIsInNvbGljaXRhdGlvbl9pZCI6IjZhZGQ1ZDI1MGY5YzgxOTFhM2Y0MmZiZGFjNGUwNTc4Iiwic3VibWlzc2lvbl9pZCI6IjM2YmY2NDk2LWIyNDAtNDAxZi1iNDg2LTFiODhlMTE3NzUzOCIsInByb2R1Y2VyX3N5c3RlbSI6ImNhbXBhaWducyIsInByb2R1Y2VyX3JlZmVyZW5jZV9pZCI6ImwyLXVzZS1jYXNlLW1sLXRvcGljLWVtYWlsLWNtYWItY2FtcGFpZ24iLCJjb250ZW50X3JlZmVyZW5jZV9pZCI6InRleHQtb25seS1lbWFpbCIsImNoYW5uZWwiOiJlbWFpbCIsInN1cmZhY2UiOiJlbWFpbC5mb290ZXIiLCJxdWVzdGlvbl9pZCI6Im5vdGlmaWNhdGlvbl91c2VmdWxuZXNzX3YwIiwib3B0aW9uX2lkIjoidXNlZnVsIiwiYWxsb3dlZF9vcHRpb25faWRzIjpbInVzZWZ1bCIsIm5vdF91c2VmdWwiXSwiaWF0IjoxNzkyODk1Nzk5LCJleHAiOjE3OTM1MDA1OTl9.ZyqtBYY_-a-lo9VLBXsGJAPxdUb4urEK8r33md_z1zA&entry_id=f75f4573-17ee-47e5-975f-ec5ab9d46e20&deep_link_id=58529811-47fa-451a-8bb4-87b6ee010fb5&auth_modal=1&login_hint=tuningsai%40gmail.com&utm_campaign=EML_L2_TOPIC_ML_CTR_CMAB_V1&utm_medium=email&utm_source=sendgrid]\nNot useful\n[https://chatgpt.com/backend-api/notifications/feedback?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X3VzZXJfaWQiOiJ1c2VyLWJhQ1ZCOVhsUXF4T3pudkcwMzNSYmU0ZCIsInNvbGljaXRhdGlvbl9pZCI6IjZhZGQ1ZDI1MGY5YzgxOTFhM2Y0MmZiZGFjNGUwNTc4Iiwic3VibWlzc2lvbl9pZCI6IjQwYzBjN2RmLWMwZGItNDBlZC1iNWJmLTYzNjhjZTRhMWNjMCIsInByb2R1Y2VyX3N5c3RlbSI6ImNhbXBhaWducyIsInByb2R1Y2VyX3JlZmVyZW5jZV9pZCI6ImwyLXVzZS1jYXNlLW1sLXRvcGljLWVtYWlsLWNtYWItY2FtcGFpZ24iLCJjb250ZW50X3JlZmVyZW5jZV9pZCI6InRleHQtb25seS1lbWFpbCIsImNoYW5uZWwiOiJlbWFpbCIsInN1cmZhY2UiOiJlbWFpbC5mb290ZXIiLCJxdWVzdGlvbl9pZCI6Im5vdGlmaWNhdGlvbl91c2VmdWxuZXNzX3YwIiwib3B0aW9uX2lkIjoibm90X3VzZWZ1bCIsImFsbG93ZWRfb3B0aW9uX2lkcyI6WyJ1c2VmdWwiLCJub3RfdXNlZnVsIl0sImlhdCI6MTc5Mjg5NTc5OSwiZXhwIjoxNzkzNTAwNTk5fQ.Oshc7ar4b5mr9oW4ilkHiaPCLBWB1V4p_2lDxo7pQ3E&entry_id=f75f4573-17ee-47e5-975f-ec5ab9d46e20&deep_link_id=a7ff1eff-0260-4a0a-81cb-95f0dcbb62cd&auth_modal=1&login_hint=tuningsai%40gmail.com&utm_campaign=EML_L2_TOPIC_ML_CTR_CMAB_V1&utm_medium=email&utm_source=sendgrid]\n\nChatGPT Logo\n[https://cdn.mcauto-images-production.sendgrid.net/d4ef4a73d51fe844/23791e46-5717-4e4f-a33c-0cc5ba7cf5aa/176x45.png]\nhttps://r.openai.com/ls/click?upn=u001.I-2FaYIbqhsKngReUOKrmuweHw7Fh75qLKlFhai32cOrtVBp6HLOXV-2BfEc9lpemYyT2bali03vxV0BsjZ0v84epFCTJvMXqrwrwZN2n2FMuaAfWWnOyJ2rTIQesoHlPYNIN0ByCQIiNr5kd2FynmkttVpIhIH-2BKiaGHHBugse-2Bbr-2FbSbi-2B1KFPGwnwL6TPTpTdRv0QONCWDl0O8EWiIZCG-2BtWcRdscCW0qqx5HAvo0Oxs7x-2Bc5XaLjpAzzZIx9U94lBQjHQOtG7e6LGktCKbpExlN-2BtiZcQ-2BvBrKxxqjttaeNzpfGUX-2Bp4-2FK8YpCq38hQUiw39azxwDHr20whozAjpnQ-3D-3Dwdvj_3FJB13Yp1OwfKOOyrp01RUislrYivoLY6r7KpJ-2Fj52GbMGplhQCatpYw2Vd7LdeTLD9Xxol5gLya8D6qi-2Fq4ihlXjlWw-2BUtAYfXlJFZrQ-2FtcylAIY-2Bi0F20l1Vcn7XsAIK-2B9GWOGHMF-2BS5u3Qdw8jM1NsstbGk1QZhFPfEe5FGt0f9DZUAzMcnEFXsujAYuStAQY0BP23gD1PgZ0pd9rzagV5CxqtQDd9EisYaBVZ4Cfq9Gio2eP-2Frb6PekVUbxRSr-2BtqI3rR7FyZKVWc6E-2BZWllmAtruLSM0R2LEuhKjQ7tz-2FlBc4QbShAA29omR5B0TQrM-2Bir7mHQQLxs2-2Fct1nkwER9OPNyD3olbCKKi4ZUh42kd90F7Kr9Nzg5Z7odvipoo-2FYtDRRDTpK83UMBvLBwWElXZ0m2ljYckB5F8-2ByDy76Iz9Ws8HQCfKFK3AwHq5bpGR3eSofP70mz48uAcwjAYsSeLQzBcE-2BsY-2Bcv-2FGjm2YKJzN6QfokVp3uYDHfFTDIS4qWLqNm0hRyYaj3KGMrVi2IFvlMovmGiiymupbNy7nCGy9RO4zFixeYlRWAMJuJWPPYJLr7Zl6OXbMa1Qx-2F-2B9mmDUEyisbR54Z4QZlL3-2BwtAaEbjmZ58q8UNr6Kz1-2FSTffX1wEjEisJUnfca0PMXKxHZ1luWeeLspFRltVd-2BIJpaUIPuQrE8oBu7IVML2714BDvomcLWZX2RpGNusJeNXbmb8Mk5qCNirYoAJLPEUsiZHistvVw1SQiU2tk9nIVBSdI5WX6mCmZxy0SP0xA9RI0XB2LZentKjh2fuG4ehll1QZ2r5bLDnwDCkYXhXNufPWuN2Uqs5fZ0-2FtY-2BvV4KIYbn-2FizE1BAza2SL1VQJK5DREY89hqfSsViseJTEq8-2B4TZoU-2BeHytjKU6aLONCSEf9cw9YuvI6M-2FaV1tpjfiGDGZTwSo5OLkbMFSzd4SYz2ErLlojFi-2BH2a3WdyGHvOwsNa0qK-2BkCQkWP76-2FogQvjW-2FTN-2Ftl29QlxQz9Bj7F1aBSuu2He9EKyR-2B9wWp8ZO-2Fldwo0vv8c3dxI92b4YpsMzmkEewmk2919-2F42fBO6FLqX-2FLBsG6BeZfGAWiYMM4jlzjzByp-2F-2BZ4VmKiR7dHUt-2FEUl7u-2B64YdmtlwQSjY-2B89OXcVZngPVvFBom9wSLCrxQg-3D-3D\n\nOpenAI\n1455 3rd Street\nSan Francisco, CA 94158\nUnsubscribe\n[https://r.openai.com/asm/unsubscribe/?user_id=108370056&data=Za3_J_oa0ehaNPy4ZfloEfDriHPd9RMBt0koANYNfhpoMDAwdTAwMFJ95AuXKvSIDTIiyac4y99NMgtG8jmPjNmCpEbU7S-x1ylsaZb7B3QyVtJkIJqJkF1YdsdkVpqBx_wROsiOqSyu1gk-rswl48x2-RinCOMgFAlWFv5qPS55Fs-k2wC_9_Gw9T5br35gAjRNzmJGK4AF7b6W0IHbfpQdcdf_SVXwWTQpXn-77zW78B4OPdLHIjLS2yofIQlQ9tg7LWlnRBk8GOkX5pleN4NeKlAayMkFEc8f8zLyP4WgkQowVYi93YvEqW9kphvDA3nW8YrRFNJiFU0G1aDpTSbapGEZhlnx0699ZlKicwy1_zcs1D5tVZEWOcc2JJ08BX3d0_Vege9IF94Qebe-weyFh3DmWL1SFeQCqhFdC6MIEsz7BkZztPwcc1GhlWw5L8y9yK8rRsng0mwp8Qn-CCX53BlbuJ8hhEgvjm490mmVNtXO9_mFkhcgTz6AYDohTP6ZYFO7Iurinl3jjPweRurJ5MLufB0RBTljaEYxvJNs8qcpk9U74gcGGv1TGsKTZKdzLOAsGt_UhrSF2AndsOzAxS5XFkbhl-bXxToKMXrphAVMzzsGu-9ELQ5c6xrVuEytAs93CsjoiUABtidxWrJ08pfAmTDLmXFKxw1rvJyQDFRs2h0fleOB1IsGQXpH5De4HqNmcJzCDwMjNxQyIrrwKcHaaWhb_oLnHAjL2jD8aGzYDkSq4dAYqrWB1OnqORg5Yu1Akms1No3rA-RKHItDtlaNhGVVs3md69P9zNK1ln5Tvd1fBwm8XOlipAubcNkmUtv5glzIK_Ss41HwMDSdjWR_TdxLX6zXOSGS9fwlG2VKy1phOEgfgRKlzUakUwSihHDhdoxggGRDYI8PifRY-vN_ad463fMsJZjfMo_YW0831mZ58-M2vHhHdHqHJ_rqrgI0GFH_dbXNt-4jaCcpI3fEO3BwZZTli45CWJwqQwq9aDAMriYWL6YvKoVAvxM5_g3oR8mFtiEFu0xNcx1f0ECSYrAmcnJaPTjEyAiT2f0wSxFQ_gDYUIPGslL6YSecpzniX-UOPnHB_00gKU4ZWhUCFUZjh9IMbvRYtU0Uf_VYXP4VrLylDMM7WIWmHKYQQ4jTeIec_hF5sE42jhlNkFVu6uNeugoiWRbajicjZrbeD8FyMpoOHvWSwdTesIZCkTWFQ_HgIpdNibY1nmQvo-jKJJMpAQ8F27anMqfV6FnPO1ZbGSRjpcvupS-B5eBifTyGzlPPjUCwiecMXK7Y7OzSirwT5qebEyHKn2WJrMbxRmUBzom4Kx13xnXBQgbnyCOfceXRRcjMdoFe04Vsm6c6eOy_v1Si1pgwbk2T3POd0WFgOqMY_Aus3jZTyWHXXEPYRQA=]\nPrivacy\n[https://r.openai.com/ls/click?upn=u001.I-2FaYIbqhsKngReUOKrmuwdFPmDaqS0juGoYmsKbfgYfwqExqW26D5AgK66Z85ve44Wnp0Hw3nl7gYerZVcyzc0QNKtR-2FiuWH4vkucseVGNRYh-2B8koyUo0m-2F5N1LKNRAY3gAVJZ1QqcpmSqicIAhQYiEEMJaRf1mf-2FRj-2B2o2AbbIqqXRB-2FmfxPZcGuDRGJuNWp9L5_3FJB13Yp1OwfKOOyrp01RUislrYivoLY6r7KpJ-2Fj52GbMGplhQCatpYw2Vd7LdeTLD9Xxol5gLya8D6qi-2Fq4ihlXjlWw-2BUtAYfXlJFZrQ-2FtcylAIY-2Bi0F20l1Vcn7XsAIK-2B9GWOGHMF-2BS5u3Qdw8jM1NsstbGk1QZhFPfEe5FGt0f9DZUAzMcnEFXsujAYuStAQY0BP23gD1PgZ0pd9rzagV5CxqtQDd9EisYaBVZ4Cfq9Gio2eP-2Frb6PekVUbxRSr-2BtqI3rR7FyZKVWc6E-2BZWllmAtruLSM0R2LEuhKjQ7tz-2FlBc4QbShAA29omR5B0TQrM-2Bir7mHQQLxs2-2Fct1nkwER9OPNyD3olbCKKi4ZUh42kd90F7Kr9Nzg5Z7odvipoo-2FYtDRRDTpK83UMBvLBwWElXZ0m2ljYckB5F8-2ByDy76Iz9Ws8HQCfKFK3AwHq5bpGR3eSofP70mz48uAcwjAYsSeLQzBcE-2BsY-2Bcv-2FGjm2YKJzN6QfokVp3uYDHfFTDIS4qWLqNm0hRyYaj3KGMrVi2IFvlMovmGiiymupbNy7nCGy9RO4zFixeYlRWAMJuJWPPYJLr7Zl6OXbMa1Qx-2F-2B9mmDUEyisbR54Z4QZlL3-2BwtAaEbjmZ58q8UNr6Kz1-2FSTffX1wEjEisJUnfca0PMXKxHZ1luWeeLspFRltVd-2BIJpaUIPuQrE8oBu7IVML2714BDvomcLWZX2RpGNusJeNXbmb8Mk5qCNirYoAJLPEUsiZHistvVw1SQiU2tk9nIVBSdI5WX6mCmZxy0SP0xA9RI0XB2LZentKjh2fuG4ehll1QZ2r5bLDnwDCkYXhXNufPWuN2Uqs5fZ0-2FtY-2BvV4KIYbn-2FizE1BAza2SL1VQJK5DREY89hqfSsViseJTEq8-2B4TZoU-2BeHytjKU6aLONCSEf9cw9YuvI6M-2FaV1tpjfiGDGZTwSo5OLkbMFSzd4SYz2ErLlojFi-2BH2a3WdyGHvOwsNa0qK-2BkCQkWP76-2FogQvin04Js0wyZrfsfzXJG5gvHXmbSmuN8vfMlPGflNoQeDhNw4pViD1rrTz7E6gjcK1cvffUeAr6zH-2BLWew08JKKIN7XSUXlNe7IURF7ARaZxgdrNV5j7wpSKv-2Fqmgbf8IUfBApQTPDVbz79HDsMypSiTSV-2FnrjDQ9X6VJZLScmKMxA-3D-3D]\n· Terms\n[https://r.openai.com/ls/click?upn=u001.I-2FaYIbqhsKngReUOKrmuwYaDqPngOSPu6GkRbe5tnRM9OIAhQskX37vJyi-2FSYhQOMPcjhPTG0XvT-2FjgARYqaEZVIV8tRosZLtGix-2Fq8RF7twzJIrKmk-2FLK8ESUdgeQfv3zELyKeAiwhJ0YQYo2wPBvslPQZIpmiXhEWJGN9LvzQ-3DP5ye_3FJB13Yp1OwfKOOyrp01RUislrYivoLY6r7KpJ-2Fj52GbMGplhQCatpYw2Vd7LdeTLD9Xxol5gLya8D6qi-2Fq4ihlXjlWw-2BUtAYfXlJFZrQ-2FtcylAIY-2Bi0F20l1Vcn7XsAIK-2B9GWOGHMF-2BS5u3Qdw8jM1NsstbGk1QZhFPfEe5FGt0f9DZUAzMcnEFXsujAYuStAQY0BP23gD1PgZ0pd9rzagV5CxqtQDd9EisYaBVZ4Cfq9Gio2eP-2Frb6PekVUbxRSr-2BtqI3rR7FyZKVWc6E-2BZWllmAtruLSM0R2LEuhKjQ7tz-2FlBc4QbShAA29omR5B0TQrM-2Bir7mHQQLxs2-2Fct1nkwER9OPNyD3olbCKKi4ZUh42kd90F7Kr9Nzg5Z7odvipoo-2FYtDRRDTpK83UMBvLBwWElXZ0m2ljYckB5F8-2ByDy76Iz9Ws8HQCfKFK3AwHq5bpGR3eSofP70mz48uAcwjAYsSeLQzBcE-2BsY-2Bcv-2FGjm2YKJzN6QfokVp3uYDHfFTDIS4qWLqNm0hRyYaj3KGMrVi2IFvlMovmGiiymupbNy7nCGy9RO4zFixeYlRWAMJuJWPPYJLr7Zl6OXbMa1Qx-2F-2B9mmDUEyisbR54Z4QZlL3-2BwtAaEbjmZ58q8UNr6Kz1-2FSTffX1wEjEisJUnfca0PMXKxHZ1luWeeLspFRltVd-2BIJpaUIPuQrE8oBu7IVML2714BDvomcLWZX2RpGNusJeNXbmb8Mk5qCNirYoAJLPEUsiZHistvVw1SQiU2tk9nIVBSdI5WX6mCmZxy0SP0xA9RI0XB2LZentKjh2fuG4ehll1QZ2r5bLDnwDCkYXhXNufPWuN2Uqs5fZ0-2FtY-2BvV4KIYbn-2FizE1BAza2SL1VQJK5DREY89hqfSsViseJTEq8-2B4TZoU-2BeHytjKU6aLONCSEf9cw9YuvI6M-2FaV1tpjfiGDGZTwSo5OLkbMFSzd4SYz2ErLlojFi-2BH2a3WdyGHvOwsNa0qK-2BkCQkWP76-2FogQvgfP8xvBOg2UW6mSc9uuknwQY5In8HBeObJroioJAs7344y-2FnFeFtogob-2BrhZqrNCoHiwBSsiwFfbLoV0mhRB1-2FXqFH33wxlVhLFlhhpiYXI4OP2-2BcVBtfvkKec6rTenmMm4vJsl4xNZD7XTNCMJensy3u19FWD9xX9oce9i7QvEw-3D-3D]\nOpenAI © 2015–2026\n\nGet it on Google Play\n[http://cdn.mcauto-images-production.sendgrid.net/d4ef4a73d51fe844/f0bb62f0-5199-4600-a341-38aa871bde57/240x80.png]\nhttps://r.openai.com/ls/click?upn=u001.I-2FaYIbqhsKngReUOKrmuwYBa-2BGFcXGeGbwcZIhpg-2FH1pc6X2duY0-2Fz3LF-2BpeGLeWmkTfxpouE7rs0nUGSMQpqUhry-2FFbVqtt-2F2iMOVVLfE-2BB8Rd-2FEm1jvc0cer3MMzSamrNKRkB2cBC4cNmdghgUm4-2B-2FylOBrUwdVEFvmnjv2V9Qa-2BM6sfHvJzetg4BnXTOGGapsUj7xle9n5gr8xlbCaGw4dtnawIqMMu67Knf51PEV3l-2FtGKJHpwQ1Zb25GO-2B-2BHLuxBRgBgG8rQh0Z9yrslIj3TDbDUZD-2B0Y9loDSTXTrEquk9gzTIa6kAxNHyzfOggBSg_3FJB13Yp1OwfKOOyrp01RUislrYivoLY6r7KpJ-2Fj52GbMGplhQCatpYw2Vd7LdeTLD9Xxol5gLya8D6qi-2Fq4ihlXjlWw-2BUtAYfXlJFZrQ-2FtcylAIY-2Bi0F20l1Vcn7XsAIK-2B9GWOGHMF-2BS5u3Qdw8jM1NsstbGk1QZhFPfEe5FGt0f9DZUAzMcnEFXsujAYuStAQY0BP23gD1PgZ0pd9rzagV5CxqtQDd9EisYaBVZ4Cfq9Gio2eP-2Frb6PekVUbxRSr-2BtqI3rR7FyZKVWc6E-2BZWllmAtruLSM0R2LEuhKjQ7tz-2FlBc4QbShAA29omR5B0TQrM-2Bir7mHQQLxs2-2Fct1nkwER9OPNyD3olbCKKi4ZUh42kd90F7Kr9Nzg5Z7odvipoo-2FYtDRRDTpK83UMBvLBwWElXZ0m2ljYckB5F8-2ByDy76Iz9Ws8HQCfKFK3AwHq5bpGR3eSofP70mz48uAcwjAYsSeLQzBcE-2BsY-2Bcv-2FGjm2YKJzN6QfokVp3uYDHfFTDIS4qWLqNm0hRyYaj3KGMrVi2IFvlMovmGiiymupbNy7nCGy9RO4zFixeYlRWAMJuJWPPYJLr7Zl6OXbMa1Qx-2F-2B9mmDUEyisbR54Z4QZlL3-2BwtAaEbjmZ58q8UNr6Kz1-2FSTffX1wEjEisJUnfca0PMXKxHZ1luWeeLspFRltVd-2BIJpaUIPuQrE8oBu7IVML2714BDvomcLWZX2RpGNusJeNXbmb8Mk5qCNirYoAJLPEUsiZHistvVw1SQiU2tk9nIVBSdI5WX6mCmZxy0SP0xA9RI0XB2LZentKjh2fuG4ehll1QZ2r5bLDnwDCkYXhXNufPWuN2Uqs5fZ0-2FtY-2BvV4KIYbn-2FizE1BAza2SL1VQJK5DREY89hqfSsViseJTEq8-2B4TZoU-2BeHytjKU6aLONCSEf9cw9YuvI6M-2FaV1tpjfiGDGZTwSo5OLkbMFSzd4SYz2ErLlojFi-2BH2a3WdyGHvOwsNa0qK-2BkCQkWP76-2FogQvivEbWd0gG1Uo-2BAVH6YDQqU-2BpE3TchRowDF-2F4ULYPmY2Lfy5tOYFEOlqJz8HiL45KGcd6-2FA4bDMauGBjzRmXKTm-2F9Izd7o6TQlK-2Bj0FPvJgvn28Tg-2BTaQQr-2FG9fp93W19-2BHjW9aztU0Ogt51Ogo-2FrEDJ7eL8-2BiD5dRHd6Axb8P-2BoA-3D-3D\nDownload on the App Store\n[http://cdn.mcauto-images-production.sendgrid.net/d4ef4a73d51fe844/7556e4e9-fd26-44ce-b5db-098b33274c20/240x80.png]\nhttps://r.openai.com/ls/click?upn=u001.I-2FaYIbqhsKngReUOKrmuwYWte-2BeK-2FyKj-2FOqgK2UtFoGAaO7eBUt8soQ5BGC2EfVtC95MFGma9I8358veyKD4ktYKawjBtcLA-2FOnLUTbdoJuTknazAK-2BQ-2FB8O9F7U4NaAnzY0wtZqRcjKo9rGJBetWDzanFP2rp3EAYDLT6vtMUtVrBlblxjpUcMIn0isQEfmxh6t_3FJB13Yp1OwfKOOyrp01RUislrYivoLY6r7KpJ-2Fj52GbMGplhQCatpYw2Vd7LdeTLD9Xxol5gLya8D6qi-2Fq4ihlXjlWw-2BUtAYfXlJFZrQ-2FtcylAIY-2Bi0F20l1Vcn7XsAIK-2B9GWOGHMF-2BS5u3Qdw8jM1NsstbGk1QZhFPfEe5FGt0f9DZUAzMcnEFXsujAYuStAQY0BP23gD1PgZ0pd9rzagV5CxqtQDd9EisYaBVZ4Cfq9Gio2eP-2Frb6PekVUbxRSr-2BtqI3rR7FyZKVWc6E-2BZWllmAtruLSM0R2LEuhKjQ7tz-2FlBc4QbShAA29omR5B0TQrM-2Bir7mHQQLxs2-2Fct1nkwER9OPNyD3olbCKKi4ZUh42kd90F7Kr9Nzg5Z7odvipoo-2FYtDRRDTpK83UMBvLBwWElXZ0m2ljYckB5F8-2ByDy76Iz9Ws8HQCfKFK3AwHq5bpGR3eSofP70mz48uAcwjAYsSeLQzBcE-2BsY-2Bcv-2FGjm2YKJzN6QfokVp3uYDHfFTDIS4qWLqNm0hRyYaj3KGMrVi2IFvlMovmGiiymupbNy7nCGy9RO4zFixeYlRWAMJuJWPPYJLr7Zl6OXbMa1Qx-2F-2B9mmDUEyisbR54Z4QZlL3-2BwtAaEbjmZ58q8UNr6Kz1-2FSTffX1wEjEisJUnfca0PMXKxHZ1luWeeLspFRltVd-2BIJpaUIPuQrE8oBu7IVML2714BDvomcLWZX2RpGNusJeNXbmb8Mk5qCNirYoAJLPEUsiZHistvVw1SQiU2tk9nIVBSdI5WX6mCmZxy0SP0xA9RI0XB2LZentKjh2fuG4ehll1QZ2r5bLDnwDCkYXhXNufPWuN2Uqs5fZ0-2FtY-2BvV4KIYbn-2FizE1BAza2SL1VQJK5DREY89hqfSsViseJTEq8-2B4TZoU-2BeHytjKU6aLONCSEf9cw9YuvI6M-2FaV1tpjfiGDGZTwSo5OLkbMFSzd4SYz2ErLlojFi-2BH2a3WdyGHvOwsNa0qK-2BkCQkWP76-2FogQvhBVCROmGNDmv-2BMvoNy9969j3sHkGBlDX02u7eo42JcmTzegw-2F3JohnSvF11fyANliE3sIAIrBzZfpRTdjvje2tdaQ0mld0gY7mNvLjotLnMwArH5aeKBD7klh2j2F1XGCEoY-2FR2Bmi65ykymX0vt1j0VoO9U-2FiB-2FedVCVdE3WWWg-3D-3D\n\n[https://r.openai.com/wf/open?upn=u001.k7yXK5pgCWSnUu-2FU5rQd-2FLXzbD805GDXqkWfDtxcCqNiJGzBHsVz8-2FFx36Jza6uMskGq7RBnOUThooFPMLQuM1smOFnabWErv0s7m-2F6g8cjSQYwwwxARa0Uk8yTL36qwUU9D-2FRxDFdOavqSFwgdK9QxutgHvw02RvxCbtqp2KlA55nWpgOjDx1fF0dGbIWLvfpfdmlg4Q0RDy7KdwVxAQYTMSaXbSmPWffW-2B9-2BHYjCidnOZ5qvfFtGeBMUP69NdQOvnqWw1dJmJinssLyBOJGJ9L2dKPUf7VcVH9nt7k5p0qf9ialqW4Xxc7i1vsmjX79jZRuy6-2FjUSCqQnDs8b6ZnqWDCQvthMXzM1BO755kBHkJOG8cpzO9hr4xZyadkN9-2B85iEZj57VX-2FcXR9OwEMpJwzKpLUlcVB6orAVyTO6d9aWnSrBMIZgFjTfc72Lpcp1Qt7ZvHyl5eO8HIE8e1YA3suf5dCt0Yr3lUR7t0V4FSpMK2T6llnsg2o9dm3655WUDEAdXhUCQg2rhr7eAyE84aexZW36ZjxR9Gyotbmo-2BjbJn4IlQvTVLi-2F0wGOXSZy1gB5XKoqQ4xEp9qOpqCbkFHo4YNuE0jFLim1zZDtWK9-2F6tzQcTBLu59tZLw92vAfJE0kH2ZfSOkvx7CeyHyxyd3yTBWyss3Yw4ubCR0YwNHYg8FcxNTU-2F3o5SdTvYgrB0QsnMsVoaMjqsyRHwA4eX19HcEsBS3qfMMs1jP7UMUelvRzZQrEIvj7ol9gkiGmR8s46Lm-2BaE3Uk1iZbj0UL7YLfz0zJXyn2XyffFETrIFsMZcL29gWDw73VAl-2FrpKTF-2FKJlYLq-2FQ-2BdftX1Qc9MJTa0yt5cnR5P-2BjzFLddzmKPY6MZ9TaWxDiAsEAOEd2KSqZGd-2B6hfRob36Gs-2BQWTMQv4-2Bn5C8sN3YWrJwBZM-2FmGvasW7aFG-2BY6vmmCEsiFRUxg37QMiEVmLhEuItQSVCrTuUZwrkHsEzyp5tk9ZgWUO3W0OcUDrETY6PeQ7DbrPjZHFUJyN-2Fbs9UpbBq0kWsTgduKsigFua2WB9jQXBWC11erGXi6gYlSOg1gSz-2F27Rv9Egw8oh06rnDMh-2FbHF21c-2FxoUq8-2Bll7cIcXEe6c-2F85n5DPSZ49vc8G3vu5U66JBssYpNVmb6OmkCap-2BL3QHgLvGMduKRjvoLBEarTZefHqvxM-3D]",
+      "attachments": [],
+      "isDemo": false,
+      "companyName": "Email LLC",
+      "isWasteProposal": true,
+      "category": "New Proposal / RFP",
+      "urgency": "High",
+      "status": "pending_approval",
+      "gmailDraftSynced": true,
+      "aiAnalysis": {
+        "relevanceScore": 99,
+        "relevanceReason": "Matched waste management RFQ and contract scope.",
+        "executiveSummary": [
+          "Email LLC needs waste collection at Ghala & Rusayl.",
+          "Collect general waste 3× weekly and cardboard weekly; remove 2 skips monthly.",
+          "12 months from 1 Nov 2026. Please submit quotation prior to deadline."
+        ],
+        "extractedDetails": {
+          "wasteStreamsLabel": "General + cardboard",
+          "siteLocationsLabel": "Ghala & Rusayl",
+          "binsVolumeLabel": "8 × 1,100 L; 2 × 6 m³",
+          "contractDurationLabel": "12 months from 1 Nov 2026",
+          "estimatedMonthlyValue": "2,129 OMR/month"
+        },
+        "usedProvider": "Built-in Smart Waste-AI Engine"
+      },
+      "draft": {
+        "from": "tuningsai@gmail.com",
+        "to": "noreply@email.openai.com",
+        "cc": "",
+        "subject": "Quotation | Ghala & Rusayl waste collection",
+        "tonePreset": "Accept & Send Quotation",
+        "body": "Dear ChatGPT,\n\nThank you for your RFQ. We are pleased to quote for your Ghala & Rusayl facilities for 12 months from 1 Nov 2026.\n\n• General waste · 6 bins × 208: 1,248.000 OMR\n• Cardboard · 2 bins × 240.500: 481.000 OMR\n• 6 m³ skips · 2 lifts × 200: 400.000 OMR\nTotal · excluding VAT: 2,129 OMR/month\n\nGeneral waste: 3× weekly; cardboard: weekly; skips: 2 lifts/month. Payment: 30 days. Please confirm to arrange mobilisation.\n\nKind regards, Tuning AI\nGeneral Manager · PGS Oman",
+        "lastUpdatedAt": "2026-10-25T05:26:00.025Z"
+      }
+    },
+    {
       "id": "msg-1792843164089-348-618",
       "messageId": "<6adc7e63.edd81e09.1943c9.1338.GMR@mx.google.com>",
       "fromName": "Mail Delivery Subsystem",
@@ -1063,6 +1269,41 @@
   ],
   "socialPosts": [
     {
+      "id": "social-1792909938717",
+      "createdAt": "2026-10-25T06:32:18.717Z",
+      "prompt": "Generate an image of petrolium waste management",
+      "status": "draft",
+      "platforms": [
+        "linkedin",
+        "instagram"
+      ],
+      "visualConfig": {
+        "templateStyle": "executive-emerald",
+        "aspectRatio": "1:1",
+        "categoryBadge": "OPERATIONAL EXCELLENCE",
+        "headline": "Generate an image of petrolium waste management",
+        "subheadline": "Certified Skip Collection, RoRo Haulage & Turnkey Environmental Compliance",
+        "highlights": [
+          "Be’ah & EA Licensed Contractor",
+          "24/7 GPS-Tracked Fleet SLA",
+          "ISO 14001 & 45001 Certified"
+        ],
+        "sceneIllustration": "fleet-trucks",
+        "uploadedPhotos": []
+      },
+      "linkedinCaption": "At PGS Oman — Premier Green Environmental & Waste Management LLC, we are committed to setting the benchmark for industrial waste management across the Sultanate of Oman. 🇴🇲♻️\n\n📌 Spotlight: Generate an image of petrolium waste management\n\n✅ Be’ah & EA Licensed Contractor\n✅ 24/7 GPS-Tracked Fleet SLA\n✅ ISO 14001 & 45001 Certified\n\n📞 Contact our Contracts Desk: +968 2450 8800 / +968 9900 1234 | proposals@pgsoman.com",
+      "instagramCaption": "Generate an image of petrolium waste management 🚛♻️🇴🇲\n\nGenerate an image of petrolium waste management!\n\n🔹 Be’ah & EA Licensed Contractor\n🔹 24/7 GPS-Tracked Fleet SLA\n🔹 ISO 14001 & 45001 Certified\n\n📩 DM us or email proposals@pgsoman.com for a fast quotation!",
+      "hashtags": [
+        "#PGSOman",
+        "#WasteManagementOman",
+        "#OmanVision2040",
+        "#BeahCompliance",
+        "#SustainableOman",
+        "#MuscatBusiness"
+      ],
+      "usedProvider": "Built-in Smart Social Marketing AI"
+    },
+    {
       "id": "social-demo-1",
       "createdAt": "2026-10-21T17:32:52.976Z",
       "prompt": "Showcase our new fleet of 30 CBM RoRo containers and chain-lift skip trucks deployed at Sohar Freezone & Rusayl Industrial Estate for 24/7 industrial waste management.",
@@ -1134,6 +1375,38 @@
     }
   ],
   "syncHistory": [
+    {
+      "timestamp": "2026-10-26T15:04:30.239Z",
+      "fetchedCount": 1,
+      "proposalsFound": 1,
+      "accountsSynced": [
+        "tuningsai@gmail.com"
+      ]
+    },
+    {
+      "timestamp": "2026-10-26T12:33:29.737Z",
+      "fetchedCount": 1,
+      "proposalsFound": 0,
+      "accountsSynced": [
+        "tuningsai@gmail.com"
+      ]
+    },
+    {
+      "timestamp": "2026-10-25T05:33:02.278Z",
+      "fetchedCount": 1,
+      "proposalsFound": 1,
+      "accountsSynced": [
+        "tuningsai@gmail.com"
+      ]
+    },
+    {
+      "timestamp": "2026-10-25T05:26:02.361Z",
+      "fetchedCount": 1,
+      "proposalsFound": 1,
+      "accountsSynced": [
+        "tuningsai@gmail.com"
+      ]
+    },
     {
       "timestamp": "2026-10-24T11:59:28.490Z",
       "fetchedCount": 1,

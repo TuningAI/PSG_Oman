@@ -20,6 +20,13 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 20 * 1024 * 1024 } });
 
+process.on('uncaughtException', (err) => {
+  console.warn('[Server uncaughtException handled]', err?.message || err);
+});
+process.on('unhandledRejection', (reason) => {
+  console.warn('[Server unhandledRejection handled]', reason);
+});
+
 app.use(cors());
 app.use(express.json({ limit: '25mb' }));
 
@@ -742,6 +749,62 @@ app.delete('/api/social/:id', (req, res) => {
       socialPosts: db.socialPosts,
       stats: computeStats(db.emails, db.socialPosts),
     });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 16. Chat with EVE Virtual Assistant
+app.post('/api/chat', async (req, res) => {
+  try {
+    const db = getDb();
+    const { message = '', lang = 'en' } = req.body;
+    const lower = message.toLowerCase().trim();
+
+    const pendingEmails = (db.emails || []).filter((e) => e.status === 'pending_approval' && e.isWasteProposal);
+    const totalEmails = (db.emails || []).length;
+    const isAr = lang === 'ar' || /[\u0600-\u06FF]/.test(message);
+
+    let reply = '';
+    if (lower.includes('proposal') || lower.includes('email') || lower.includes('pending') || lower.includes('طلب') || lower.includes('عروض') || lower.includes('بريد')) {
+      if (isAr) {
+        reply = `لديك حالياً ${pendingEmails.length} طلبات عروض أسعار بانتظار الاعتماد من إجمالي ${totalEmails} بريد تم استلامه. تشمل الطلبات الرئيسية: ${pendingEmails.slice(0, 3).map((e) => e.companyName).join('، ')}. يمكنك مراجعتها والرد عليها مباشرة من تبويب إدارة البريد.`;
+      } else {
+        reply = `You currently have ${pendingEmails.length} proposal requests waiting for manager approval out of ${totalEmails} collected emails. Recent clients include: ${pendingEmails.slice(0, 3).map((e) => e.companyName).join(', ')}. Would you like me to guide you to their details?`;
+      }
+    } else if (lower.includes('fleet') || lower.includes('truck') || lower.includes('skip') || lower.includes('roro') || lower.includes('اسطول') || lower.includes('شاحن') || lower.includes('حاوي')) {
+      if (isAr) {
+        reply = `أسطول شركة PGS عمان مجهز بحاويات RoRo سعة 30 متر مكعب للمشاريع الكبرى وحاويات سكيب سعة 7 متر مكعب، مع شاحنات رافعة سلاسل وصهاريج صرف صحي معتمدة، مع ضمان استبدال الحاويات خلال 24 ساعة في مسقط وصحار والدقم.`;
+      } else {
+        reply = `PGS Oman's fleet operates 30 CBM heavy-duty RoRo containers for industrial sites, 7 CBM skip containers with chain-lift trucks, and vacuum tankers, backed by our guaranteed 24-hour container swap SLA across Muscat, Sohar, and Duqm.`;
+      }
+    } else if (lower.includes('iso') || lower.includes('beah') || lower.includes("be'ah") || lower.includes('license') || lower.includes('بيئة') || lower.includes('ترخيص')) {
+      if (isAr) {
+        reply = `جميع خدماتنا معتمدة ومرخصة بالكامل من شركة "بيئة" (Be'ah) وهيئة البيئة العمانية، كما نوفر شهادات تحويل وتدوير رسمية متوافقة مع معايير ISO 14001 وESG لجميع عملائنا شهرياً.`;
+      } else {
+        reply = `PGS Oman holds full operational permits from Be'ah and the Environment Authority of Oman. We issue official monthly ESG & ISO 14001 Recycling Diversion Certificates for corporate and industrial partners.`;
+      }
+    } else if (lower.includes('price') || lower.includes('pricing') || lower.includes('rate') || lower.includes('سعر') || lower.includes('اسعار')) {
+      if (isAr) {
+        reply = `تعتمد أسعار عقود جمع النفايات على سعة الحاويات ومعدل الرفع وموقع المنشأة. على سبيل المثال، يبلغ متوسط عقد 8 حاويات عادية وحاويتي سكيب في مسقط حوالي 2,129 ر.ع شهرياً شامل الرسوم والشهادات الرسمية.`;
+      } else {
+        reply = `Our commercial waste collection contracts are based on container volume and collection frequency. For example, standard contracts in Muscat industrial zones average around 1,800 to 2,500 OMR/month including Be'ah compliance manifests.`;
+      }
+    } else if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey') || lower.includes('مرحبا') || lower.includes('اهلا')) {
+      if (isAr) {
+        reply = `مرحباً بك! أنا إيف (EVE)، مساعدتك الذكية لإدارة النفايات في سلطنة عمان. كيف يمكنني مساعدتك اليوم؟`;
+      } else {
+        reply = `Hello! I am EVE, your PGS Oman intelligent operations assistant. How can I assist you with your emails, fleet, or client proposals today?`;
+      }
+    } else {
+      if (isAr) {
+        reply = `أنا هنا لمساعدتك في كل ما يتعلق بإدارة عروض الأسعار، وتفاصيل أسطول الشاحنات، والامتثال لشركة بيئة، والردود الذكية على العملاء. هل تود الاستفسار عن الطلبات المعلقة أو عروض الأسعار؟`;
+      } else {
+        reply = `I am here to assist with proposal approvals, waste collection fleet tracking, Be'ah regulatory compliance, and draft email responses. Feel free to ask about any pending RFPs or operations!`;
+      }
+    }
+
+    res.json({ reply, timestamp: new Date().toISOString() });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
