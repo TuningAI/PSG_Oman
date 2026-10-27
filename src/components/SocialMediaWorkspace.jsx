@@ -22,6 +22,10 @@ import {
   X,
   FileImage,
   Layers,
+  Mic,
+  MicOff,
+  Save,
+  FileText,
 } from 'lucide-react';
 
 const CAMPAIGN_PRESETS = [
@@ -307,8 +311,147 @@ export default function SocialMediaWorkspace({
   const fileInputRef = useRef(null);
   const [posterDataUrl, setPosterDataUrl] = useState('');
 
+  // Generated Post Text Content state (with tabs, manual edit, and 1-click copy)
+  const [activeContentTab, setActiveContentTab] = useState('linkedin'); // 'linkedin' | 'instagram'
+  const [editablePostText, setEditablePostText] = useState('');
+  const [isTextEdited, setIsTextEdited] = useState(false);
+  const [copiedStatus, setCopiedStatus] = useState(false);
+
+  // Speech Recognition (Voice Input Mic) state
+  const [isListening, setIsListening] = useState(false);
+  const recognitionRef = useRef(null);
+
   const selectedPost =
     socialPosts.find((p) => p.id === selectedPostId) || socialPosts[0] || null;
+
+  // Sync post content text when selected post or platform content tab changes
+  useEffect(() => {
+    if (!selectedPost) {
+      setEditablePostText('');
+      setIsTextEdited(false);
+      return;
+    }
+    if (activeContentTab === 'linkedin') {
+      setEditablePostText(selectedPost.linkedinCaption || '');
+    } else {
+      const igText = selectedPost.instagramCaption || '';
+      const tags = Array.isArray(selectedPost.hashtags)
+        ? selectedPost.hashtags.join(' ')
+        : selectedPost.hashtags || '';
+      setEditablePostText(tags ? `${igText}\n\n${tags}` : igText);
+    }
+    setIsTextEdited(false);
+  }, [selectedPostId, activeContentTab, socialPosts]);
+
+  const handleTextChange = (e) => {
+    setEditablePostText(e.target.value);
+    setIsTextEdited(true);
+  };
+
+  const handleCopyCurrentContent = () => {
+    if (!editablePostText) {
+      showToast('No generated post text to copy yet.', 'warning');
+      return;
+    }
+    navigator.clipboard.writeText(editablePostText);
+    setCopiedStatus(true);
+    setTimeout(() => setCopiedStatus(false), 2200);
+    showToast('Generated post text copied to clipboard!', 'success');
+  };
+
+  const handleSavePostContent = async () => {
+    if (!selectedPost) return;
+    try {
+      const payload = {};
+      if (activeContentTab === 'linkedin') {
+        payload.linkedinCaption = editablePostText;
+      } else {
+        payload.instagramCaption = editablePostText;
+      }
+
+      const res = await fetch(`/api/social/${selectedPost.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to save edits');
+
+      onUpdateSocialPosts(data.socialPosts, data.stats);
+      setIsTextEdited(false);
+      showToast('Post content updated and saved!', 'success');
+    } catch (err) {
+      showToast(err.message, 'error');
+    }
+  };
+
+  // Toggle Voice Input (Mic)
+  const handleToggleVoiceInput = () => {
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      showToast('Voice recognition is not supported in this browser. Please use Chrome or Edge.', 'warning');
+      return;
+    }
+
+    if (isListening) {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+      setIsListening(false);
+      return;
+    }
+
+    try {
+      const recognition = new SpeechRecognition();
+      recognitionRef.current = recognition;
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US';
+
+      recognition.onstart = () => {
+        setIsListening(true);
+        showToast('Listening... Speak your campaign prompt.', 'info');
+      };
+
+      recognition.onresult = (event) => {
+        const transcript = event.results?.[0]?.[0]?.transcript;
+        if (transcript) {
+          setPromptInput((prev) => (prev ? `${prev.trim()} ${transcript}` : transcript));
+          showToast('Voice prompt captured successfully!', 'success');
+        }
+        setIsListening(false);
+      };
+
+      recognition.onerror = (event) => {
+        console.warn('Speech recognition notice:', event.error);
+        setIsListening(false);
+        if (event.error === 'not-allowed') {
+          showToast('Microphone access blocked. Please permit microphone access.', 'error');
+        } else if (event.error !== 'no-speech') {
+          showToast(`Voice input notice: ${event.error}`, 'warning');
+        }
+      };
+
+      recognition.onend = () => {
+        setIsListening(false);
+      };
+
+      recognition.start();
+    } catch (err) {
+      console.error('Failed to initialize speech recognition:', err);
+      setIsListening(false);
+      showToast('Could not start microphone: ' + err.message, 'error');
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (settings?.socialAccounts) {
@@ -583,6 +726,17 @@ export default function SocialMediaWorkspace({
 
       onUpdateSocialPosts(data.socialPosts, data.stats);
       setSelectedPostId(data.post.id);
+      // Immediately display newly generated post text in the text box
+      if (activeContentTab === 'linkedin') {
+        setEditablePostText(data.post.linkedinCaption || '');
+      } else {
+        const ig = data.post.instagramCaption || '';
+        const tags = Array.isArray(data.post.hashtags)
+          ? data.post.hashtags.join(' ')
+          : data.post.hashtags || '';
+        setEditablePostText(tags ? `${ig}\n\n${tags}` : ig);
+      }
+      setIsTextEdited(false);
       setPromptInput('');
       setUploadedImages([]);
       showToast(data.message || 'Post & media successfully generated!', 'success');
@@ -759,51 +913,79 @@ export default function SocialMediaWorkspace({
       </div>
 
       {/* =========================================================================
-          MAIN MIDDLE CONTAINER (Large Outer Box in Wireframe Diagram)
+          MAIN MIDDLE CONTAINER (Generate Social Media Post Studio)
           ========================================================================= */}
       <div className="bg-white rounded-3xl border-2 border-slate-400/90 shadow-md p-6 lg:p-8 flex flex-col items-center">
+        {/* Header of the Post Generation Box */}
+        <div className="w-full pb-5 mb-6 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#06392A] to-[#047857] flex items-center justify-center shadow-md shadow-emerald-900/20 shrink-0">
+              <Sparkles className="w-5 h-5 text-amber-400" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight">
+                  Generate Social Media Post using AI
+                </h2>
+                <span className="px-2.5 py-0.5 rounded-full bg-amber-100 border border-amber-300 text-amber-900 text-[10px] font-extrabold uppercase tracking-wider">
+                  AI Studio
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 font-medium">
+                Create 1080×1080 branded media graphics with customized marketing captions for LinkedIn & Instagram
+              </p>
+            </div>
+          </div>
+
+          <div className="hidden sm:flex items-center gap-2">
+            <div className="px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200/80 text-xs text-emerald-800 font-bold flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Multi-Platform AI Engine</span>
+            </div>
+          </div>
+        </div>
         
-        {/* CENTER BOX: Generating Media.... */}
-        <div className="w-full max-w-xl mx-auto mb-6">
-          <div className="relative rounded-2xl border-2 border-slate-400 bg-slate-50 overflow-hidden shadow-inner flex flex-col items-center justify-center min-h-[340px] md:min-h-[380px]">
+        {/* CENTER BOX: Generating Media (Matching image aspect-ratio with small gap to boundary) */}
+        <div className="w-full max-w-[390px] sm:max-w-[420px] aspect-square mx-auto mb-5">
+          <div className="relative w-full h-full p-2.5 sm:p-3 rounded-2xl border-2 border-slate-400/90 bg-slate-100 shadow-sm overflow-hidden flex items-center justify-center">
             {generating ? (
               /* Generating State */
-              <div className="p-8 flex flex-col items-center justify-center text-center space-y-4">
+              <div className="w-full h-full rounded-xl bg-slate-50 border border-slate-200/80 p-6 flex flex-col items-center justify-center text-center space-y-3">
                 <div className="relative">
-                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/30 animate-pulse">
-                    <Loader2 className="w-10 h-10 text-white animate-spin" />
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-lg shadow-emerald-500/30 animate-pulse">
+                    <Loader2 className="w-8 h-8 text-white animate-spin" />
                   </div>
-                  <Sparkles className="w-6 h-6 text-amber-400 absolute -top-2 -right-2 animate-bounce" />
+                  <Sparkles className="w-5 h-5 text-amber-400 absolute -top-1.5 -right-1.5 animate-bounce" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-black text-slate-900 tracking-wide">
+                  <h3 className="text-base font-black text-slate-900 tracking-wide">
                     Generating Media....
                   </h3>
-                  <p className="text-xs text-slate-500 mt-1 max-w-xs">
-                    Designing 1080×1080 HD graphics with PGS Oman brand styling, certified fleet stamps, and executive captions...
+                  <p className="text-[11px] text-slate-500 mt-1 max-w-[220px]">
+                    Creating 1080×1080 HD graphics and marketing copy...
                   </p>
                 </div>
               </div>
             ) : posterDataUrl ? (
               /* Display Generated Media Image */
-              <div className="relative w-full h-full flex flex-col items-center justify-center group">
+              <div className="relative w-full h-full rounded-xl overflow-hidden shadow-sm bg-slate-900 group flex items-center justify-center">
                 <img
                   src={posterDataUrl}
-                  alt="Generating Media"
-                  className="max-h-[380px] w-auto object-contain rounded-xl shadow-md"
+                  alt="Generated Media"
+                  className="w-full h-full object-cover rounded-xl"
                 />
 
                 {/* Overlay Floating Badge and Actions */}
-                <div className="absolute top-3 left-3 bg-slate-950/80 backdrop-blur-md text-white text-[11px] font-extrabold px-3 py-1.5 rounded-lg border border-white/20 flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Generated Media (1080×1080 HD)</span>
+                <div className="absolute top-2.5 left-2.5 bg-slate-950/80 backdrop-blur-md text-white text-[10px] font-extrabold px-2.5 py-1 rounded-md border border-white/20 flex items-center gap-1.5 pointer-events-none">
+                  <Sparkles className="w-3 h-3 text-amber-400" />
+                  <span>1080×1080 HD</span>
                 </div>
 
-                <div className="absolute bottom-3 right-3 flex items-center gap-2 opacity-95 group-hover:opacity-100 transition">
+                <div className="absolute bottom-2.5 right-2.5 flex items-center gap-2 opacity-95 group-hover:opacity-100 transition">
                   <button
                     type="button"
                     onClick={() => handleDownloadPoster(selectedPost)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-lg transition"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-lg transition cursor-pointer"
                     title="Download HD PNG"
                   >
                     <Download className="w-3.5 h-3.5" />
@@ -813,49 +995,179 @@ export default function SocialMediaWorkspace({
               </div>
             ) : (
               /* Empty Ready State */
-              <div className="p-8 flex flex-col items-center justify-center text-center space-y-3">
-                <div className="w-16 h-16 rounded-2xl bg-emerald-100/80 text-emerald-700 flex items-center justify-center">
-                  <ImageIcon className="w-8 h-8" />
+              <div className="w-full h-full rounded-xl bg-slate-50 border border-slate-200/80 p-6 flex flex-col items-center justify-center text-center space-y-2.5">
+                <div className="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center shadow-xs">
+                  <ImageIcon className="w-7 h-7" />
                 </div>
-                <div className="text-base font-extrabold text-slate-800">
+                <div className="text-sm font-extrabold text-slate-800">
                   Generating Media....
                 </div>
-                <p className="text-xs text-slate-500 max-w-sm">
-                  Type your campaign idea below and attach reference photos to render high-resolution branded media for LinkedIn & Instagram.
+                <p className="text-[11px] text-slate-500 max-w-[240px] leading-relaxed">
+                  Enter prompt below or speak into mic to render high-resolution branded media with copy.
                 </p>
               </div>
             )}
           </div>
         </div>
 
-        {/* COMBINED HORIZONTAL BAR: [ Type prompt... ] + [ File Upload ] */}
+        {/* =========================================================================
+            GENERATED POST TEXT CONTENT BOX (Directly Below Image Generation Box)
+            Includes Copy Option & Manual Edit
+            ========================================================================= */}
+        <div className="w-full max-w-2xl mx-auto mb-6">
+          <div className="rounded-2xl border-2 border-slate-300 bg-white shadow-sm overflow-hidden transition focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-500/15">
+            {/* Header of Content Box */}
+            <div className="px-4 py-2.5 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <FileText className="w-4 h-4 text-emerald-700" />
+                <span className="text-xs font-black text-slate-800 uppercase tracking-wider">
+                  Generated Post Content
+                </span>
+                {/* Platform tabs */}
+                <div className="flex items-center gap-1 ms-2 bg-slate-200/70 p-0.5 rounded-lg text-[11px]">
+                  <button
+                    type="button"
+                    onClick={() => setActiveContentTab('linkedin')}
+                    className={`px-2.5 py-1 rounded-md font-bold transition cursor-pointer ${
+                      activeContentTab === 'linkedin'
+                        ? 'bg-[#0A66C2] text-white shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    LinkedIn
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveContentTab('instagram')}
+                    className={`px-2.5 py-1 rounded-md font-bold transition cursor-pointer ${
+                      activeContentTab === 'instagram'
+                        ? 'bg-gradient-to-r from-amber-500 to-pink-600 text-white shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    Instagram
+                  </button>
+                </div>
+              </div>
+
+              {/* Action Buttons: Copy & Save */}
+              <div className="flex items-center gap-2">
+                {isTextEdited && (
+                  <button
+                    type="button"
+                    onClick={handleSavePostContent}
+                    className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold shadow-xs transition cursor-pointer"
+                    title="Save your manual edits to this post"
+                  >
+                    <Save className="w-3.5 h-3.5" />
+                    <span>Save Edits</span>
+                  </button>
+                )}
+
+                <button
+                  type="button"
+                  onClick={handleCopyCurrentContent}
+                  className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-extrabold border transition cursor-pointer ${
+                    copiedStatus
+                      ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
+                      : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-300'
+                  }`}
+                  title="Copy generated post text to clipboard"
+                >
+                  {copiedStatus ? (
+                    <>
+                      <Check className="w-3.5 h-3.5 text-emerald-600" />
+                      <span>Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="w-3.5 h-3.5 text-slate-500" />
+                      <span>Copy Text</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Editable Text Area */}
+            <div className="p-3 relative">
+              <textarea
+                value={editablePostText}
+                onChange={handleTextChange}
+                placeholder={
+                  generating
+                    ? 'AI is generating post text content...'
+                    : 'Generated post text content will appear here with hashtags. You can also manually type or edit here directly...'
+                }
+                rows={4}
+                className="w-full text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 bg-transparent resize-y outline-none leading-relaxed font-sans"
+              />
+              <div className="mt-1 flex items-center justify-between text-[11px] text-slate-400 pt-1 border-t border-slate-100">
+                <span className="flex items-center gap-1 text-slate-500">
+                  <Edit3 className="w-3 h-3 text-emerald-600" />
+                  <span>Manually editable · Click above to edit captions or hashtags</span>
+                </span>
+                <span className="font-mono text-slate-500">
+                  {editablePostText.length} characters
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* COMBINED HORIZONTAL BAR: [ Type prompt... ] + [ Voice Mic ] + [ File Upload ] */}
         <div className="w-full max-w-3xl mb-5">
           <form onSubmit={handleGenerateCampaign} className="w-full">
-            <div className="flex items-center rounded-2xl border-2 border-slate-400 bg-white shadow-sm overflow-hidden p-1.5 focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-500/20 transition">
+            <div className="flex items-center rounded-2xl border-2 border-slate-400 bg-white shadow-sm overflow-hidden p-1.5 focus-within:border-emerald-600 focus-within:ring-2 focus-within:ring-emerald-500/20 transition gap-1.5">
               {/* Text Input: Type prompt... */}
               <input
                 type="text"
                 value={promptInput}
                 onChange={(e) => setPromptInput(e.target.value)}
-                placeholder="Type prompt..."
-                className="flex-1 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 outline-none bg-transparent"
+                placeholder={isListening ? 'Listening to voice prompt... speak now' : 'Type prompt or speak with mic...'}
+                className="flex-1 px-4 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 outline-none bg-transparent"
               />
 
               {/* Uploaded Photos Count Indicator if any */}
               {uploadedImages.length > 0 && (
-                <div className="flex items-center gap-1 bg-emerald-50 border border-emerald-300 px-2.5 py-1.5 rounded-lg text-emerald-800 text-xs font-bold mr-2">
+                <div className="flex items-center gap-1 bg-emerald-50 border border-emerald-300 px-2.5 py-1.5 rounded-lg text-emerald-800 text-xs font-bold shrink-0">
                   <FileImage className="w-3.5 h-3.5" />
                   <span>{uploadedImages.length} photo{uploadedImages.length > 1 ? 's' : ''}</span>
                   <button
                     type="button"
                     onClick={() => setUploadedImages([])}
-                    className="ml-1 hover:text-rose-600"
+                    className="ml-1 hover:text-rose-600 cursor-pointer"
                     title="Remove attached photos"
                   >
                     <X className="w-3 h-3" />
                   </button>
                 </div>
               )}
+
+              {/* Voice Input Mic Button */}
+              <button
+                type="button"
+                onClick={handleToggleVoiceInput}
+                className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-extrabold border shrink-0 transition cursor-pointer ${
+                  isListening
+                    ? 'bg-rose-500 hover:bg-rose-600 text-white border-rose-600 animate-pulse ring-2 ring-rose-400/40 shadow-sm'
+                    : 'bg-slate-100 hover:bg-emerald-50 text-slate-700 hover:text-emerald-800 border-slate-300'
+                }`}
+                title={isListening ? 'Listening... Click to stop voice input' : 'Talk the prompt using microphone'}
+                aria-label="Voice input prompt"
+              >
+                {isListening ? (
+                  <>
+                    <Mic className="w-4 h-4 text-white animate-bounce" />
+                    <span>Listening...</span>
+                  </>
+                ) : (
+                  <>
+                    <Mic className="w-4 h-4 text-emerald-700" />
+                    <span>Voice</span>
+                  </>
+                )}
+              </button>
 
               {/* File Upload Button (Inside the bar on the right side) */}
               <input
@@ -869,7 +1181,8 @@ export default function SocialMediaWorkspace({
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-extrabold border border-slate-300 shrink-0 transition"
+                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-extrabold border border-slate-300 shrink-0 transition cursor-pointer"
+                title="Upload image or reference photos"
               >
                 <Upload className="w-4 h-4 text-slate-600" />
                 <span>File Upload</span>

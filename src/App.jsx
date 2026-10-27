@@ -195,6 +195,114 @@ export default function App() {
     );
   };
 
+  // Movable / Draggable EVE Chatbot State & Drag Handlers
+  const [chatPos, setChatPos] = useState({ x: null, y: null });
+  const [isDraggingChat, setIsDraggingChat] = useState(false);
+  const dragStartRef = useRef({ startX: 0, startY: 0, initialX: 0, initialY: 0, hasMoved: false });
+
+  const handleChatPointerDown = (e) => {
+    // Only handle primary mouse click or touch
+    if (e.type === 'mousedown' && e.button !== 0) return;
+
+    const clientX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+    const clientY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+
+    const target = e.currentTarget;
+    const rect = target.getBoundingClientRect();
+
+    dragStartRef.current = {
+      startX: clientX,
+      startY: clientY,
+      initialX: rect.left,
+      initialY: rect.top,
+      hasMoved: false,
+    };
+    setIsDraggingChat(true);
+
+    const onPointerMove = (moveEvent) => {
+      const curX = moveEvent.type.startsWith('touch') ? moveEvent.touches[0].clientX : moveEvent.clientX;
+      const curY = moveEvent.type.startsWith('touch') ? moveEvent.touches[0].clientY : moveEvent.clientY;
+      const dx = curX - dragStartRef.current.startX;
+      const dy = curY - dragStartRef.current.startY;
+
+      if (Math.abs(dx) > 4 || Math.abs(dy) > 4) {
+        dragStartRef.current.hasMoved = true;
+      }
+
+      // Strictly clamp inside viewable screen (viewport) with safety margin
+      const padding = 16;
+      const minX = padding;
+      const maxX = Math.max(minX, window.innerWidth - rect.width - padding);
+      const minY = padding;
+      const maxY = Math.max(minY, window.innerHeight - rect.height - padding);
+
+      const rawX = dragStartRef.current.initialX + dx;
+      const rawY = dragStartRef.current.initialY + dy;
+
+      const newX = Math.max(minX, Math.min(maxX, rawX));
+      const newY = Math.max(minY, Math.min(maxY, rawY));
+
+      setChatPos({ x: newX, y: newY });
+    };
+
+    const onPointerUp = () => {
+      window.removeEventListener('mousemove', onPointerMove);
+      window.removeEventListener('mouseup', onPointerUp);
+      window.removeEventListener('touchmove', onPointerMove);
+      window.removeEventListener('touchend', onPointerUp);
+      setIsDraggingChat(false);
+
+      // Verify final placement is strictly inside viewable screen bounds
+      setChatPos((prev) => {
+        if (prev.x === null || prev.y === null) return prev;
+        const padding = 16;
+        const minX = padding;
+        const maxX = Math.max(minX, window.innerWidth - rect.width - padding);
+        const minY = padding;
+        const maxY = Math.max(minY, window.innerHeight - rect.height - padding);
+        return {
+          x: Math.max(minX, Math.min(maxX, prev.x)),
+          y: Math.max(minY, Math.min(maxY, prev.y)),
+        };
+      });
+    };
+
+    window.addEventListener('mousemove', onPointerMove);
+    window.addEventListener('mouseup', onPointerUp);
+    window.addEventListener('touchmove', onPointerMove, { passive: false });
+    window.addEventListener('touchend', onPointerUp);
+  };
+
+  const handleChatIconClick = () => {
+    if (dragStartRef.current.hasMoved) {
+      dragStartRef.current.hasMoved = false;
+      return;
+    }
+    setChatbotModalOpen((prev) => !prev);
+  };
+
+  // Keep chatbot strictly inside viewable area on window resize
+  useEffect(() => {
+    const handleResize = () => {
+      setChatPos((prev) => {
+        if (prev.x === null || prev.y === null) return prev;
+        const padding = 16;
+        const iconWidth = 64;
+        const iconHeight = 96;
+        const minX = padding;
+        const maxX = Math.max(minX, window.innerWidth - iconWidth - padding);
+        const minY = padding;
+        const maxY = Math.max(minY, window.innerHeight - iconHeight - padding);
+        return {
+          x: Math.max(minX, Math.min(maxX, prev.x)),
+          y: Math.max(minY, Math.min(maxY, prev.y)),
+        };
+      });
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   // Compute all synced Gmail accounts
   const syncedGmailAccounts = useMemo(() => {
     const g = settings?.gmail || {};
@@ -1858,40 +1966,49 @@ export default function App() {
         lang={lang}
       />
 
-      {/* Floating Main AI Assistant / Chatbot Action Button featuring EVE with Golden Light */}
-      {activeMainModule === 'email_assistant' && (
-        <div className="fixed bottom-6 end-6 z-40 flex items-center group">
-          {/* Floating Tooltip / Speech Bubble on hover */}
-          <div className="hidden sm:flex items-center gap-1.5 me-3 px-3.5 py-2 bg-slate-900/90 text-white text-xs font-bold rounded-2xl shadow-xl backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none translate-x-1 group-hover:translate-x-0 border border-amber-400/30">
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            <span>{isRtl ? 'إيف: كيف يمكنني مساعدتك؟' : 'EVE: How can I assist you?'}</span>
+      {/* Floating Main AI Assistant / Chatbot Action Button featuring EVE with Golden Light (Globally visible & draggable across all modules) */}
+      <div
+        style={
+          chatPos.x !== null
+            ? { left: `${chatPos.x}px`, top: `${chatPos.y}px`, right: 'auto', bottom: 'auto' }
+            : undefined
+        }
+        className={`fixed ${
+          chatPos.x === null ? 'bottom-6 end-6' : ''
+        } z-40 flex items-center select-none touch-none`}
+      >
+        {/* Floating Main EVE Assistant (Movable anywhere by click & drag / hold-press) */}
+        <button
+          type="button"
+          onMouseDown={handleChatPointerDown}
+          onTouchStart={handleChatPointerDown}
+          onClick={handleChatIconClick}
+          className={`relative flex flex-col items-center justify-center transition-transform duration-100 focus:outline-none ${
+            isDraggingChat ? 'cursor-grabbing scale-110' : 'cursor-grab hover:scale-115 active:scale-95'
+          }`}
+          aria-label="EVE AI Chatbot"
+        >
+          {/* Golden Ambient Light */}
+          <span
+            className={`absolute -inset-2.5 rounded-full blur-md transition-all duration-300 pointer-events-none ${
+              isDraggingChat ? 'bg-amber-400/50 scale-125' : 'bg-amber-400/20 hover:bg-amber-400/40'
+            }`}
+          />
+
+          {/* EVE Character Body with Float Animation */}
+          <div className={`relative w-12 h-19 sm:w-13 sm:h-20 flex items-center justify-center ${isDraggingChat ? '' : 'animate-eve-float'}`}>
+            <img
+              src={eveBurningParkAvatar || '/eve-burning-park.png'}
+              alt="EVE Main Assistant"
+              draggable={false}
+              className="w-full h-full object-contain filter drop-shadow-[0_4px_12px_rgba(245,158,11,0.5)] hover:drop-shadow-[0_6px_16px_rgba(245,158,11,0.75)] pointer-events-none select-none"
+            />
           </div>
 
-          {/* Floating Main EVE Assistant (Light aura only, no circle/sphere, no blinking, no plus badge) */}
-          <button
-            type="button"
-            onClick={() => setChatbotModalOpen(!chatbotModalOpen)}
-            title={isRtl ? 'المساعد الذكي إيف • انقر لبدء المحادثة' : 'EVE Virtual Assistant • Click to chat'}
-            className="relative flex flex-col items-center justify-center transition-all duration-200 cursor-pointer focus:outline-none hover:scale-115 active:scale-95"
-            aria-label="EVE AI Chatbot"
-          >
-            {/* Golden Ambient Light (Soft blur light only, identical to voice assistant style) */}
-            <span className="absolute -inset-2.5 rounded-full blur-md transition-all duration-300 pointer-events-none bg-amber-400/20 group-hover:bg-amber-400/40" />
-
-            {/* EVE Character Body with Float Animation */}
-            <div className="relative w-12 h-19 sm:w-13 sm:h-20 flex items-center justify-center animate-eve-float">
-              <img
-                src={eveBurningParkAvatar || '/eve-burning-park.png'}
-                alt="EVE Main Assistant"
-                className="w-full h-full object-contain filter drop-shadow-[0_4px_12px_rgba(245,158,11,0.5)] group-hover:drop-shadow-[0_6px_16px_rgba(245,158,11,0.75)] transition-all duration-200"
-              />
-            </div>
-
-            {/* 3D Contact Shadow under Levitating EVE */}
-            <span className="h-1.5 w-10 rounded-full bg-slate-900/20 blur-[1.5px] transition-all duration-200 mt-0.5 group-hover:w-11 group-hover:bg-amber-950/30" />
-          </button>
-        </div>
-      )}
+          {/* 3D Contact Shadow under Levitating EVE */}
+          <span className="h-1.5 w-10 rounded-full bg-slate-900/20 blur-[1.5px] transition-all duration-200 mt-0.5 hover:w-11 hover:bg-amber-950/30 pointer-events-none" />
+        </button>
+      </div>
 
       {/* Interactive EVE AI Chatbot Modal */}
       <EveChatbotModal

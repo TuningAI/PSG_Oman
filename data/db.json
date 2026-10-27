@@ -1269,6 +1269,41 @@
   ],
   "socialPosts": [
     {
+      "id": "social-1793081566008",
+      "createdAt": "2026-10-27T06:12:46.008Z",
+      "prompt": "generate an image",
+      "status": "draft",
+      "platforms": [
+        "linkedin",
+        "instagram"
+      ],
+      "visualConfig": {
+        "templateStyle": "executive-emerald",
+        "aspectRatio": "1:1",
+        "categoryBadge": "OPERATIONAL EXCELLENCE",
+        "headline": "generate an image",
+        "subheadline": "Certified Skip Collection, RoRo Haulage & Turnkey Environmental Compliance",
+        "highlights": [
+          "Be’ah & EA Licensed Contractor",
+          "24/7 GPS-Tracked Fleet SLA",
+          "ISO 14001 & 45001 Certified"
+        ],
+        "sceneIllustration": "fleet-trucks",
+        "uploadedPhotos": []
+      },
+      "linkedinCaption": "At PGS Oman — Premier Green Environmental & Waste Management LLC, we are committed to setting the benchmark for industrial waste management across the Sultanate of Oman. 🇴🇲♻️\n\n📌 Spotlight: generate an image\n\n✅ Be’ah & EA Licensed Contractor\n✅ 24/7 GPS-Tracked Fleet SLA\n✅ ISO 14001 & 45001 Certified\n\n📞 Contact our Contracts Desk: +968 2450 8800 / +968 9900 1234 | proposals@pgsoman.com",
+      "instagramCaption": "generate an image 🚛♻️🇴🇲\n\ngenerate an image!\n\n🔹 Be’ah & EA Licensed Contractor\n🔹 24/7 GPS-Tracked Fleet SLA\n🔹 ISO 14001 & 45001 Certified\n\n📩 DM us or email proposals@pgsoman.com for a fast quotation!",
+      "hashtags": [
+        "#PGSOman",
+        "#WasteManagementOman",
+        "#OmanVision2040",
+        "#BeahCompliance",
+        "#SustainableOman",
+        "#MuscatBusiness"
+      ],
+      "usedProvider": "Built-in Smart Social Marketing AI"
+    },
+    {
       "id": "social-1792909938717",
       "createdAt": "2026-10-25T06:32:18.717Z",
       "prompt": "Generate an image of petrolium waste management",
