@@ -1,19 +1,13 @@
 {
   "settings": {
     "gmail": {
-      "email": "tuningsai@gmail.com",
-      "appPassword": "upuc tmvx jcjr vmbn",
+      "email": "",
+      "appPassword": "",
       "autoSyncIntervalMinutes": 10,
       "syncToGmailDrafts": true,
       "maxEmailsPerSync": 15,
       "lastSyncedLabel": "09:42 GST",
-      "accounts": [
-        {
-          "id": "gmail-1",
-          "email": "tuningsai@gmail.com",
-          "appPassword": "upuc tmvx jcjr vmbn"
-        }
-      ]
+      "accounts": []
     },
     "ai": {
       "provider": "gemini",
@@ -104,6 +98,138 @@
     }
   },
   "emails": [
+    {
+      "id": "msg-1793166302917-356-692",
+      "messageId": "<22002814.26161211.1793147533281@lva2-app58297.prod.linkedin.com>",
+      "fromName": "LinkedIn",
+      "fromEmail": "messages-noreply@linkedin.com",
+      "toEmail": "tuningsai@gmail.com",
+      "syncedAccountEmail": "tuningsai@gmail.com",
+      "subject": "Raj Shamani, Founder, is popular in your network",
+      "receivedAt": "2026-10-28T00:32:13.000Z",
+      "bodyText": "Emza, add interesting content to your feed. Here are a few recommendations to get started.\n\n\nhttps://www.linkedin.com/comm/mynetwork/discovery-see-all/?usecase=EMAIL_MIXED_RECOMMENDATIONS&lipi=urn%3Ali%3Apage%3Aemail_email_edge_discover_01%3BX8jrIs%2B9ShS01HiLCXq6nA%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=2-Rzuibxtw1sw1&trk=eml-email_edge_discover_01-see_all-0-cta~text&trkEmail=eml-email_edge_discover_01-see_all-0-cta~text-null-qp7fa8~mvrdqp1x~3b-null-null&eid=qp7fa8-mvrdqp1x-3b&otpToken=OTBjZTY1MTMwYzRjZjBlMTYxZTVhZjcxMGE0YzI1ZDk3N2FhNjNmOGVlY2Q2YTViM2U5NTAzZWM1MDlkYThkMmQxYjBjZTk4YjQ2MmRjM2MzMWFhOGQ2ZDM2YzU1ODBmNGUzYmZlZjg1MmE2ZTUyYTQ1ZjdjYjFjM2JmMDI0OWFhYjFkNDkxMTFhZGM0YzNlODEsMiwx\n      \n\n----------------------------------------\n\nSee messages instantly with the app\nStay updated on new messages, job openings, and more.\nDownload for free: https://www.linkedinmobileapp.com/comm/feed/?appType=FLAGSHIP&lipi=urn%3Ali%3Apage%3Aemail_email_edge_discover_01%3BX8jrIs%2B9ShS01HiLCXq6nA%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=2-Rzuibxtw1sw1&trk=eml-email_edge_discover_01-smart~tile-0-app~download~cta&trkEmail=eml-email_edge_discover_01-smart~tile-0-app~download~cta-null-qp7fa8~mvrdqp1x~3b-null-null&eid=qp7fa8-mvrdqp1x-3b&otpToken=OTBjZTY1MTMwYzRjZjBlMTYxZTVhZjcxMGE0YzI1ZDk3N2FhNjNmOGVlY2Q2YTViM2U5NTAzZWM1MDlkYThkMmQxYjBjZTk4YjQ2MmRjM2MzMWFhOGQ2ZDM2YzU1ODBmNGUzYmZlZjg1MmE2ZTUyYTQ1ZjdjYjFjM2JmMDI0OWFhYjFkNDkxMTFhZGM0YzNlODEsMiwx\n\n----------------------------------------\n\nThis email was intended for Emza S S (Entrepreneur)\nLearn why we included this: https://www.linkedin.com/help/linkedin/answer/4788?lang=en&lipi=urn%3Ali%3Apage%3Aemail_email_edge_discover_01%3BX8jrIs%2B9ShS01HiLCXq6nA%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=2-Rzuibxtw1sw1&trk=eml-email_edge_discover_01-SecurityHelp-0-textfooterglimmer&trkEmail=eml-email_edge_discover_01-SecurityHelp-0-textfooterglimmer-null-qp7fa8~mvrdqp1x~3b-null-null&eid=qp7fa8-mvrdqp1x-3b&otpToken=OTBjZTY1MTMwYzRjZjBlMTYxZTVhZjcxMGE0YzI1ZDk3N2FhNjNmOGVlY2Q2YTViM2U5NTAzZWM1MDlkYThkMmQxYjBjZTk4YjQ2MmRjM2MzMWFhOGQ2ZDM2YzU1ODBmNGUzYmZlZjg1MmE2ZTUyYTQ1ZjdjYjFjM2JmMDI0OWFhYjFkNDkxMTFhZGM0YzNlODEsMiwx\nYou are receiving People You May Know notification emails.\n\n\nUnsubscribe: https://www.linkedin.com/comm/mypreferences/u/emailunsub?action=updateEmailSubscription&lipi=urn%3Ali%3Apage%3Aemail_email_edge_discover_01%3BX8jrIs%2B9ShS01HiLCXq6nA%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=2-Rzuibxtw1sw1&trk=eml-email_edge_discover_01-unsubscribe-0-textfooterglimmer&trkEmail=eml-email_edge_discover_01-unsubscribe-0-textfooterglimmer-null-qp7fa8~mvrdqp1x~3b-null-null&eid=qp7fa8-mvrdqp1x-3b&loid=AQFKnvdaFYTxhwAAAaF_6_YKceY-jevsfDdkzKMha2M13UusoePpAK3rxU4jpFSdkDh75_QWWE7M2TE274mxyPJv1G4fhJJCWqy6yjk-1w\nHelp: https://www.linkedin.com/help/linkedin/answer/67?lang=en&lipi=urn%3Ali%3Apage%3Aemail_email_edge_discover_01%3BX8jrIs%2B9ShS01HiLCXq6nA%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=2-Rzuibxtw1sw1&trk=eml-email_edge_discover_01-help-0-textfooterglimmer&trkEmail=eml-email_edge_discover_01-help-0-textfooterglimmer-null-qp7fa8~mvrdqp1x~3b-null-null&eid=qp7fa8-mvrdqp1x-3b&otpToken=OTBjZTY1MTMwYzRjZjBlMTYxZTVhZjcxMGE0YzI1ZDk3N2FhNjNmOGVlY2Q2YTViM2U5NTAzZWM1MDlkYThkMmQxYjBjZTk4YjQ2MmRjM2MzMWFhOGQ2ZDM2YzU1ODBmNGUzYmZlZjg1MmE2ZTUyYTQ1ZjdjYjFjM2JmMDI0OWFhYjFkNDkxMTFhZGM0YzNlODEsMiwx\n\n© 2026 LinkedIn Corporation, 1zwnj000 West Maude Avenue, Sunnyvale, CA 94085.\nLinkedIn and the LinkedIn logo are registered trademarks of LinkedIn.",
+      "attachments": [],
+      "isDemo": false,
+      "companyName": "Linkedin LLC",
+      "isWasteProposal": false,
+      "category": "Unrelated / Marketing",
+      "urgency": "Low",
+      "status": "filtered_out",
+      "gmailDraftSynced": false,
+      "aiAnalysis": {
+        "relevanceScore": 5,
+        "relevanceReason": "Not related to waste management proposals or extraction rules.",
+        "executiveSummary": [
+          "Automatically filtered out by AI: Unrelated marketing or non-proposal email."
+        ],
+        "extractedDetails": {},
+        "usedProvider": "Built-in Smart Waste-AI Engine"
+      },
+      "draft": null
+    },
+    {
+      "id": "msg-1793108719915-355-752",
+      "messageId": "<1588549146.22917273.1793108651452@lva2-app68386.prod.linkedin.com>",
+      "fromName": "LinkedIn",
+      "fromEmail": "notifications-noreply@linkedin.com",
+      "toEmail": "tuningsai@gmail.com",
+      "syncedAccountEmail": "tuningsai@gmail.com",
+      "subject": "Learn more about Spices Board India and discover other pages you might be…",
+      "receivedAt": "2026-10-27T13:44:11.000Z",
+      "bodyText": "Learn more about Spices Board India and discover other pages you might be interested in following.\nSee page detailshttps://www.linkedin.com/comm/suggested-for-you/follow-page/?vanityName=undefined&lipi=urn%3Ali%3Apage%3Aemail_email_notification_digest_01%3BvXJaQ1dyTkiY9A317BeIAQ%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=3Z4Gp5IMno0Iw1&trk=eml-email_notification_digest_01-notification_digest-0-FOLLOW_PAGE_HERO&trkEmail=eml-email_notification_digest_01-notification_digest-0-FOLLOW_PAGE_HERO-null-qp7fa8~mvqqldh3~gf-null-null-%2B5GoXoo1TlKRiyIfncflBA%3D%3D&eid=qp7fa8-mvqqldh3-gf&otpToken=M2U3NzI2MjZhNjBlZGE2Mzc1MWJjZThhYjhiMzYwZWM4Yzk4YWZlOGYyMzBmM2I4MjkzMjhmMmM4NTE2MGQxMWU5MTEwY2YwMmE1ODE4ZDMwZWNiYjRlYWM2ODM2N2UzMmY5OTZiMDQ2NjA1NDk0ZjE3OWMwN2ZjYjE3ZTRkN2IxOGQ0OTQxOWRmMGU0MmZmMDcsMiwx\n\nA job ad doesn’t have to be a perfect match for you to apply. Here's why.\nSee newsletter:https://www.linkedin.com/comm/feed/news/9551802?lipi=urn%3Ali%3Apage%3Aemail_email_notification_digest_01%3BvXJaQ1dyTkiY9A317BeIAQ%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=3Z4Gp5IMno0Iw1&trk=eml-email_notification_digest_01-notification_digest-0-EDITORIAL_BLAZE_INAPP&trkEmail=eml-email_notification_digest_01-notification_digest-0-EDITORIAL_BLAZE_INAPP-null-qp7fa8~mvqqldh3~gf-null-null-xVwB2KYoRqC%2ByCeNP2BWgg%3D%3D&eid=qp7fa8-mvqqldh3-gf&otpToken=M2U3NzI2MjZhNjBlZGE2Mzc1MWJjZThhYjhiMzYwZWM4Yzk4YWZlOGYyMzBmM2I4MjkzMjhmMmM4NTE2MGQxMWU5MTEwY2YwMmE1ODE4ZDMwZWNiYjRlYWM2ODM2N2UzMmY5OTZiMDQ2NjA1NDk0ZjE3OWMwN2ZjYjE3ZTRkN2IxOGQ0OTQxOWRmMGU0MmZmMDcsMiwx\n\n\n----------------------------------------\n\nSee messages instantly with the app\nStay updated on new messages, job openings, and more.\nDownload for free: https://www.linkedinmobileapp.com/comm/feed/?appType=FLAGSHIP&lipi=urn%3Ali%3Apage%3Aemail_email_notification_digest_01%3BvXJaQ1dyTkiY9A317BeIAQ%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=3Z4Gp5IMno0Iw1&trk=eml-email_notification_digest_01-smart~tile-0-app~download~cta&trkEmail=eml-email_notification_digest_01-smart~tile-0-app~download~cta-null-qp7fa8~mvqqldh3~gf-null-null&eid=qp7fa8-mvqqldh3-gf&otpToken=M2U3NzI2MjZhNjBlZGE2Mzc1MWJjZThhYjhiMzYwZWM4Yzk4YWZlOGYyMzBmM2I4MjkzMjhmMmM4NTE2MGQxMWU5MTEwY2YwMmE1ODE4ZDMwZWNiYjRlYWM2ODM2N2UzMmY5OTZiMDQ2NjA1NDk0ZjE3OWMwN2ZjYjE3ZTRkN2IxOGQ0OTQxOWRmMGU0MmZmMDcsMiwx\n\n----------------------------------------\n\nThis email was intended for Emza S S (Entrepreneur)\nLearn why we included this: https://www.linkedin.com/help/linkedin/answer/4788?lang=en&lipi=urn%3Ali%3Apage%3Aemail_email_notification_digest_01%3BvXJaQ1dyTkiY9A317BeIAQ%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=3Z4Gp5IMno0Iw1&trk=eml-email_notification_digest_01-SecurityHelp-0-textfooterglimmer&trkEmail=eml-email_notification_digest_01-SecurityHelp-0-textfooterglimmer-null-qp7fa8~mvqqldh3~gf-null-null&eid=qp7fa8-mvqqldh3-gf&otpToken=M2U3NzI2MjZhNjBlZGE2Mzc1MWJjZThhYjhiMzYwZWM4Yzk4YWZlOGYyMzBmM2I4MjkzMjhmMmM4NTE2MGQxMWU5MTEwY2YwMmE1ODE4ZDMwZWNiYjRlYWM2ODM2N2UzMmY5OTZiMDQ2NjA1NDk0ZjE3OWMwN2ZjYjE3ZTRkN2IxOGQ0OTQxOWRmMGU0MmZmMDcsMiwx\nYou are receiving LinkedIn notification emails.\n\n\nUnsubscribe: https://www.linkedin.com/comm/mypreferences/u/emailunsub?action=updateEmailSubscription&lipi=urn%3Ali%3Apage%3Aemail_email_notification_digest_01%3BvXJaQ1dyTkiY9A317BeIAQ%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=3Z4Gp5IMno0Iw1&trk=eml-email_notification_digest_01-unsubscribe-0-textfooterglimmer&trkEmail=eml-email_notification_digest_01-unsubscribe-0-textfooterglimmer-null-qp7fa8~mvqqldh3~gf-null-null&eid=qp7fa8-mvqqldh3-gf&loid=AQFzPRT_F4L8cAAAAaF9mqyvjmdhJSIWD1eGS-q5yWwAM1JiwsExQZV6_VUhZ-dCCmFQAEKt6WamPyYakhTPs8Sqzz8ST39FYzgIm3w\nHelp: https://www.linkedin.com/help/linkedin/answer/67?lang=en&lipi=urn%3Ali%3Apage%3Aemail_email_notification_digest_01%3BvXJaQ1dyTkiY9A317BeIAQ%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=3Z4Gp5IMno0Iw1&trk=eml-email_notification_digest_01-help-0-textfooterglimmer&trkEmail=eml-email_notification_digest_01-help-0-textfooterglimmer-null-qp7fa8~mvqqldh3~gf-null-null&eid=qp7fa8-mvqqldh3-gf&otpToken=M2U3NzI2MjZhNjBlZGE2Mzc1MWJjZThhYjhiMzYwZWM4Yzk4YWZlOGYyMzBmM2I4MjkzMjhmMmM4NTE2MGQxMWU5MTEwY2YwMmE1ODE4ZDMwZWNiYjRlYWM2ODM2N2UzMmY5OTZiMDQ2NjA1NDk0ZjE3OWMwN2ZjYjE3ZTRkN2IxOGQ0OTQxOWRmMGU0MmZmMDcsMiwx\n\n© 2026 LinkedIn Corporation, 1zwnj000 West Maude Avenue, Sunnyvale, CA 94085.\nLinkedIn and the LinkedIn logo are registered trademarks of LinkedIn.",
+      "attachments": [],
+      "isDemo": false,
+      "companyName": "Linkedin LLC",
+      "isWasteProposal": true,
+      "category": "New Proposal / RFP",
+      "urgency": "High",
+      "status": "pending_approval",
+      "gmailDraftSynced": true,
+      "aiAnalysis": {
+        "relevanceScore": 99,
+        "relevanceReason": "Matched waste management RFQ and contract scope.",
+        "executiveSummary": [
+          "Linkedin LLC needs waste collection at Ghala & Rusayl.",
+          "Collect general waste 3× weekly and cardboard weekly; remove 2 skips monthly.",
+          "12 months from 1 Nov 2026. Please submit quotation prior to deadline."
+        ],
+        "extractedDetails": {
+          "wasteStreamsLabel": "General + cardboard",
+          "siteLocationsLabel": "Ghala & Rusayl",
+          "binsVolumeLabel": "8 × 1,100 L; 2 × 6 m³",
+          "contractDurationLabel": "12 months from 1 Nov 2026",
+          "estimatedMonthlyValue": "2,129 OMR/month"
+        },
+        "usedProvider": "Built-in Smart Waste-AI Engine"
+      },
+      "draft": {
+        "from": "tuningsai@gmail.com",
+        "to": "notifications-noreply@linkedin.com",
+        "cc": "",
+        "subject": "Quotation | Ghala & Rusayl waste collection",
+        "tonePreset": "Accept & Send Quotation",
+        "body": "Dear LinkedIn,\n\nThank you for your RFQ. We are pleased to quote for your Ghala & Rusayl facilities for 12 months from 1 Nov 2026.\n\n• General waste · 6 bins × 208: 1,248.000 OMR\n• Cardboard · 2 bins × 240.500: 481.000 OMR\n• 6 m³ skips · 2 lifts × 200: 400.000 OMR\nTotal · excluding VAT: 2,129 OMR/month\n\nGeneral waste: 3× weekly; cardboard: weekly; skips: 2 lifts/month. Payment: 30 days. Please confirm to arrange mobilisation.\n\nKind regards, Tuning AI\nGeneral Manager · PGS Oman",
+        "lastUpdatedAt": "2026-10-27T13:45:21.332Z"
+      }
+    },
+    {
+      "id": "msg-1793104490432-354-194",
+      "messageId": "<1171648972.19523167.1793104331344@ltx1-app79211.prod.linkedin.com>",
+      "fromName": "LinkedIn",
+      "fromEmail": "messages-noreply@linkedin.com",
+      "toEmail": "tuningsai@gmail.com",
+      "syncedAccountEmail": "tuningsai@gmail.com",
+      "subject": "Information Technology Consultant: Accenture in India and Infosys are hiring",
+      "receivedAt": "2026-10-27T12:32:11.000Z",
+      "bodyText": "----------------------------------------\nHiring trends for Information Technology Consultant roles\n----------------------------------------\n\n\n+2%\n\nNew job openings in your country in the past week\n\nView job openingshttps://www.linkedin.com/comm/jobs/search/?keywords=Information+Technology+Consultant&geoId=0&lipi=urn%3Ali%3Apage%3Aemail_email_career_insights_01%3B58dywikIS1qD1t93rw6wOg%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=0SX1_0P7-g0Iw1&trk=eml-email_career_insights_01-main~module~text-0-view~job~openings~text&trkEmail=eml-email_career_insights_01-main~module~text-0-view~job~openings~text-null-qp7fa8~mvqo0r7t~x2-null-null&eid=qp7fa8-mvqo0r7t-x2&otpToken=YjYwMjQxMGEzZGJkZWY4OWFjMjExM2QzMjc5NmVkOGYxODc1NjNhZTk5ZGRlMDgzZWFkODhkZWM2MjcxOGQxODUzYmI1NzU4ZTFmZDk1NTcxMDhhNTA2YzdmZGFmMmY3NjBhNjY0MTVjNWY0MWZhYmVlZWQyYjcxODk2NGQ5OTYzNGJiYzY1MmEwZGM5NzQ4MDMsMiwx\n  \n\n\nCompanies with the most job openings in your role\n----------------------------------------\nAccenture in India\n203 job openings\n4M followers\n10,001+ employees\nView jobs\nhttps://www.linkedin.com/comm/jobs/search/?keywords=Information+Technology+Consultant&geoId=102713980&f_C=9215331&lipi=urn%3Ali%3Apage%3Aemail_email_career_insights_01%3B58dywikIS1qD1t93rw6wOg%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=0SX1_0P7-g0Iw1&trk=eml-email_career_insights_01-top~hiring~companies~1-0-link&trkEmail=eml-email_career_insights_01-top~hiring~companies~1-0-link-null-qp7fa8~mvqo0r7t~x2-null-null&eid=qp7fa8-mvqo0r7t-x2&otpToken=YjYwMjQxMGEzZGJkZWY4OWFjMjExM2QzMjc5NmVkOGYxODc1NjNhZTk5ZGRlMDgzZWFkODhkZWM2MjcxOGQxODUzYmI1NzU4ZTFmZDk1NTcxMDhhNTA2YzdmZGFmMmY3NjBhNjY0MTVjNWY0MWZhYmVlZWQyYjcxODk2NGQ5OTYzNGJiYzY1MmEwZGM5NzQ4MDMsMiwx\n  \nInfosys\n156 job openings\n12M followers\n10,001+ employees\nView jobs\nhttps://www.linkedin.com/comm/jobs/search/?keywords=Information+Technology+Consultant&geoId=102713980&f_C=1283&lipi=urn%3Ali%3Apage%3Aemail_email_career_insights_01%3B58dywikIS1qD1t93rw6wOg%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=0SX1_0P7-g0Iw1&trk=eml-email_career_insights_01-top~hiring~companies~2-0-link&trkEmail=eml-email_career_insights_01-top~hiring~companies~2-0-link-null-qp7fa8~mvqo0r7t~x2-null-null&eid=qp7fa8-mvqo0r7t-x2&otpToken=YjYwMjQxMGEzZGJkZWY4OWFjMjExM2QzMjc5NmVkOGYxODc1NjNhZTk5ZGRlMDgzZWFkODhkZWM2MjcxOGQxODUzYmI1NzU4ZTFmZDk1NTcxMDhhNTA2YzdmZGFmMmY3NjBhNjY0MTVjNWY0MWZhYmVlZWQyYjcxODk2NGQ5OTYzNGJiYzY1MmEwZGM5NzQ4MDMsMiwx\n  \n\nPeople with similar roles applied to these jobs\n----------------------------------------\nSales Executive\nCurwic Labs · Bengaluru (On-site)\nView\nhttps://www.linkedin.com/comm/jobs/view/4476088872/?lipi=urn%3Ali%3Apage%3Aemail_email_career_insights_01%3B58dywikIS1qD1t93rw6wOg%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=0SX1_0P7-g0Iw1&trk=eml-email_career_insights_01-top~jobs~applied~1-0-link&trkEmail=eml-email_career_insights_01-top~jobs~applied~1-0-link-null-qp7fa8~mvqo0r7t~x2-null-null&eid=qp7fa8-mvqo0r7t-x2&otpToken=YjYwMjQxMGEzZGJkZWY4OWFjMjExM2QzMjc5NmVkOGYxODc1NjNhZTk5ZGRlMDgzZWFkODhkZWM2MjcxOGQxODUzYmI1NzU4ZTFmZDk1NTcxMDhhNTA2YzdmZGFmMmY3NjBhNjY0MTVjNWY0MWZhYmVlZWQyYjcxODk2NGQ5OTYzNGJiYzY1MmEwZGM5NzQ4MDMsMiwx\n  \nBusiness Development Officer\nINTUISYZ TECHNOLOGIES Pvt. Ltd. · Kochi\nView\nhttps://www.linkedin.com/comm/jobs/view/4439316457/?lipi=urn%3Ali%3Apage%3Aemail_email_career_insights_01%3B58dywikIS1qD1t93rw6wOg%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=0SX1_0P7-g0Iw1&trk=eml-email_career_insights_01-top~jobs~applied~2-0-link&trkEmail=eml-email_career_insights_01-top~jobs~applied~2-0-link-null-qp7fa8~mvqo0r7t~x2-null-null&eid=qp7fa8-mvqo0r7t-x2&otpToken=YjYwMjQxMGEzZGJkZWY4OWFjMjExM2QzMjc5NmVkOGYxODc1NjNhZTk5ZGRlMDgzZWFkODhkZWM2MjcxOGQxODUzYmI1NzU4ZTFmZDk1NTcxMDhhNTA2YzdmZGFmMmY3NjBhNjY0MTVjNWY0MWZhYmVlZWQyYjcxODk2NGQ5OTYzNGJiYzY1MmEwZGM5NzQ4MDMsMiwx\n  \n\n\nImprove your recommendations\nUpdate your experience to receive relevant insights.\n          https://www.linkedin.com/comm/in/me/edit/?lipi=urn%3Ali%3Apage%3Aemail_email_career_insights_01%3B58dywikIS1qD1t93rw6wOg%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=0SX1_0P7-g0Iw1&trk=eml-email_career_insights_01-footer~cta~text-0-profile~edit&trkEmail=eml-email_career_insights_01-footer~cta~text-0-profile~edit-null-qp7fa8~mvqo0r7t~x2-null-null&eid=qp7fa8-mvqo0r7t-x2&otpToken=YjYwMjQxMGEzZGJkZWY4OWFjMjExM2QzMjc5NmVkOGYxODc1NjNhZTk5ZGRlMDgzZWFkODhkZWM2MjcxOGQxODUzYmI1NzU4ZTFmZDk1NTcxMDhhNTA2YzdmZGFmMmY3NjBhNjY0MTVjNWY0MWZhYmVlZWQyYjcxODk2NGQ5OTYzNGJiYzY1MmEwZGM5NzQ4MDMsMiwx\n\n----------------------------------------\n\nSee messages instantly with the app\nStay updated on new messages, job openings, and more.\nDownload for free: https://www.linkedinmobileapp.com/comm/feed/?appType=FLAGSHIP&lipi=urn%3Ali%3Apage%3Aemail_email_career_insights_01%3B58dywikIS1qD1t93rw6wOg%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=0SX1_0P7-g0Iw1&trk=eml-email_career_insights_01-smart~tile-0-app~download~cta&trkEmail=eml-email_career_insights_01-smart~tile-0-app~download~cta-null-qp7fa8~mvqo0r7t~x2-null-null&eid=qp7fa8-mvqo0r7t-x2&otpToken=YjYwMjQxMGEzZGJkZWY4OWFjMjExM2QzMjc5NmVkOGYxODc1NjNhZTk5ZGRlMDgzZWFkODhkZWM2MjcxOGQxODUzYmI1NzU4ZTFmZDk1NTcxMDhhNTA2YzdmZGFmMmY3NjBhNjY0MTVjNWY0MWZhYmVlZWQyYjcxODk2NGQ5OTYzNGJiYzY1MmEwZGM5NzQ4MDMsMiwx\n\n----------------------------------------\n\nThis email was intended for Emza S S (Entrepreneur)\nLearn why we included this: https://www.linkedin.com/help/linkedin/answer/4788?lang=en&lipi=urn%3Ali%3Apage%3Aemail_email_career_insights_01%3B58dywikIS1qD1t93rw6wOg%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=0SX1_0P7-g0Iw1&trk=eml-email_career_insights_01-SecurityHelp-0-textfooterglimmer&trkEmail=eml-email_career_insights_01-SecurityHelp-0-textfooterglimmer-null-qp7fa8~mvqo0r7t~x2-null-null&eid=qp7fa8-mvqo0r7t-x2&otpToken=YjYwMjQxMGEzZGJkZWY4OWFjMjExM2QzMjc5NmVkOGYxODc1NjNhZTk5ZGRlMDgzZWFkODhkZWM2MjcxOGQxODUzYmI1NzU4ZTFmZDk1NTcxMDhhNTA2YzdmZGFmMmY3NjBhNjY0MTVjNWY0MWZhYmVlZWQyYjcxODk2NGQ5OTYzNGJiYzY1MmEwZGM5NzQ4MDMsMiwx\nYou are receiving LinkedIn notification emails.\n\n\nUnsubscribe: https://www.linkedin.com/comm/mypreferences/u/emailunsub?action=updateEmailSubscription&lipi=urn%3Ali%3Apage%3Aemail_email_career_insights_01%3B58dywikIS1qD1t93rw6wOg%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=0SX1_0P7-g0Iw1&trk=eml-email_career_insights_01-unsubscribe-0-textfooterglimmer&trkEmail=eml-email_career_insights_01-unsubscribe-0-textfooterglimmer-null-qp7fa8~mvqo0r7t~x2-null-null&eid=qp7fa8-mvqo0r7t-x2&loid=AQHJV-FK4tyb7wAAAaF9WMCrprLe__I-uhUtFLojMw9-Rl_m3cqcqgz7k16DRju_oW_1zBfiNet88sN-gTLWXdY3eb3hQdhJXVo\nHelp: https://www.linkedin.com/help/linkedin/answer/67?lang=en&lipi=urn%3Ali%3Apage%3Aemail_email_career_insights_01%3B58dywikIS1qD1t93rw6wOg%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=0SX1_0P7-g0Iw1&trk=eml-email_career_insights_01-help-0-textfooterglimmer&trkEmail=eml-email_career_insights_01-help-0-textfooterglimmer-null-qp7fa8~mvqo0r7t~x2-null-null&eid=qp7fa8-mvqo0r7t-x2&otpToken=YjYwMjQxMGEzZGJkZWY4OWFjMjExM2QzMjc5NmVkOGYxODc1NjNhZTk5ZGRlMDgzZWFkODhkZWM2MjcxOGQxODUzYmI1NzU4ZTFmZDk1NTcxMDhhNTA2YzdmZGFmMmY3NjBhNjY0MTVjNWY0MWZhYmVlZWQyYjcxODk2NGQ5OTYzNGJiYzY1MmEwZGM5NzQ4MDMsMiwx\n\n© 2026 LinkedIn Corporation, 1zwnj000 West Maude Avenue, Sunnyvale, CA 94085.\nLinkedIn and the LinkedIn logo are registered trademarks of LinkedIn.",
+      "attachments": [],
+      "isDemo": false,
+      "companyName": "Linkedin LLC",
+      "isWasteProposal": false,
+      "category": "Unrelated / Marketing",
+      "urgency": "Low",
+      "status": "filtered_out",
+      "gmailDraftSynced": false,
+      "aiAnalysis": {
+        "relevanceScore": 5,
+        "relevanceReason": "Not related to waste management proposals or extraction rules.",
+        "executiveSummary": [
+          "Automatically filtered out by AI: Unrelated marketing or non-proposal email."
+        ],
+        "extractedDetails": {},
+        "usedProvider": "Built-in Smart Waste-AI Engine"
+      },
+      "draft": null
+    },
+    {
+      "id": "msg-1793094373248-353-890",
+      "messageId": "<236466234.5326983.1793094307673@ltx1-app93705.prod.linkedin.com>",
+      "fromName": "LinkedIn",
+      "fromEmail": "messages-noreply@linkedin.com",
+      "toEmail": "tuningsai@gmail.com",
+      "syncedAccountEmail": "tuningsai@gmail.com",
+      "subject": "Emza, Salman KM is waiting for your Zip puzzle answer ⏳",
+      "receivedAt": "2026-10-27T09:45:07.000Z",
+      "bodyText": "Can you solve this?\nConnect the dots in order and see how quickly you can fill the grid.\nSolve: https://www.linkedin.com/comm/games/zip?lipi=urn%3Ali%3Apage%3Aemail_email_games_discovery_social%3BPAF12Lw%2FSG%2BOaA%2BKPcpL5Q%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=1UDENsvRPF0sw1&trk=eml-email_games_discovery_social-null-0-games_solve_ragebait_zip_green&trkEmail=eml-email_games_discovery_social-null-0-games_solve_ragebait_zip_green-null-qp7fa8~mvqi1x1c~zi-null-null&eid=qp7fa8-mvqi1x1c-zi\n\n      \n\n----------------------------------------\n\nSee messages instantly with the app\nStay updated on new messages, job openings, and more.\nDownload for free: https://www.linkedinmobileapp.com/comm/feed/?appType=FLAGSHIP&lipi=urn%3Ali%3Apage%3Aemail_email_games_discovery_social%3BPAF12Lw%2FSG%2BOaA%2BKPcpL5Q%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=1UDENsvRPF0sw1&trk=eml-email_games_discovery_social-smart~tile-0-app~download~cta&trkEmail=eml-email_games_discovery_social-smart~tile-0-app~download~cta-null-qp7fa8~mvqi1x1c~zi-null-null&eid=qp7fa8-mvqi1x1c-zi\n\n----------------------------------------\n\nThis email was intended for Emza S S (Entrepreneur)\nLearn why we included this: https://www.linkedin.com/help/linkedin/answer/4788?lang=en&lipi=urn%3Ali%3Apage%3Aemail_email_games_discovery_social%3BPAF12Lw%2FSG%2BOaA%2BKPcpL5Q%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=1UDENsvRPF0sw1&trk=eml-email_games_discovery_social-SecurityHelp-0-textfooterglimmer&trkEmail=eml-email_games_discovery_social-SecurityHelp-0-textfooterglimmer-null-qp7fa8~mvqi1x1c~zi-null-null&eid=qp7fa8-mvqi1x1c-zi\nYou are receiving LinkedIn notification emails.\n\n\nUnsubscribe: https://www.linkedin.com/comm/mypreferences/u/emailunsub?action=updateEmailSubscription&lipi=urn%3Ali%3Apage%3Aemail_email_games_discovery_social%3BPAF12Lw%2FSG%2BOaA%2BKPcpL5Q%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=1UDENsvRPF0sw1&trk=eml-email_games_discovery_social-unsubscribe-0-textfooterglimmer&trkEmail=eml-email_games_discovery_social-unsubscribe-0-textfooterglimmer-null-qp7fa8~mvqi1x1c~zi-null-null&eid=qp7fa8-mvqi1x1c-zi&loid=AQF01HhMuZIZCAAAAaF8v83nHf0x2Vt1J02HI7qIRiVC8_At_3zgBfJgrQKOUFBorZZ1Cxy_f0-oSLm3YMZ3xeQ8vxD9zA\nHelp: https://www.linkedin.com/help/linkedin/answer/67?lang=en&lipi=urn%3Ali%3Apage%3Aemail_email_games_discovery_social%3BPAF12Lw%2FSG%2BOaA%2BKPcpL5Q%3D%3D&midToken=AQHoAQYH_HgxWA&midSig=1UDENsvRPF0sw1&trk=eml-email_games_discovery_social-help-0-textfooterglimmer&trkEmail=eml-email_games_discovery_social-help-0-textfooterglimmer-null-qp7fa8~mvqi1x1c~zi-null-null&eid=qp7fa8-mvqi1x1c-zi\n\n© 2026 LinkedIn Corporation, 1zwnj000 West Maude Avenue, Sunnyvale, CA 94085.\nLinkedIn and the LinkedIn logo are registered trademarks of LinkedIn.",
+      "attachments": [],
+      "isDemo": false,
+      "companyName": "Linkedin LLC",
+      "isWasteProposal": false,
+      "category": "Unrelated / Marketing",
+      "urgency": "Low",
+      "status": "filtered_out",
+      "gmailDraftSynced": false,
+      "aiAnalysis": {
+        "relevanceScore": 5,
+        "relevanceReason": "Not related to waste management proposals or extraction rules.",
+        "executiveSummary": [
+          "Automatically filtered out by AI: Unrelated marketing or non-proposal email."
+        ],
+        "extractedDetails": {},
+        "usedProvider": "Built-in Smart Waste-AI Engine"
+      },
+      "draft": null
+    },
     {
       "id": "msg-sim-1793040806031",
       "messageId": "<sim-1793040806031@client.om>",
@@ -1410,6 +1536,38 @@
     }
   ],
   "syncHistory": [
+    {
+      "timestamp": "2026-10-28T05:45:11.189Z",
+      "fetchedCount": 1,
+      "proposalsFound": 0,
+      "accountsSynced": [
+        "tuningsai@gmail.com"
+      ]
+    },
+    {
+      "timestamp": "2026-10-27T13:45:31.734Z",
+      "fetchedCount": 1,
+      "proposalsFound": 1,
+      "accountsSynced": [
+        "tuningsai@gmail.com"
+      ]
+    },
+    {
+      "timestamp": "2026-10-27T12:35:01.815Z",
+      "fetchedCount": 1,
+      "proposalsFound": 0,
+      "accountsSynced": [
+        "tuningsai@gmail.com"
+      ]
+    },
+    {
+      "timestamp": "2026-10-27T09:46:20.526Z",
+      "fetchedCount": 1,
+      "proposalsFound": 0,
+      "accountsSynced": [
+        "tuningsai@gmail.com"
+      ]
+    },
     {
       "timestamp": "2026-10-26T15:04:30.239Z",
       "fetchedCount": 1,

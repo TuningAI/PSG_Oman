@@ -125,7 +125,10 @@ export default function LoginPage({ onLogin, lang = 'en', onToggleLang }) {
       <main className="relative z-10 flex-1 flex items-center justify-center px-4 py-8">
         <div className="w-full max-w-[460px]">
           {/* Card Container */}
-          <div className="relative rounded-3xl bg-[#06392A]/85 backdrop-blur-2xl border-2 border-emerald-500/40 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.85)] p-7 sm:p-9 transition-all">
+          <div
+            id="tour-login-card"
+            className="relative rounded-3xl bg-[#06392A]/85 backdrop-blur-2xl border-2 border-emerald-500/40 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.85)] p-7 sm:p-9 transition-all"
+          >
             {/* Top Golden Crown Highlight Bar */}
             <div className="absolute top-0 left-8 right-8 h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent rounded-full shadow-[0_0_12px_rgba(245,158,11,0.6)]" />
 

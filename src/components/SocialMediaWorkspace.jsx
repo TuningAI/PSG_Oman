@@ -27,6 +27,8 @@ import {
   Save,
   FileText,
 } from 'lucide-react';
+import UserAccountDropdown from './UserAccountDropdown.jsx';
+import TopSettingsDropdown from './TopSettingsDropdown.jsx';
 
 const CAMPAIGN_PRESETS = [
   {
@@ -274,6 +276,19 @@ function drawGeneratedSceneIllustration(ctx, sceneType, x, y, w, h) {
 export default function SocialMediaWorkspace({
   socialPosts = [],
   settings,
+  currentUser,
+  syncedGmailAccounts = [],
+  syncingGmail = false,
+  onSyncGmail,
+  onSaveProfile,
+  onDeleteGmailAccount,
+  onOpenGmailSettings,
+  onLogout,
+  lang = 'en',
+  onToggleLang,
+  onStartTour,
+  onSimulateMail,
+  onOpenSystemSettings,
   onUpdateSocialPosts,
   onSaveSettings,
   showToast,
@@ -826,27 +841,27 @@ export default function SocialMediaWorkspace({
   const instagramAcc = settings?.socialAccounts?.instagram || {};
 
   return (
-    <div className="flex-1 flex flex-col p-6 lg:p-8 max-w-[1400px] w-full mx-auto space-y-6">
+    <div className="flex-1 flex flex-col min-h-0 p-4 lg:p-6 max-w-[1500px] w-full mx-auto space-y-4">
       {/* Hidden High-Res 1080x1080 Canvas used for rendering downloadable & previewable media graphics */}
       <canvas ref={canvasRef} className="hidden" />
 
       {/* =========================================================================
           TOP ROW: [ LinkedIn ]  [ Instagram ] BUTTONS (Exact Wireframe Top Container)
           ========================================================================= */}
-      <div className="bg-white rounded-2xl border-2 border-slate-300 p-3 shadow-sm flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
+      <div className="bg-white rounded-2xl border border-slate-200/90 px-5 py-3 shadow-sm flex flex-wrap items-center justify-between gap-4 shrink-0 min-h-[70px]">
+        <div className="flex items-center gap-3">
           {/* LinkedIn Button */}
           <button
             type="button"
             onClick={() => togglePlatform('linkedin')}
-            className={`group flex items-center gap-3 px-6 py-3 rounded-xl border-2 font-bold text-sm transition shadow-sm ${
+            className={`group flex items-center gap-2.5 px-4 py-2 rounded-xl border-2 font-bold text-sm transition shadow-xs ${
               activePlatforms.includes('linkedin')
                 ? 'bg-[#0A66C2] text-white border-[#0A66C2] ring-2 ring-blue-400/30'
                 : 'bg-slate-50 text-slate-700 border-slate-300 hover:bg-slate-100'
             }`}
           >
             <span
-              className={`w-7 h-7 rounded flex items-center justify-center font-black text-xs ${
+              className={`w-6 h-6 rounded flex items-center justify-center font-black text-xs ${
                 activePlatforms.includes('linkedin')
                   ? 'bg-white text-[#0A66C2]'
                   : 'bg-[#0A66C2] text-white'
@@ -855,9 +870,9 @@ export default function SocialMediaWorkspace({
               in
             </span>
             <div className="text-left">
-              <div className="text-sm font-extrabold leading-tight">LinkedIn</div>
+              <div className="text-xs font-extrabold leading-tight">LinkedIn</div>
               <div className="text-[10px] opacity-80">
-                {activePlatforms.includes('linkedin') ? '✓ Active Platform' : 'Click to Target'}
+                {activePlatforms.includes('linkedin') ? '✓ Active' : 'Target'}
               </div>
             </div>
           </button>
@@ -866,14 +881,14 @@ export default function SocialMediaWorkspace({
           <button
             type="button"
             onClick={() => togglePlatform('instagram')}
-            className={`group flex items-center gap-3 px-6 py-3 rounded-xl border-2 font-bold text-sm transition shadow-sm ${
+            className={`group flex items-center gap-2.5 px-4 py-2 rounded-xl border-2 font-bold text-sm transition shadow-xs ${
               activePlatforms.includes('instagram')
                 ? 'bg-gradient-to-r from-amber-500 via-pink-600 to-purple-600 text-white border-pink-500 ring-2 ring-pink-400/30'
                 : 'bg-slate-50 text-slate-700 border-slate-300 hover:bg-slate-100'
             }`}
           >
             <span
-              className={`w-7 h-7 rounded flex items-center justify-center font-black text-xs ${
+              className={`w-6 h-6 rounded flex items-center justify-center font-black text-xs ${
                 activePlatforms.includes('instagram')
                   ? 'bg-white text-pink-600'
                   : 'bg-gradient-to-r from-amber-500 via-pink-600 to-purple-600 text-white'
@@ -882,9 +897,9 @@ export default function SocialMediaWorkspace({
               IG
             </span>
             <div className="text-left">
-              <div className="text-sm font-extrabold leading-tight">Instagram</div>
+              <div className="text-xs font-extrabold leading-tight">Instagram</div>
               <div className="text-[10px] opacity-80">
-                {activePlatforms.includes('instagram') ? '✓ Active Platform' : 'Click to Target'}
+                {activePlatforms.includes('instagram') ? '✓ Active' : 'Target'}
               </div>
             </div>
           </button>
@@ -903,19 +918,48 @@ export default function SocialMediaWorkspace({
           <button
             type="button"
             onClick={() => setAccountModalOpen(true)}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold border border-slate-300 transition"
+            className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold border border-slate-200 transition"
             title="Configure Connected Accounts"
           >
             <Share2 className="w-3.5 h-3.5 text-slate-600" />
             <span>Accounts</span>
           </button>
+
+          {onSaveProfile && (
+            <>
+              <div className="h-7 w-px bg-slate-200 mx-1 hidden sm:block" />
+              <TopSettingsDropdown
+                lang={lang}
+                onToggleLang={onToggleLang}
+                onStartTour={onStartTour}
+                onSimulateMail={onSimulateMail}
+                onOpenSystemSettings={onOpenSystemSettings}
+              />
+              <UserAccountDropdown
+                currentUser={currentUser}
+                settings={settings}
+                syncedGmailAccounts={syncedGmailAccounts}
+                syncingGmail={syncingGmail}
+                onSyncGmail={onSyncGmail}
+                onSaveProfile={onSaveProfile}
+                onDeleteGmailAccount={onDeleteGmailAccount}
+                onOpenGmailSettings={onOpenGmailSettings}
+                onLogout={onLogout}
+                lang={lang}
+                showToast={showToast}
+              />
+            </>
+          )}
         </div>
       </div>
 
       {/* =========================================================================
           MAIN MIDDLE CONTAINER (Generate Social Media Post Studio)
           ========================================================================= */}
-      <div className="bg-white rounded-3xl border-2 border-slate-400/90 shadow-md p-6 lg:p-8 flex flex-col items-center">
+      <div
+        id="tour-social-studio-container"
+        className="bg-white rounded-3xl border-2 border-slate-400/90 shadow-md p-6 lg:p-8 flex flex-col items-center"
+      >
         {/* Header of the Post Generation Box */}
         <div className="w-full pb-5 mb-6 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
