@@ -6,7 +6,7 @@
   "main": "server/index.js",
   "scripts": {
     "dev": "concurrently \"node server/index.js\" \"vite\"",
-    "build": "vite build",
+    "build": "node --max-semi-space-size=4 ./node_modules/vite/bin/vite.js build",
     "start": "node server/index.js"
   },
   "dependencies": {
@@ -20,6 +20,7 @@
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.10.0",
     "pdf-parse": "^1.1.1",
+    "pdfkit": "^0.20.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

@@ -1,62 +1,48 @@
-import mammoth from 'mammoth';
-import { createRequire } from 'module';
-
-const require = createRequire(import.meta.url);
-let pdfParse = null;
-try {
-  pdfParse = require('pdf-parse/lib/pdf-parse.js');
-} catch {
-  try {
-    pdfParse = require('pdf-parse');
-  } catch {
-    pdfParse = null;
-  }
-}
+import { ingestAndExtractDocument } from './documentProcessor.js';
 
 /**
- * Extracts readable text from an email attachment buffer (PDF, DOCX, TXT, CSV)
+ * Extracts readable text from an email attachment buffer (PDF, DOCX, TXT, CSV).
+ * Uses the multi-page Document Processor (preserving pages, headings, tables, and caching by hash)
+ * and returns a backwards-compatible string for existing email preview callers.
  */
-export async function extractAttachmentText(filename = '', mimeType = '', buffer) {
-  if (!buffer || !Buffer.isBuffer(buffer)) {
+export async function extractAttachmentText(filename = '', mimeType = '', buffer, options = {}) {
+  if (!buffer || !Buffer.isBuffer(buffer) || buffer.length === 0) {
     return '';
   }
 
-  const lowerName = filename.toLowerCase();
-  const lowerMime = (mimeType || '').toLowerCase();
-
   try {
-    // 1. PDF Document
-    if (lowerName.endsWith('.pdf') || lowerMime.includes('pdf')) {
-      if (pdfParse) {
-        const data = await pdfParse(buffer);
-        return (data.text || '').trim().slice(0, 12000);
-      }
-      return '[PDF attachment detected — install pdf-parse to extract full text]';
+    const docRecord = await ingestAndExtractDocument({
+      filename,
+      mimeType,
+      buffer,
+      emailId: options.emailId || null,
+      attachmentIndex: options.attachmentIndex || 0,
+      settings: options.settings || {},
+    });
+
+    if (!docRecord.isValid) {
+      return `[Attachment ${filename} validation notice: ${docRecord.errorMessage}]`;
     }
 
-    // 2. Word DOCX Document
-    if (
-      lowerName.endsWith('.docx') ||
-      lowerMime.includes('officedocument.wordprocessingml.document') ||
-      lowerMime.includes('msword')
-    ) {
-      const result = await mammoth.extractRawText({ buffer });
-      return (result.value || '').trim().slice(0, 12000);
-    }
-
-    // 3. Plain Text / CSV / Markdown
-    if (
-      lowerName.endsWith('.txt') ||
-      lowerName.endsWith('.csv') ||
-      lowerName.endsWith('.md') ||
-      lowerMime.startsWith('text/')
-    ) {
-      return buffer.toString('utf8').trim().slice(0, 12000);
-    }
-
-    return '';
+    // Return full text up to 60,000 chars for email summary preview while keeping the complete
+    // multi-page document record cached in documents_store.json for 80+ page deep analysis.
+    return (docRecord.fullText || '').trim().slice(0, 60000);
   } catch (err) {
     console.warn(`Attachment parsing warning for ${filename}:`, err.message);
     return `[Attachment ${filename} could not be parsed automatically: ${err.message}]`;
   }
+}
+
+/**
+ * Extracts full multi-page document details and metadata for an attachment.
+ */
+export async function extractAttachmentFullDocument(filename = '', mimeType = '', buffer, options = {}) {
+  return ingestAndExtractDocument({
+    filename,
+    mimeType,
+    buffer,
+    emailId: options.emailId || null,
+    attachmentIndex: options.attachmentIndex || 0,
+    settings: options.settings || {},
+  });
 }

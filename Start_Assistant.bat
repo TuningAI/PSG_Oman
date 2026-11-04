@@ -16,7 +16,7 @@ if not exist "dist\index.html" (
     call npm run build
 )
 
-echo Opening Manager Dashboard in your browser (http://localhost:3001)...
-start "" "http://localhost:3001"
+echo Opening Manager Dashboard in your browser (http://localhost:3005)...
+start "" "http://localhost:3005"
 node server/index.js
 pause

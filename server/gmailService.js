@@ -1,8 +1,9 @@
+import fs from 'fs';
 import { ImapFlow } from 'imapflow';
 import { simpleParser } from 'mailparser';
 import nodemailer from 'nodemailer';
 import MailComposer from 'nodemailer/lib/mail-composer/index.js';
-import { extractAttachmentText } from './attachmentParser.js';
+import { extractAttachmentText, extractAttachmentFullDocument } from './attachmentParser.js';
 
 function cleanAppPassword(pwd = '') {
   return pwd.replace(/\s+/g, '');
@@ -84,12 +85,23 @@ export async function fetchRecentGmailEmails({ email, appPassword, maxEmails = 1
 
       const attachments = [];
       if (Array.isArray(parsed.attachments)) {
-        for (const att of parsed.attachments) {
-          const extractedText = await extractAttachmentText(att.filename, att.contentType, att.content);
+        for (let attIdx = 0; attIdx < parsed.attachments.length; attIdx++) {
+          const att = parsed.attachments[attIdx];
+          const docRecord = await extractAttachmentFullDocument(att.filename, att.contentType, att.content, {
+            attachmentIndex: attIdx,
+          });
+          const extractedText = docRecord?.isValid
+            ? (docRecord.fullText || '').trim().slice(0, 60000)
+            : await extractAttachmentText(att.filename, att.contentType, att.content);
           attachments.push({
             filename: att.filename || 'attachment',
             mimeType: att.contentType || 'application/octet-stream',
             size: att.size || 0,
+            documentId: docRecord?.documentId || null,
+            pages: docRecord?.pageCount || 1,
+            isScanned: Boolean(docRecord?.isScanned),
+            ocrUsed: Boolean(docRecord?.ocrUsed),
+            storedFilePath: docRecord?.storedFilePath || null,
             extractedText,
           });
         }
@@ -145,6 +157,18 @@ export async function saveDraftToGmail({ gmailSettings, companyProfile, draft, o
   }
   const { email, appPassword } = activeAccount;
 
+  const attachments = [];
+  if (
+    draft?.attachedDocument?.pdfSavedPath &&
+    fs.existsSync(draft.attachedDocument.pdfSavedPath)
+  ) {
+    attachments.push({
+      filename: draft.attachedDocument.fileName || 'PGS_Oman_Response.pdf',
+      path: draft.attachedDocument.pdfSavedPath,
+      contentType: 'application/pdf',
+    });
+  }
+
   const mailOptions = {
     from: `"${companyProfile.companyName}" <${email.trim()}>`,
     to: draft.to,
@@ -153,6 +177,7 @@ export async function saveDraftToGmail({ gmailSettings, companyProfile, draft, o
     text: draft.body,
     inReplyTo: originalMessageId || undefined,
     references: originalMessageId ? [originalMessageId] : undefined,
+    attachments: attachments.length > 0 ? attachments : undefined,
   };
 
   const composer = new MailComposer(mailOptions);
@@ -206,6 +231,18 @@ export async function sendApprovedEmailViaGmail({ gmailSettings, companyProfile,
       },
     });
 
+    const attachments = [];
+    if (
+      draft?.attachedDocument?.pdfSavedPath &&
+      fs.existsSync(draft.attachedDocument.pdfSavedPath)
+    ) {
+      attachments.push({
+        filename: draft.attachedDocument.fileName || 'PGS_Oman_Response.pdf',
+        path: draft.attachedDocument.pdfSavedPath,
+        contentType: 'application/pdf',
+      });
+    }
+
     const info = await transporter.sendMail({
       from: `"${companyProfile.companyName}" <${email.trim()}>`,
       to: draft.to,
@@ -214,6 +251,7 @@ export async function sendApprovedEmailViaGmail({ gmailSettings, companyProfile,
       text: draft.body,
       inReplyTo: originalMessageId || undefined,
       references: originalMessageId ? [originalMessageId] : undefined,
+      attachments: attachments.length > 0 ? attachments : undefined,
     });
 
     return {
