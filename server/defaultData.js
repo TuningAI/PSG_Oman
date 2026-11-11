@@ -10,7 +10,7 @@ export const DEFAULT_SETTINGS = {
   ai: {
     provider: 'gemini',
     geminiApiKey: '',
-    geminiModel: 'gemini-2.5-flash',
+    geminiModel: 'gemini-3.5-flash-lite',
     openaiApiKey: '',
     openaiModel: 'gpt-4o-mini',
   },

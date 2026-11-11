@@ -31,6 +31,8 @@ export default function SettingsModal({
   const [saving, setSaving] = useState(false);
   const [testingGmail, setTestingGmail] = useState(false);
   const [gmailTestStatus, setGmailTestStatus] = useState(null);
+  const [testingAi, setTestingAi] = useState(false);
+  const [aiTestStatus, setAiTestStatus] = useState(null);
 
   // Multi-Gmail Account Editor state
   const [editingAccountId, setEditingAccountId] = useState(null);
@@ -720,13 +722,14 @@ export default function SettingsModal({
                       Gemini Model
                     </label>
                     <select
-                      value={ai.geminiModel || 'gemini-2.5-flash'}
+                      value={ai.geminiModel || 'gemini-3.5-flash-lite'}
                       onChange={(e) => setAi({ ...ai, geminiModel: e.target.value })}
                       className="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-sm bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"
                     >
-                      <option value="gemini-2.5-flash">gemini-2.5-flash (Recommended - Fast & Smart)</option>
-                      <option value="gemini-2.0-flash">gemini-2.0-flash</option>
-                      <option value="gemini-1.5-pro">gemini-1.5-pro</option>
+                      <option value="gemini-3.5-flash-lite">gemini-3.5-flash-lite (Recommended - Fastest)</option>
+                      <option value="gemini-3.5-flash">gemini-3.5-flash (Smart & Balanced)</option>
+                      <option value="gemini-3.6-flash">gemini-3.6-flash</option>
+                      <option value="gemini-3.1-flash-lite">gemini-3.1-flash-lite</option>
                     </select>
                   </div>
                 </div>
@@ -759,6 +762,57 @@ export default function SettingsModal({
                   </div>
                 </div>
               )}
+
+              {/* Test Live AI Key Button & Status */}
+              <div className="pt-2 space-y-3">
+                <button
+                  type="button"
+                  disabled={testingAi}
+                  onClick={async () => {
+                    setTestingAi(true);
+                    setAiTestStatus(null);
+                    try {
+                      const res = await fetch('/api/ai/test', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(ai),
+                      });
+                      const data = await res.json();
+                      if (!res.ok) throw new Error(data.error || 'AI key test failed');
+                      setAiTestStatus({ ok: true, message: data.message });
+                    } catch (err) {
+                      setAiTestStatus({ ok: false, message: err.message });
+                    } finally {
+                      setTestingAi(false);
+                    }
+                  }}
+                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#06392A] hover:bg-[#094D39] text-amber-300 text-xs font-extrabold transition shadow-sm cursor-pointer disabled:opacity-50"
+                >
+                  {testingAi ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Sparkles className="w-4 h-4 text-amber-400" />
+                  )}
+                  <span>{testingAi ? 'Testing Live AI Key...' : 'Test Live AI Connection'}</span>
+                </button>
+
+                {aiTestStatus && (
+                  <div
+                    className={`flex items-center gap-2.5 p-3.5 rounded-xl border text-sm ${
+                      aiTestStatus.ok
+                        ? 'bg-emerald-50 border-emerald-300 text-emerald-900'
+                        : 'bg-rose-50 border-rose-300 text-rose-900'
+                    }`}
+                  >
+                    {aiTestStatus.ok ? (
+                      <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+                    ) : (
+                      <AlertCircle className="w-5 h-5 text-rose-600 shrink-0" />
+                    )}
+                    <span>{aiTestStatus.message}</span>
+                  </div>
+                )}
+              </div>
             </div>
           )}
         </div>

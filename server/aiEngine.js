@@ -65,9 +65,27 @@ Return strictly valid JSON:
 }`;
 }
 
+const GEMINI_FALLBACK_MODELS = [
+  'gemini-3.5-flash-lite',
+  'gemini-3.1-flash-lite',
+  'gemini-3.5-flash',
+  'gemini-3.6-flash',
+  'gemini-3-flash-preview',
+];
+
+function extractJsonFromGeminiParts(parts = []) {
+  if (!Array.isArray(parts) || parts.length === 0) return null;
+  const nonThought = parts.filter((p) => !p.thought && typeof p.text === 'string' && p.text.trim());
+  const raw = (nonThought.length > 0 ? nonThought[nonThought.length - 1].text : parts[0]?.text || '').trim();
+  if (!raw) return null;
+  const cleaned = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
+  return JSON.parse(cleaned);
+}
+
 async function callGeminiAPI(apiKey, model, systemPrompt, userPrompt, inlineImages = []) {
-  const modelName = model || 'gemini-2.5-flash';
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${encodeURIComponent(apiKey)}`;
+  const deadModels = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-pro', 'gemini-3.8-flash'];
+  const preferred = model && !deadModels.includes(model) ? model : 'gemini-3.5-flash-lite';
+  const candidateModels = [preferred, ...GEMINI_FALLBACK_MODELS.filter((m) => m !== preferred)];
 
   const parts = [{ text: userPrompt }];
   for (const img of inlineImages) {
@@ -81,25 +99,36 @@ async function callGeminiAPI(apiKey, model, systemPrompt, userPrompt, inlineImag
     }
   }
 
-  const response = await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      systemInstruction: { parts: [{ text: systemPrompt }] },
-      contents: [{ role: 'user', parts }],
-      generationConfig: { temperature: 0.25, responseMimeType: 'application/json' },
-    }),
-  });
+  let lastErr = null;
+  for (const modelName of candidateModels) {
+    try {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${encodeURIComponent(apiKey)}`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          systemInstruction: { parts: [{ text: systemPrompt }] },
+          contents: [{ role: 'user', parts }],
+          generationConfig: { temperature: 0.25, responseMimeType: 'application/json' },
+        }),
+        signal: AbortSignal.timeout(12000),
+      });
 
-  if (!response.ok) {
-    const errText = await response.text();
-    throw new Error(`Gemini API Error (${response.status}): ${errText}`);
+      if (!response.ok) {
+        const errText = await response.text();
+        lastErr = new Error(`Gemini API Error (${response.status} on ${modelName}): ${errText.slice(0, 180)}`);
+        continue;
+      }
+
+      const data = await response.json();
+      const parsed = extractJsonFromGeminiParts(data?.candidates?.[0]?.content?.parts);
+      if (parsed) return parsed;
+    } catch (err) {
+      lastErr = err;
+    }
   }
 
-  const data = await response.json();
-  const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!rawText) throw new Error('Empty response from Gemini API');
-  return JSON.parse(rawText);
+  throw lastErr || new Error('Gemini API request failed across candidate models');
 }
 
 async function callOpenAIAPI(apiKey, model, systemPrompt, userPrompt) {

@@ -39,6 +39,8 @@ import {
   PlayCircle,
   Download,
   Eye,
+  ChevronsLeft,
+  ChevronsRight,
 } from 'lucide-react';
 import SettingsModal from './components/SettingsModal.jsx';
 import SimulateModal from './components/SimulateModal.jsx';
@@ -50,6 +52,7 @@ import EveChatbotModal from './components/EveChatbotModal.jsx';
 import LoginPage from './components/LoginPage.jsx';
 import ClientTourRunner from './components/ClientTourRunner.jsx';
 import UserAccountDropdown from './components/UserAccountDropdown.jsx';
+import UserProfilePage from './components/UserProfilePage.jsx';
 import TopSettingsDropdown from './components/TopSettingsDropdown.jsx';
 import eveBurningParkAvatar from './assets/eve-burning-park.png';
 import { TRANSLATIONS } from './i18n.js';
@@ -104,6 +107,54 @@ function getInitials(companyName = '') {
   return (companyName.slice(0, 2) || 'CL').toUpperCase();
 }
 
+/**
+ * Format email date/time in authentic Gmail Inbox style:
+ * - If received today: shows time e.g. "09:38 AM" (or Arabic equivalent)
+ * - If received this current year on an earlier date: shows short month & day e.g. "Oct 23"
+ * - If received in a previous year: shows e.g. "10/23/2025"
+ * Gracefully falls back to existing displayTime if receivedAt is absent/invalid.
+ */
+function formatGmailInboxDate(receivedAt, fallbackDisplayTime, lang = 'en') {
+  if (!receivedAt) {
+    return fallbackDisplayTime || '09:38';
+  }
+
+  const date = new Date(receivedAt);
+  if (isNaN(date.getTime())) {
+    return fallbackDisplayTime || '09:38';
+  }
+
+  const now = new Date();
+  const isToday =
+    date.getFullYear() === now.getFullYear() &&
+    date.getMonth() === now.getMonth() &&
+    date.getDate() === now.getDate();
+
+  const locale = lang === 'ar' ? 'ar-OM' : 'en-US';
+
+  if (isToday) {
+    return date.toLocaleTimeString(locale, {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    });
+  }
+
+  const isCurrentYear = date.getFullYear() === now.getFullYear();
+  if (isCurrentYear) {
+    return date.toLocaleDateString(locale, {
+      month: 'short',
+      day: 'numeric',
+    });
+  }
+
+  return date.toLocaleDateString(locale, {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+  });
+}
+
 export default function App() {
   // Authentication State: defaults to false so the user starts at the login page
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -117,8 +168,16 @@ export default function App() {
   const t = TRANSLATIONS[lang] || TRANSLATIONS.en;
   const isRtl = lang === 'ar';
 
-  // Primary Leftmost Navigation Sidebar Tab: 'email_assistant' | 'social_assistant'
+  // Primary Leftmost Navigation Sidebar Tab: 'email_assistant' | 'social_assistant' | 'document_assistant'
   const [activeMainModule, setActiveMainModule] = useState('email_assistant');
+  // Sidebar Minimize / Maximize State (automatically minimizes when entering Document & PDF Builder)
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
+  useEffect(() => {
+    if (activeMainModule === 'document_assistant') {
+      setIsSidebarCollapsed(true);
+    }
+  }, [activeMainModule]);
 
   const [emails, setEmails] = useState([]);
   const [socialPosts, setSocialPosts] = useState([]);
@@ -783,257 +842,406 @@ export default function App() {
       {/* =====================================================================
           LEFTMOST EXECUTIVE SIDEBAR (Royal Emerald & Omani Gold Palette)
          ===================================================================== */}
-      <aside className="w-72 bg-[#06392A] text-white flex flex-col justify-between shrink-0 p-5 select-none shadow-xl h-full overflow-y-auto">
-        <div className="space-y-5">
-          {/* Company Brand Header */}
-          <div className="p-4 rounded-2xl bg-[#094D39] border border-emerald-700/60 flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-md shrink-0">
-              <Recycle className="w-7 h-7 text-[#06392A]" />
-            </div>
-            <div className="min-w-0">
-              <div className="text-lg font-extrabold tracking-tight text-white truncate">
-                {t.appName}
+      <div className="relative shrink-0 h-full flex">
+        <aside
+          className={`${
+            isSidebarCollapsed ? 'w-20 px-3 py-4 items-center' : 'w-72 p-5'
+          } bg-[#06392A] text-white flex flex-col justify-between shrink-0 select-none shadow-xl h-full overflow-y-auto overflow-x-hidden transition-all duration-300 ease-in-out`}
+        >
+          <div className={`space-y-4 ${isSidebarCollapsed ? ' flex flex-col items-center w-full' : ''}`}>
+            {/* Company Brand Header (No minimize/maximize button here) */}
+            {isSidebarCollapsed ? (
+              <div
+                className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-md shrink-0"
+                title={`${t.appName} — ${t.appSubtitle}`}
+              >
+                <Recycle className="w-6 h-6 text-[#06392A]" />
               </div>
-              <div className="text-xs font-medium text-emerald-200 truncate">
-                {t.appSubtitle}
-              </div>
-            </div>
-          </div>
-
-          {/* 2 Primary Assistant Tabs */}
-          <nav className="space-y-3 pt-1">
-            {/* Tab 1: Email Management (Inbox) */}
-            <button
-              type="button"
-              onClick={() => {
-                setActiveMainModule('email_assistant');
-                setOpenedEmailId(null);
-              }}
-              className={`w-full flex items-center justify-between p-4 rounded-2xl border-2 text-start transition ${
-                activeMainModule === 'email_assistant'
-                  ? 'bg-white text-[#06392A] border-amber-400 shadow-lg'
-                  : 'bg-[#094D39]/70 border-emerald-800/80 text-emerald-100 hover:bg-[#094D39]'
-              }`}
-            >
-              <div className="flex items-center gap-3.5 min-w-0">
-                <div
-                  className={`p-2.5 rounded-xl shrink-0 ${
-                    activeMainModule === 'email_assistant'
-                      ? 'bg-[#06392A] text-amber-400'
-                      : 'bg-[#06392A]/60 text-emerald-300'
-                  }`}
-                >
-                  <Mail className="w-6 h-6" />
+            ) : (
+              <div className="p-4 rounded-2xl bg-[#094D39] border border-emerald-700/60 flex items-center gap-3.5">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-md shrink-0">
+                  <Recycle className="w-7 h-7 text-[#06392A]" />
                 </div>
                 <div className="min-w-0">
-                  <div className="text-[15px] font-extrabold truncate">
-                    {t.navProposals}
+                  <div className="text-lg font-extrabold tracking-tight text-white truncate">
+                    {t.appName}
                   </div>
-                  <div
-                    className={`text-xs truncate mt-0.5 ${
-                      activeMainModule === 'email_assistant'
-                        ? 'text-slate-600 font-medium'
-                        : 'text-emerald-300/80'
-                    }`}
-                  >
-                    {t.navProposalsSub}
+                  <div className="text-xs font-medium text-emerald-200 truncate">
+                    {t.appSubtitle}
                   </div>
                 </div>
               </div>
-              {pendingCount > 0 && (
-                <span className="px-2.5 py-1 rounded-full bg-amber-500 text-slate-950 text-xs font-extrabold shrink-0">
-                  {pendingCount}
-                </span>
-              )}
-            </button>
+            )}
 
-            {/* Tab 2: Social Media Assistant */}
-            <button
-              type="button"
-              onClick={() => setActiveMainModule('social_assistant')}
-              className={`w-full flex items-center justify-between p-4 rounded-2xl border-2 text-start transition ${
-                activeMainModule === 'social_assistant'
-                  ? 'bg-white text-[#06392A] border-amber-400 shadow-lg'
-                  : 'bg-[#094D39]/70 border-emerald-800/80 text-emerald-100 hover:bg-[#094D39]'
-              }`}
-            >
-              <div className="flex items-center gap-3.5 min-w-0">
-                <div
-                  className={`p-2.5 rounded-xl shrink-0 ${
-                    activeMainModule === 'social_assistant'
-                      ? 'bg-[#06392A] text-amber-400'
-                      : 'bg-[#06392A]/60 text-emerald-300'
-                  }`}
-                >
-                  <Megaphone className="w-6 h-6" />
-                </div>
-                <div className="min-w-0">
-                  <div className="text-[15px] font-extrabold truncate">{t.navSocial}</div>
-                  <div
-                    className={`text-xs truncate mt-0.5 ${
-                      activeMainModule === 'social_assistant'
-                        ? 'text-slate-600 font-medium'
-                        : 'text-emerald-300/80'
+            {/* 3 Primary Assistant Tabs */}
+            <nav className={`space-y-3 pt-1 ${isSidebarCollapsed ? 'flex flex-col items-center w-full' : ''}`}>
+              {/* Tab 1: Email Management (Inbox) */}
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveMainModule('email_assistant');
+                  setOpenedEmailId(null);
+                }}
+                title={`${t.navProposals} — ${t.navProposalsSub}`}
+                className={
+                  isSidebarCollapsed
+                    ? `w-12 h-12 rounded-2xl border-2 flex items-center justify-center relative transition cursor-pointer ${
+                        activeMainModule === 'email_assistant'
+                          ? 'bg-white text-[#06392A] border-amber-400 shadow-lg'
+                          : 'bg-[#094D39]/90 border-emerald-700/80 text-emerald-200 hover:bg-[#094D39] hover:border-emerald-500'
+                      }`
+                    : `w-full flex items-center justify-between p-4 rounded-2xl border-2 text-start transition cursor-pointer ${
+                        activeMainModule === 'email_assistant'
+                          ? 'bg-white text-[#06392A] border-amber-400 shadow-lg'
+                          : 'bg-[#094D39]/70 border-emerald-800/80 text-emerald-100 hover:bg-[#094D39]'
+                      }`
+                }
+              >
+                {isSidebarCollapsed ? (
+                  <Mail
+                    className={`w-6 h-6 ${
+                      activeMainModule === 'email_assistant' ? 'text-[#06392A]' : 'text-emerald-300'
                     }`}
-                  >
-                    {t.navSocialSub}
-                  </div>
-                </div>
-              </div>
-            </button>
-            {/* Tab 3: AI Document Reader & Response PDF Builder */}
-            <button
-              type="button"
-              onClick={() => setActiveMainModule('document_assistant')}
-              className={`w-full flex items-center justify-between p-4 rounded-2xl border-2 text-start transition ${
-                activeMainModule === 'document_assistant'
-                  ? 'bg-white text-[#06392A] border-amber-400 shadow-lg'
-                  : 'bg-[#094D39]/70 border-emerald-800/80 text-emerald-100 hover:bg-[#094D39]'
-              }`}
-            >
-              <div className="flex items-center gap-3.5 min-w-0">
-                <div
-                  className={`p-2.5 rounded-xl shrink-0 ${
-                    activeMainModule === 'document_assistant'
-                      ? 'bg-[#06392A] text-amber-400'
-                      : 'bg-[#06392A]/60 text-emerald-300'
-                  }`}
-                >
-                  <FileText className="w-6 h-6" />
-                </div>
-                <div className="min-w-0">
-                  <div className="text-[15px] font-extrabold truncate">
-                    {isRtl ? 'قارئ العقود وبناء PDF' : 'Document & PDF Builder'}
-                  </div>
-                  <div
-                    className={`text-xs truncate mt-0.5 ${
-                      activeMainModule === 'document_assistant'
-                        ? 'text-slate-600 font-medium'
-                        : 'text-emerald-300/80'
-                    }`}
-                  >
-                    {isRtl ? 'تحليل مستندات 80+ صفحة' : 'Analyze 5–80+ Page Docs'}
-                  </div>
-                </div>
-              </div>
-            </button>
-          </nav>
-        </div>
-
-        {/* Bottom Synced Gmail Accounts List, Settings & Manager Profile */}
-        <div className="space-y-3 pt-4 border-t border-emerald-800/80">
-          {/* Synced Gmail Accounts Display + Edit & Delete Buttons in Sidebar */}
-          <div className="p-3 rounded-xl bg-[#094D39]/90 border border-emerald-700/80 space-y-2">
-            <div className="flex items-center justify-between gap-2">
-              <div className="flex items-center gap-2">
-                <span
-                  className={`w-2.5 h-2.5 rounded-full shrink-0 ${
-                    syncedGmailAccounts.length > 0 ? 'bg-emerald-400' : 'bg-amber-400'
-                  }`}
-                />
-                <span className="text-[11px] font-bold text-emerald-300 uppercase tracking-wider">
-                  {syncedGmailAccounts.length > 0 ? t.syncedGmailLabel : t.notSyncedGmailLabel}
-                </span>
-              </div>
-            </div>
-
-            {syncedGmailAccounts.length > 0 && (
-              <div className="space-y-1.5">
-                {syncedGmailAccounts.map((acc) => (
-                  <div
-                    key={acc.id || acc.email}
-                    className="flex items-center justify-between gap-1.5 px-2.5 py-1.5 rounded-lg bg-[#06392A]/80 border border-emerald-800"
-                  >
-                    <span className="text-xs font-extrabold text-white truncate">
-                      {acc.email}
-                    </span>
-                    <div className="flex items-center gap-1 shrink-0">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setSettingsInitialTab('gmail');
-                          setSettingsEditEmail(acc.email);
-                          setSettingsModalOpen(true);
-                        }}
-                        title={t.btnEditGmail}
-                        className="inline-flex items-center gap-1 px-2 py-1 rounded bg-emerald-700 hover:bg-emerald-600 text-white text-[11px] font-bold transition"
+                  />
+                ) : (
+                  <div className="flex items-center gap-3.5 min-w-0">
+                    <div
+                      className={`p-2.5 rounded-xl shrink-0 ${
+                        activeMainModule === 'email_assistant'
+                          ? 'bg-[#06392A] text-amber-400'
+                          : 'bg-[#06392A]/60 text-emerald-300'
+                      }`}
+                    >
+                      <Mail className="w-6 h-6" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="text-[15px] font-extrabold truncate">
+                        {t.navProposals}
+                      </div>
+                      <div
+                        className={`text-xs truncate mt-0.5 ${
+                          activeMainModule === 'email_assistant'
+                            ? 'text-slate-600 font-medium'
+                            : 'text-emerald-300/80'
+                        }`}
                       >
-                        <Edit3 className="w-3 h-3" />
-                        <span>{t.btnEditGmail}</span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleDeleteGmailAccount(acc.email)}
-                        title={t.btnDeleteGmail}
-                        className="inline-flex items-center gap-1 px-2 py-1 rounded bg-rose-600/90 hover:bg-rose-500 text-white text-[11px] font-bold transition"
-                      >
-                        <Trash2 className="w-3 h-3" />
-                        <span>{t.btnDeleteGmail}</span>
-                      </button>
+                        {t.navProposalsSub}
+                      </div>
                     </div>
                   </div>
-                ))}
+                )}
+                {pendingCount > 0 && (
+                  <span
+                    className={
+                      isSidebarCollapsed
+                        ? 'absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-amber-500 text-slate-950 text-[10px] font-extrabold flex items-center justify-center shadow'
+                        : 'px-2.5 py-1 rounded-full bg-amber-500 text-slate-950 text-xs font-extrabold shrink-0'
+                    }
+                  >
+                    {pendingCount}
+                  </span>
+                )}
+              </button>
+
+              {/* Tab 2: Social Media Assistant */}
+              <button
+                type="button"
+                onClick={() => setActiveMainModule('social_assistant')}
+                title={`${t.navSocial} — ${t.navSocialSub}`}
+                className={
+                  isSidebarCollapsed
+                    ? `w-12 h-12 rounded-2xl border-2 flex items-center justify-center transition cursor-pointer ${
+                        activeMainModule === 'social_assistant'
+                          ? 'bg-white text-[#06392A] border-amber-400 shadow-lg'
+                          : 'bg-[#094D39]/90 border-emerald-700/80 text-emerald-200 hover:bg-[#094D39] hover:border-emerald-500'
+                      }`
+                    : `w-full flex items-center justify-between p-4 rounded-2xl border-2 text-start transition cursor-pointer ${
+                        activeMainModule === 'social_assistant'
+                          ? 'bg-white text-[#06392A] border-amber-400 shadow-lg'
+                          : 'bg-[#094D39]/70 border-emerald-800/80 text-emerald-100 hover:bg-[#094D39]'
+                      }`
+                }
+              >
+                {isSidebarCollapsed ? (
+                  <Megaphone
+                    className={`w-6 h-6 ${
+                      activeMainModule === 'social_assistant' ? 'text-[#06392A]' : 'text-emerald-300'
+                    }`}
+                  />
+                ) : (
+                  <div className="flex items-center gap-3.5 min-w-0">
+                    <div
+                      className={`p-2.5 rounded-xl shrink-0 ${
+                        activeMainModule === 'social_assistant'
+                          ? 'bg-[#06392A] text-amber-400'
+                          : 'bg-[#06392A]/60 text-emerald-300'
+                      }`}
+                    >
+                      <Megaphone className="w-6 h-6" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="text-[15px] font-extrabold truncate">{t.navSocial}</div>
+                      <div
+                        className={`text-xs truncate mt-0.5 ${
+                          activeMainModule === 'social_assistant'
+                            ? 'text-slate-600 font-medium'
+                            : 'text-emerald-300/80'
+                        }`}
+                      >
+                        {t.navSocialSub}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </button>
+
+              {/* Tab 3: AI Document Builder */}
+              <button
+                type="button"
+                onClick={() => {
+                  setActiveMainModule('document_assistant');
+                  setIsSidebarCollapsed(true);
+                }}
+                title={
+                  isRtl
+                    ? 'منشئ المستندات الذكي — عروض وتقارير PDF'
+                    : 'AI Document Builder — Smart PDF Proposals'
+                }
+                className={
+                  isSidebarCollapsed
+                    ? `w-12 h-12 rounded-2xl border-2 flex items-center justify-center transition cursor-pointer ${
+                        activeMainModule === 'document_assistant'
+                          ? 'bg-white text-[#06392A] border-amber-400 shadow-lg'
+                          : 'bg-[#094D39]/90 border-emerald-700/80 text-emerald-200 hover:bg-[#094D39] hover:border-emerald-500'
+                      }`
+                    : `w-full flex items-center justify-between p-4 rounded-2xl border-2 text-start transition cursor-pointer ${
+                        activeMainModule === 'document_assistant'
+                          ? 'bg-white text-[#06392A] border-amber-400 shadow-lg'
+                          : 'bg-[#094D39]/70 border-emerald-800/80 text-emerald-100 hover:bg-[#094D39]'
+                      }`
+                }
+              >
+                {isSidebarCollapsed ? (
+                  <FileText
+                    className={`w-6 h-6 ${
+                      activeMainModule === 'document_assistant' ? 'text-[#06392A]' : 'text-emerald-300'
+                    }`}
+                  />
+                ) : (
+                  <div className="flex items-center gap-3.5 min-w-0">
+                    <div
+                      className={`p-2.5 rounded-xl shrink-0 ${
+                        activeMainModule === 'document_assistant'
+                          ? 'bg-[#06392A] text-amber-400'
+                          : 'bg-[#06392A]/60 text-emerald-300'
+                      }`}
+                    >
+                      <FileText className="w-6 h-6" />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="text-[15px] font-extrabold truncate">
+                        {isRtl ? 'منشئ المستندات الذكي' : 'AI Document Builder'}
+                      </div>
+                      <div
+                        className={`text-xs truncate mt-0.5 ${
+                          activeMainModule === 'document_assistant'
+                            ? 'text-slate-600 font-medium'
+                            : 'text-emerald-300/80'
+                        }`}
+                      >
+                        {isRtl ? 'عروض وتقارير PDF' : 'Smart PDF Proposals'}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </button>
+            </nav>
+          </div>
+
+          {/* Bottom Settings & Logged-in User Button (with Minimize Button alongside User Button when expanded) */}
+          <div className={`space-y-3 pt-4 border-t border-emerald-800/80 ${isSidebarCollapsed ? 'flex flex-col items-center w-full' : ''}`}>
+            {!isSidebarCollapsed ? (
+              <>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSettingsInitialTab('company');
+                    setSettingsEditEmail(null);
+                    setSettingsModalOpen(true);
+                  }}
+                  className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-[#094D39] hover:bg-emerald-800 text-white text-sm font-bold border border-emerald-700 transition cursor-pointer"
+                >
+                  <Settings className="w-5 h-5 text-amber-400 shrink-0" />
+                  <span>{t.navSettings}</span>
+                </button>
+
+                {/* Logged-in User Details Button + Minimize Sidebar Button next to it */}
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setActiveMainModule('user_profile')}
+                    title={isRtl ? 'عرض بيانات المستخدم وتسجيل الخروج' : 'View Logged-in User Details & Log Out'}
+                    className={`flex-1 min-w-0 flex items-center gap-3 p-2.5 rounded-2xl border-2 text-start transition cursor-pointer ${
+                      activeMainModule === 'user_profile'
+                        ? 'bg-white text-[#06392A] border-amber-400 shadow-lg'
+                        : 'bg-[#094D39]/70 hover:bg-[#094D39] border-emerald-700/80 text-white'
+                    }`}
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-amber-400 text-[#06392A] text-sm font-extrabold flex items-center justify-center shrink-0 shadow-sm overflow-hidden">
+                      {currentUser?.profilePic || settings?.companyProfile?.profilePic ? (
+                        <img
+                          src={currentUser?.profilePic || settings?.companyProfile?.profilePic}
+                          alt={currentUser?.name || settings?.companyProfile?.managerName || 'User'}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        currentUser?.initials || settings?.companyProfile?.managerInitials || 'AK'
+                      )}
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <div
+                        className={`text-sm font-extrabold truncate ${
+                          activeMainModule === 'user_profile' ? 'text-[#06392A]' : 'text-white'
+                        }`}
+                      >
+                        {currentUser?.name || settings?.companyProfile?.managerName || 'Ahmed Al Kindi'}
+                      </div>
+                      <div
+                        className={`text-xs truncate ${
+                          activeMainModule === 'user_profile'
+                            ? 'text-slate-600 font-medium'
+                            : 'text-emerald-300'
+                        }`}
+                      >
+                        {currentUser?.role || settings?.companyProfile?.managerTitle || 'General Manager · PGS Oman'}
+                      </div>
+                    </div>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setIsSidebarCollapsed(true)}
+                    title={isRtl ? 'تصغير القائمة الجانبية' : 'Minimize Sidebar'}
+                    aria-label={isRtl ? 'تصغير القائمة الجانبية' : 'Minimize Sidebar'}
+                    className="w-12 h-[60px] rounded-2xl bg-amber-400 hover:bg-amber-300 text-[#06392A] border-2 border-amber-300 hover:border-white flex flex-col items-center justify-center gap-0.5 shrink-0 transition cursor-pointer shadow-md"
+                  >
+                    {isRtl ? (
+                      <ChevronsRight className="w-5 h-5 stroke-[2.75]" />
+                    ) : (
+                      <ChevronsLeft className="w-5 h-5 stroke-[2.75]" />
+                    )}
+                    <span className="text-[9px] font-black uppercase tracking-tighter leading-none">
+                      {isRtl ? 'تصغير' : 'Hide'}
+                    </span>
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="flex flex-col items-center gap-3 w-full">
+                {/* Square Box Settings Icon */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSettingsInitialTab('company');
+                    setSettingsEditEmail(null);
+                    setSettingsModalOpen(true);
+                  }}
+                  title={t.navSettings}
+                  className="w-12 h-12 rounded-2xl bg-[#094D39]/90 hover:bg-emerald-800 text-amber-400 flex items-center justify-center border-2 border-emerald-700/80 hover:border-emerald-500 transition cursor-pointer shadow-sm"
+                >
+                  <Settings className="w-5 h-5" />
+                </button>
+
+                {/* Square Box Logged-in User Details Icon */}
+                <button
+                  type="button"
+                  onClick={() => setActiveMainModule('user_profile')}
+                  title={
+                    isRtl
+                      ? `${currentUser?.name || settings?.companyProfile?.managerName || 'Ahmed Al Kindi'} — عرض بيانات المستخدم`
+                      : `${currentUser?.name || settings?.companyProfile?.managerName || 'Ahmed Al Kindi'} — View User Details & Log Out`
+                  }
+                  className={`w-12 h-12 rounded-2xl bg-amber-400 text-[#06392A] text-sm font-extrabold flex items-center justify-center shrink-0 shadow-md overflow-hidden border-2 transition cursor-pointer ${
+                    activeMainModule === 'user_profile'
+                      ? 'border-white ring-2 ring-amber-300 scale-105'
+                      : 'border-amber-300 hover:border-white'
+                  }`}
+                >
+                  {currentUser?.profilePic || settings?.companyProfile?.profilePic ? (
+                    <img
+                      src={currentUser?.profilePic || settings?.companyProfile?.profilePic}
+                      alt={currentUser?.name || settings?.companyProfile?.managerName || 'User'}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    currentUser?.initials || settings?.companyProfile?.managerInitials || 'AK'
+                  )}
+                </button>
               </div>
             )}
           </div>
+        </aside>
 
+        {/* Maximize Button Shown OUTSIDE the Minimized Side Navigation Bar (next to Logged-in User Button) */}
+        {isSidebarCollapsed && (
           <button
             type="button"
-            onClick={() => {
-              setSettingsInitialTab('company');
-              setSettingsEditEmail(null);
-              setSettingsModalOpen(true);
-            }}
-            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-[#094D39] hover:bg-emerald-800 text-white text-sm font-bold border border-emerald-700 transition"
+            onClick={() => setIsSidebarCollapsed(false)}
+            title={isRtl ? 'تكبير القائمة الجانبية' : 'Maximize Sidebar'}
+            aria-label={isRtl ? 'تكبير القائمة الجانبية' : 'Maximize Sidebar'}
+            className="absolute bottom-4 start-full ms-2.5 z-40 w-12 h-12 rounded-2xl bg-[#06392A] hover:bg-[#094D39] text-amber-400 hover:text-amber-300 border-2 border-amber-400 shadow-xl flex flex-col items-center justify-center gap-0.5 transition cursor-pointer"
           >
-            <Settings className="w-5 h-5 text-amber-400 shrink-0" />
-            <span>{t.navSettings}</span>
+            {isRtl ? (
+              <ChevronsLeft className="w-5 h-5 stroke-[2.75]" />
+            ) : (
+              <ChevronsRight className="w-5 h-5 stroke-[2.75]" />
+            )}
+            <span className="text-[8px] font-black uppercase tracking-tighter leading-none text-amber-300">
+              {isRtl ? 'تكبير' : 'Open'}
+            </span>
           </button>
-
-          <div className="flex items-center justify-between gap-2 px-2 pt-1">
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="w-10 h-10 rounded-full bg-amber-400 text-[#06392A] text-sm font-extrabold flex items-center justify-center shrink-0 shadow-sm overflow-hidden">
-                {currentUser?.profilePic || settings?.companyProfile?.profilePic ? (
-                  <img
-                    src={currentUser?.profilePic || settings?.companyProfile?.profilePic}
-                    alt={currentUser?.name || settings?.companyProfile?.managerName || 'User'}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  currentUser?.initials || settings?.companyProfile?.managerInitials || 'AK'
-                )}
-              </div>
-              <div className="min-w-0">
-                <div className="text-sm font-bold text-white truncate">
-                  {currentUser?.name || settings?.companyProfile?.managerName || 'Ahmed Al Kindi'}
-                </div>
-                <div className="text-xs text-emerald-300 truncate">
-                  {currentUser?.role || settings?.companyProfile?.managerTitle || 'General Manager · PGS Oman'}
-                </div>
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => setIsAuthenticated(false)}
-              className="p-2 rounded-xl bg-[#094D39] hover:bg-rose-900/60 hover:text-rose-200 text-emerald-300 border border-emerald-700 hover:border-rose-400/50 transition cursor-pointer shrink-0"
-              title={isRtl ? 'تسجيل الخروج والعودة لصفحة الدخول' : 'Sign Out / Return to Login Page'}
-              aria-label="Logout"
-            >
-              <LogOut className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      </aside>
+        )}
+      </div>
 
       {/* =====================================================================
           RIGHT MAIN WINDOW
          ===================================================================== */}
       <div
         className={`flex-1 flex flex-col min-w-0 h-full ${
-          activeMainModule === 'social_assistant' || activeMainModule === 'document_assistant' ? 'overflow-y-auto' : 'overflow-hidden'
+          activeMainModule === 'social_assistant' ||
+          activeMainModule === 'document_assistant' ||
+          activeMainModule === 'user_profile'
+            ? 'overflow-y-auto'
+            : 'overflow-hidden'
         }`}
       >
-        {activeMainModule === 'social_assistant' ? (
+        {activeMainModule === 'user_profile' ? (
+          <UserProfilePage
+            currentUser={currentUser}
+            settings={settings}
+            syncedGmailAccounts={syncedGmailAccounts}
+            syncingGmail={syncingGmail}
+            onSyncGmail={handleSyncGmail}
+            onSaveProfile={handleSaveUserProfile}
+            onDeleteGmailAccount={handleDeleteGmailAccount}
+            onOpenGmailSettings={(emailToEdit) => {
+              setSettingsInitialTab('gmail');
+              setSettingsEditEmail(emailToEdit);
+              setSettingsModalOpen(true);
+            }}
+            onLogout={() => setIsAuthenticated(false)}
+            onBack={() => setActiveMainModule('email_assistant')}
+            lang={lang}
+            onToggleLang={() => setLang(lang === 'en' ? 'ar' : 'en')}
+            onStartTour={() => setIsTourActive(true)}
+            onSimulateMail={() => setSimulateModalOpen(true)}
+            onOpenSystemSettings={() => {
+              setSettingsInitialTab('company');
+              setSettingsModalOpen(true);
+            }}
+            showToast={showToast}
+          />
+        ) : activeMainModule === 'social_assistant' ? (
           <SocialMediaWorkspace
             socialPosts={socialPosts}
             settings={settings}
@@ -1067,6 +1275,26 @@ export default function App() {
         ) : activeMainModule === 'document_assistant' ? (
           <DocumentAndPDFBuilder
             emails={emails}
+            settings={settings}
+            currentUser={currentUser}
+            syncedGmailAccounts={syncedGmailAccounts}
+            syncingGmail={syncingGmail}
+            onSyncGmail={handleSyncGmail}
+            onSaveProfile={handleSaveUserProfile}
+            onDeleteGmailAccount={handleDeleteGmailAccount}
+            onOpenGmailSettings={(emailToEdit) => {
+              setSettingsInitialTab('gmail');
+              setSettingsEditEmail(emailToEdit);
+              setSettingsModalOpen(true);
+            }}
+            onLogout={() => setIsAuthenticated(false)}
+            onToggleLang={() => setLang(lang === 'en' ? 'ar' : 'en')}
+            onStartTour={() => setIsTourActive(true)}
+            onSimulateMail={() => setSimulateModalOpen(true)}
+            onOpenSystemSettings={() => {
+              setSettingsInitialTab('company');
+              setSettingsModalOpen(true);
+            }}
             initialEmail={openedEmail}
             initialAttachmentIndex={0}
             initialStep={docBuilderInitialStep}
@@ -1085,7 +1313,6 @@ export default function App() {
               } else if (updatedEmail) {
                 updateEmailInList(updatedEmail);
               }
-              setActiveMainModule('email_assistant');
               showToast(
                 isRtl
                   ? 'تم توليد مستند الرد بصيغة PDF وإرفاقه بمسودة البريد!'
@@ -1292,7 +1519,7 @@ export default function App() {
                         <div
                           key={item.id}
                           onClick={() => setOpenedEmailId(item.id)}
-                          className={`group px-5 py-4 flex items-center gap-4 cursor-pointer whitespace-nowrap transition ${
+                          className={`group relative px-5 py-4 flex items-center gap-4 cursor-pointer whitespace-nowrap transition ${
                             isPending
                               ? 'bg-white hover:bg-[#F0FDF4]'
                               : 'bg-slate-50/60 hover:bg-slate-100/80'
@@ -1380,8 +1607,8 @@ export default function App() {
                             </div>
                           )}
 
-                          {/* Complete Subject + Summary Snippet (No Truncation) */}
-                          <div className="text-[15px] pe-6 shrink-0">
+                          {/* Complete Subject + Summary Snippet (No Truncation, with ample spacing before sticky date) */}
+                          <div className="text-[15px] pe-40 shrink-0">
                             <span
                               className={
                                 isPending
@@ -1395,10 +1622,23 @@ export default function App() {
                             <span className="text-slate-500 text-sm">{snippetText}</span>
                           </div>
 
-                          {/* Time (Right End) */}
-                          <div className="flex items-center shrink-0 ms-auto ps-4">
-                            <span className="text-xs font-bold text-slate-500 text-end">
-                              {item.displayTime || '09:38'}
+                          {/* Fixed Sticky Time / Date with an extended, soft Google Mail-style fade margin */}
+                          <div
+                            className={`sticky end-0 z-10 flex items-center justify-end py-4 pe-5 ps-16 ms-auto pointer-events-none transition-colors ${
+                              isPending
+                                ? 'bg-gradient-to-l from-white from-45% via-white/80 to-transparent group-hover:from-[#F0FDF4] group-hover:from-45% group-hover:via-[#F0FDF4]/80'
+                                : 'bg-gradient-to-l from-[#F8FAFC] from-45% via-[#F8FAFC]/80 to-transparent group-hover:from-slate-100 group-hover:from-45% group-hover:via-slate-100/80'
+                            }`}
+                          >
+                            <span
+                              className={`text-xs text-end whitespace-nowrap pointer-events-auto select-none ${
+                                isPending
+                                  ? 'font-extrabold text-slate-900'
+                                  : 'font-semibold text-slate-600'
+                              }`}
+                              title={item.receivedAt ? new Date(item.receivedAt).toLocaleString(lang === 'ar' ? 'ar-OM' : 'en-US') : undefined}
+                            >
+                              {formatGmailInboxDate(item.receivedAt, item.displayTime, lang)}
                             </span>
                           </div>
                         </div>
@@ -1539,8 +1779,16 @@ export default function App() {
                           {t.statusSent}
                         </span>
                       )}
-                      <span className="text-xs font-bold text-slate-500 ms-auto">
-                        {openedEmail.displayTime || '09:38 AM'}
+                      <span
+                        className="text-xs font-bold text-slate-500 ms-auto whitespace-nowrap"
+                        title={openedEmail.receivedAt ? new Date(openedEmail.receivedAt).toLocaleString(lang === 'ar' ? 'ar-OM' : 'en-US') : undefined}
+                      >
+                        {openedEmail.receivedAt
+                          ? new Date(openedEmail.receivedAt).toLocaleString(lang === 'ar' ? 'ar-OM' : 'en-US', {
+                              dateStyle: 'medium',
+                              timeStyle: 'short',
+                            })
+                          : openedEmail.displayTime || '09:38 AM'}
                       </span>
                     </div>
 
@@ -2115,7 +2363,7 @@ export default function App() {
                               className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-extrabold transition"
                             >
                               <Edit3 className="w-3.5 h-3.5 text-[#065F46]" />
-                              <span>Edit in Document & PDF Builder</span>
+                              <span>Edit in AI Document Builder</span>
                             </button>
                           </div>
                         </div>

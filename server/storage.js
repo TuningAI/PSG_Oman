@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -7,6 +8,33 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const DATA_DIR = path.join(__dirname, '..', 'data');
 const DB_PATH = path.join(DATA_DIR, 'db.json');
+
+function mergeEnvIntoAiSettings(aiSettings = {}) {
+  const merged = { ...DEFAULT_SETTINGS.ai, ...aiSettings };
+  if (process.env.AI_PROVIDER) {
+    merged.provider = process.env.AI_PROVIDER.trim().toLowerCase();
+  }
+  if (process.env.GEMINI_API_KEY) {
+    merged.geminiApiKey = process.env.GEMINI_API_KEY.trim();
+  }
+  const deadOrSlowModels = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-pro', 'gemini-3.8-flash'];
+  if (!merged.geminiModel || deadOrSlowModels.includes(merged.geminiModel)) {
+    merged.geminiModel = (process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite').trim();
+  }
+  if (process.env.OPENAI_API_KEY && !merged.openaiApiKey) {
+    merged.openaiApiKey = process.env.OPENAI_API_KEY.trim();
+  }
+  if (process.env.OPENAI_MODEL && !aiSettings.openaiModel) {
+    merged.openaiModel = process.env.OPENAI_MODEL.trim();
+  }
+  // Auto-select provider if one key is set in .env
+  if (!merged.geminiApiKey && merged.openaiApiKey) {
+    merged.provider = 'openai';
+  } else if (merged.geminiApiKey) {
+    merged.provider = merged.provider || 'gemini';
+  }
+  return merged;
+}
 
 function ensureDb() {
   if (!fs.existsSync(DATA_DIR)) {
@@ -47,7 +75,7 @@ function ensureDb() {
     return {
       settings: {
         gmail: rawGmail,
-        ai: { ...DEFAULT_SETTINGS.ai, ...(parsed.settings?.ai || {}) },
+        ai: mergeEnvIntoAiSettings(parsed.settings?.ai || {}),
         socialAccounts: {
           linkedin: {
             ...DEFAULT_SETTINGS.socialAccounts.linkedin,
@@ -92,7 +120,29 @@ export function saveDb(dbData) {
   if (!fs.existsSync(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR, { recursive: true });
   }
-  fs.writeFileSync(DB_PATH, JSON.stringify(dbData, null, 2), 'utf8');
+  // Never persist .env secrets into data/db.json so git push protection is never triggered
+  const diskCopy = {
+    ...dbData,
+    settings: dbData?.settings
+      ? {
+          ...dbData.settings,
+          ai: {
+            ...(dbData.settings.ai || {}),
+            geminiApiKey:
+              process.env.GEMINI_API_KEY &&
+              dbData.settings.ai?.geminiApiKey === process.env.GEMINI_API_KEY.trim()
+                ? ''
+                : dbData.settings.ai?.geminiApiKey || '',
+            openaiApiKey:
+              process.env.OPENAI_API_KEY &&
+              dbData.settings.ai?.openaiApiKey === process.env.OPENAI_API_KEY.trim()
+                ? ''
+                : dbData.settings.ai?.openaiApiKey || '',
+          },
+        }
+      : dbData?.settings,
+  };
+  fs.writeFileSync(DB_PATH, JSON.stringify(diskCopy, null, 2), 'utf8');
   return dbData;
 }
 

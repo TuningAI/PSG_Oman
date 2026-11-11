@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import multer from 'multer';
@@ -1306,7 +1307,343 @@ app.get('/api/documents/:docId/pdf', async (req, res) => {
   }
 });
 
-// 26. Generate a Realistic Multi-Page Tender PDF (e.g. 5, 18, 50, or 80 pages) and Simulate Incoming Email
+// ============================================================================
+// SIMPLIFIED DOCUMENT & PDF BUILDER: TEMPLATES & SCRATCH GENERATION
+// ============================================================================
+
+// Helper to get or initialize templates store
+function getTemplatesStore() {
+  const store = getDocumentsStore();
+  if (!store.templates) {
+    store.templates = {};
+    // Pre-seed the two default reference templates from documentation if present
+    const docDir = path.join(__dirname, '..', 'documentation');
+    const rfqPath = path.join(docDir, 'RFQ 6000061376.pdf');
+    const sowPath = path.join(docDir, 'SoW - Recycling of oligomer V3.pdf');
+
+    store.templates['tpl-rfq-6000061376'] = {
+      templateId: 'tpl-rfq-6000061376',
+      title: 'OQ RFQ 6000061376 Commercial Bid Template',
+      description: 'Structured formal commercial tender bid response model based on OQ RFQ 6000061376 documentation.',
+      category: 'Tender & Quotation',
+      referenceFilename: 'RFQ 6000061376.pdf',
+      pageCount: fs.existsSync(rfqPath) ? 15 : 15,
+      sections: [
+        '1. Executive Summary & Company Profile (PGS Oman)',
+        '2. Scope of Services & Compliance Confirmation',
+        '3. Commercial Pricing Schedule & Weighbridge Billing',
+        '4. Regulatory Licensing & Environment Authority Permits',
+        '5. Operational Fleet, Container Deployment & Delivery Timelines',
+        '6. HSE, Spill Response & Incident Management',
+        '7. Service Level Agreement (SLA) & Liquidated Damages Acceptance'
+      ],
+      createdAt: new Date().toISOString(),
+      isDefault: true,
+    };
+
+    store.templates['tpl-sow-oligomer-v3'] = {
+      templateId: 'tpl-sow-oligomer-v3',
+      title: 'SoW Oligomer Waste Technical Specification Template',
+      description: 'Detailed technical specification and environmental recovery schedule based on SoW V3 recycling standard.',
+      category: 'Technical Specification',
+      referenceFilename: 'SoW - Recycling of oligomer V3.pdf',
+      pageCount: fs.existsSync(sowPath) ? 8 : 8,
+      sections: [
+        '1. Technical Methodology: Closed-Loop Fractional Distillation',
+        '2. Waste Stream Profile: Oligomer C6-C12+ & Flash Point 56°C HSE Protocol',
+        '3. 100% In-Country Beneficial Reuse Route in Sultanate of Oman',
+        '4. 10-Day Collection Turnaround & 60-Day Certificate of Recycling SLA',
+        '5. Dedicated ADR Fleet, Drum/IBC Handling & Transport Manifests',
+        '6. Batch Mass-Balance & Cradle-to-Grave Traceability Matrix'
+      ],
+      createdAt: new Date().toISOString(),
+      isDefault: true,
+    };
+
+    saveDocumentsStore(store);
+  }
+  return store.templates;
+}
+
+// 26. Get all available PDF Templates
+app.get('/api/templates', (req, res) => {
+  try {
+    const templates = getTemplatesStore();
+    res.json({ templates: Object.values(templates) });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 27. Upload reference PDF/document to generate a new reusable template structure
+app.post('/api/templates/upload', upload.single('document'), async (req, res) => {
+  try {
+    const file = req.file;
+    if (!file) {
+      return res.status(400).json({ error: 'Please upload a reference document (PDF or Word).' });
+    }
+
+    const db = getDb();
+    const docRec = await ingestAndExtractDocument({
+      filename: file.originalname,
+      mimeType: file.mimetype,
+      buffer: file.buffer,
+      settings: db.settings,
+    });
+
+    if (!docRec.isValid) {
+      return res.status(400).json({ error: docRec.errorMessage });
+    }
+
+    // Auto-derive logical sections from extracted headings / structural elements
+    const sectionTitles = [];
+    const headings = docRec.headings || [];
+    for (const h of headings) {
+      const clean = (typeof h === 'string' ? h : h.text || '').trim();
+      if (clean && clean.length > 3 && clean.length < 90 && !sectionTitles.includes(clean)) {
+        sectionTitles.push(clean);
+        if (sectionTitles.length >= 7) break;
+      }
+    }
+
+    if (sectionTitles.length === 0) {
+      sectionTitles.push(
+        '1. Executive Summary & Purpose',
+        '2. Technical Specifications & Requirements',
+        '3. Commercial Pricing & Billing Terms',
+        '4. Operational SLAs & Execution Milestones',
+        '5. Regulatory & HSE Certifications'
+      );
+    }
+
+    const templateId = `tpl-custom-${Date.now()}`;
+    const newTemplate = {
+      templateId,
+      title: req.body?.title || `${file.originalname.replace(/\.[^.]+$/, '')} Structure`,
+      description: req.body?.description || `Auto-extracted template structure from reference document ${file.originalname}.`,
+      category: req.body?.category || 'Custom Reference Structure',
+      referenceFilename: file.originalname,
+      pageCount: docRec.pageCount || 1,
+      sections: sectionTitles,
+      extractedOutline: docRec.fullText ? docRec.fullText.slice(0, 1500) : '',
+      createdAt: new Date().toISOString(),
+      isDefault: false,
+    };
+
+    const store = getDocumentsStore();
+    if (!store.templates) store.templates = {};
+    store.templates[templateId] = newTemplate;
+    saveDocumentsStore(store);
+
+    res.json({
+      message: `Template "${newTemplate.title}" generated successfully from reference document.`,
+      template: newTemplate,
+      templates: Object.values(store.templates),
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 28. Generate a Document From Scratch or From an Existing Template
+app.post('/api/documents/generate-custom', async (req, res) => {
+  try {
+    const {
+      prompt = '',
+      title = '',
+      templateId = null,
+      emailId = null,
+      preferredTone = 'Formal Executive Proposal',
+      customSections = null,
+    } = req.body || {};
+
+    if (!prompt.trim() && !templateId) {
+      return res.status(400).json({ error: 'Please provide prompt instructions or select a template.' });
+    }
+
+    const db = getDb();
+    const store = getDocumentsStore();
+    const companyProfile = db.settings?.companyProfile || {};
+
+    // If an email was attached as reference, retrieve it
+    let referencedEmail = null;
+    if (emailId) {
+      referencedEmail = (db.emails || []).find((e) => e.id === emailId);
+    }
+
+    // Retrieve template if specified
+    const templates = getTemplatesStore();
+    const chosenTemplate = templateId ? templates[templateId] || null : null;
+
+    const docId = `doc-gen-${Date.now()}`;
+    const docTitle =
+      title.trim() ||
+      (chosenTemplate ? `${chosenTemplate.title} Response` : `Official Proposal & Technical Response`);
+    const docSubtitle = referencedEmail
+      ? `Tailored Response to RFQ: ${referencedEmail.subject} (${referencedEmail.companyName || referencedEmail.fromName})`
+      : chosenTemplate
+      ? `Generated using Template: ${chosenTemplate.title}`
+      : 'Prepared by PGS Oman Executive Virtual Management';
+
+    const refNumber = `PGS-DOC-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
+    const responseDate = new Date().toISOString().split('T')[0];
+
+    // Determine sections to build
+    const targetSections =
+      Array.isArray(customSections) && customSections.length > 0
+        ? customSections
+        : chosenTemplate && Array.isArray(chosenTemplate.sections) && chosenTemplate.sections.length > 0
+        ? chosenTemplate.sections
+        : [
+            '1. Executive Summary & Purpose',
+            '2. Operational Scope of Services',
+            '3. Commercial Pricing & Billing Terms',
+            '4. Environmental Safety & Regulatory Standards',
+            '5. Timelines, Service Level Agreements (SLA) & Contact Personnel'
+          ];
+
+    // Build structured sections content taking into account the user's prompt + referenced email
+    const constructedSections = targetSections.map((secName, idx) => {
+      const cleanName = typeof secName === 'string' ? secName : secName.title || `Section ${idx + 1}`;
+      const providedContent =
+        typeof secName === 'object' && secName !== null && typeof secName.content === 'string'
+          ? secName.content.trim()
+          : '';
+      let content = providedContent;
+
+      if (!content) {
+        if (cleanName.toLowerCase().includes('executive') || cleanName.toLowerCase().includes('summary') || idx === 0) {
+          content = `${companyProfile.companyName || 'PGS Oman'} is pleased to submit this comprehensive document. ${
+            referencedEmail
+              ? `This response directly addresses the inquiries and requirements outlined by ${
+                  referencedEmail.companyName || referencedEmail.fromName
+                } regarding "${referencedEmail.subject}".`
+              : 'This document has been prepared in accordance with executive specifications and operational standards.'
+          }\n\nClient Directive & Request: "${prompt.trim() || 'Generate comprehensive document structure'}"`;
+        } else if (cleanName.toLowerCase().includes('commercial') || cleanName.toLowerCase().includes('pricing')) {
+          content = `Commercial pricing and billing conditions have been calculated based on current PGS Oman rate structures:\n• All rates quoted in Omani Rials (OMR) exclusive of 5% Oman VAT.\n• Standard 30-day payment credit terms upon submission of certified invoice.\n• Transparent weighbridge and batch manifest tracking provided with every consignment.`;
+        } else if (cleanName.toLowerCase().includes('safety') || cleanName.toLowerCase().includes('hse') || cleanName.toLowerCase().includes('environment') || cleanName.toLowerCase().includes('regulatory')) {
+          content = `Compliance & Environmental Certification:\n• Environment Authority License: #EA-WM-4092\n• Civil Defence & Ambulance Authority (CDAA) Permit: #CDAA-SH-8821\n• ISO 14001:2015 & ISO 45001:2018 certified management system.\n• Full compliance with Be’ah guidelines and Royal Decree No. 114/2001 (Law on Conservation of the Environment).`;
+        } else if (cleanName.toLowerCase().includes('sla') || cleanName.toLowerCase().includes('timeline')) {
+          content = `Operational Turnaround & SLA Commitments:\n• Rapid mobilization within 24 hours of receiving formal purchase order or written notice.\n• 24/7 dedicated dispatch coordinator for container placement, swap, and collection.\n• Monthly consolidated recycling and environmental compliance certificates provided.`;
+        } else {
+          content = `Detailed operational specifications and execution methodologies are aligned with client requirements.\n• Specific user prompt directive: "${prompt.trim() || 'Execute standard operational methodology.'}"\n• Quality assurance verified by PGS Oman Technical Operations Committee.`;
+        }
+      }
+
+      return {
+        sectionNumber: idx + 1,
+        title: cleanName,
+        content,
+        verifiedCompliance: '100% Compliant with Client Directive',
+      };
+    });
+
+    const structuredResponse = {
+      documentId: docId,
+      documentTitle: docTitle,
+      documentSubtitle: docSubtitle,
+      referenceNumber: refNumber,
+      date: responseDate,
+      preparedFor: {
+        company: referencedEmail?.companyName || referencedEmail?.fromName || 'Valued Client Organization',
+        contactPerson: referencedEmail?.fromName || 'Procurement & Operations Committee',
+        email: referencedEmail?.fromEmail || 'client@company.om',
+        tenderOrRfqRef: referencedEmail?.subject || 'Direct Client Ingestion',
+      },
+      preparedBy: {
+        company: companyProfile.fullLegalName || 'PGS Oman — Premier Green Environmental LLC',
+        manager: companyProfile.managerName || 'Ahmed Al Kindi',
+        title: companyProfile.managerTitle || 'General Manager · PGS Oman',
+        phone: companyProfile.phone || '+968 2450 8800',
+        email: companyProfile.email || 'proposals@pgsoman.com',
+        location: companyProfile.location || 'Muscat & Sohar Industrial Estate, Sultanate of Oman',
+      },
+      executiveSummary: [
+        `Document custom-generated based on: "${prompt.trim() || docTitle}".`,
+        referencedEmail
+          ? `Cross-referenced with client email from ${referencedEmail.companyName || referencedEmail.fromName} (${referencedEmail.subject}).`
+          : 'Generated from scratch without external dependencies.',
+        chosenTemplate
+          ? `Structured using template: ${chosenTemplate.title}.`
+          : 'Structured using modern executive multi-section proposal standard.',
+      ],
+      commercialTable: {
+        title: 'Commercial Rate Schedule & Cost Summary',
+        items: [
+          {
+            serviceItem: 'Primary Scope of Service / Scheduled Execution',
+            qtyFreq: 'Monthly / Per Scope',
+            monthlyTotal: 'As Quoted / Per Rate Card',
+          },
+          {
+            serviceItem: 'Environmental Compliance Documentation & Monthly EA Certification',
+            qtyFreq: 'Included',
+            monthlyTotal: '0.000 OMR',
+          },
+        ],
+        totalSummary: 'As specified in proposal terms',
+      },
+      sections: constructedSections,
+      sourceMode: chosenTemplate ? 'from_template' : 'from_scratch',
+      usedTemplateId: chosenTemplate?.templateId || null,
+      referencedEmailId: referencedEmail?.id || null,
+    };
+
+    const pdfOut = await generateResponsePdfBuffer(structuredResponse);
+    structuredResponse.pdfFileName = pdfOut.fileName;
+    structuredResponse.pdfSavedPath = pdfOut.savedPath;
+    structuredResponse.pdfSize = pdfOut.buffer.length;
+
+    // Save into documents store so it's fully accessible for preview, download, and email attachment
+    const newDocRecord = {
+      documentId: docId,
+      filename: pdfOut.fileName,
+      mimeType: 'application/pdf',
+      docType: 'pdf',
+      fileSize: pdfOut.buffer.length,
+      pageCount: Math.max(2, Math.ceil(constructedSections.length / 2)),
+      totalWords: constructedSections.reduce((acc, s) => acc + (s.content || '').split(/\s+/).length, 0),
+      isScanned: false,
+      ocrUsed: false,
+      extractedAt: new Date().toISOString(),
+      linkedEmailIds: referencedEmail ? [referencedEmail.id] : [],
+      generatedResponse: structuredResponse,
+    };
+
+    store.documents[docId] = newDocRecord;
+    saveDocumentsStore(store);
+
+    // If linked to an email, also attach it directly to that email's draft so the user can send it right away!
+    if (referencedEmail) {
+      referencedEmail.draft = referencedEmail.draft || {};
+      referencedEmail.draft.attachedDocument = {
+        documentId: docId,
+        fileName: pdfOut.fileName,
+        documentTitle: docTitle,
+        referenceNumber: refNumber,
+        pdfUrl: `/api/documents/${docId}/pdf`,
+        pdfSize: pdfOut.buffer.length,
+        totalSummary: structuredResponse.commercialTable.totalSummary,
+        generatedAt: new Date().toISOString(),
+      };
+      saveDb(db);
+    }
+
+    res.json({
+      message: 'PDF Document generated successfully!',
+      document: newDocRecord,
+      generatedResponse: structuredResponse,
+      pdfUrl: `/api/documents/${docId}/pdf`,
+      email: referencedEmail || null,
+      emails: db.emails,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 29. Generate a Realistic Multi-Page Tender PDF (e.g. 5, 18, 50, or 80 pages) and Simulate Incoming Email
 app.post('/api/documents/simulate-multipage-tender', async (req, res) => {
   try {
     const db = getDb();
@@ -1632,6 +1969,251 @@ async function ensureOqClientDemoDocumentsPreloaded() {
 
 ensureOqClientDemoDocumentsPreloaded();
 
+// Helper to call Google Gemini 3.x models with automatic failover across active models
+async function callResilientGeminiJson({ apiKey, preferredModel, systemPrompt, userPrompt, temperature = 0.3 }) {
+  const deadModels = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-pro', 'gemini-3.8-flash'];
+  const cleanPreferred = preferredModel && !deadModels.includes(preferredModel) ? preferredModel : 'gemini-3.5-flash-lite';
+  const candidateModels = [
+    cleanPreferred,
+    ...['gemini-3.5-flash-lite', 'gemini-3.1-flash-lite', 'gemini-3.5-flash', 'gemini-3.6-flash', 'gemini-3-flash-preview'].filter(
+      (m) => m !== cleanPreferred
+    ),
+  ];
+
+  let lastErr = null;
+  for (const modelName of candidateModels) {
+    try {
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${encodeURIComponent(apiKey)}`;
+      const bodyPayload = {
+        contents: [{ role: 'user', parts: [{ text: userPrompt }] }],
+        generationConfig: { temperature, responseMimeType: 'application/json' },
+      };
+      if (systemPrompt) {
+        bodyPayload.systemInstruction = { parts: [{ text: systemPrompt }] };
+      }
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bodyPayload),
+        signal: AbortSignal.timeout(12000),
+      });
+
+      if (!response.ok) {
+        const errText = await response.text();
+        lastErr = new Error(`Gemini API (${response.status} on ${modelName}): ${errText.slice(0, 180)}`);
+        continue;
+      }
+
+      const data = await response.json();
+      const parts = data?.candidates?.[0]?.content?.parts || [];
+      const nonThought = parts.filter((p) => !p.thought && typeof p.text === 'string' && p.text.trim());
+      const rawText = (nonThought.length > 0 ? nonThought[nonThought.length - 1].text : parts[0]?.text || '')
+        .replace(/^```(?:json)?\s*/i, '')
+        .replace(/\s*```$/i, '')
+        .trim();
+      if (!rawText) continue;
+
+      return {
+        parsed: JSON.parse(rawText),
+        modelUsed: modelName,
+      };
+    } catch (err) {
+      lastErr = err;
+    }
+  }
+
+  throw lastErr || new Error('Gemini API call failed across candidate models');
+}
+
+// 30. Test Live LLM API Key Connection (Gemini or OpenAI)
+app.post('/api/ai/test', async (req, res) => {
+  try {
+    const db = getDb();
+    const aiSettings = {
+      ...(db.settings?.ai || {}),
+      ...(req.body || {}),
+    };
+    const provider = aiSettings.provider || 'gemini';
+
+    if (provider === 'gemini') {
+      const apiKey = (aiSettings.geminiApiKey || process.env.GEMINI_API_KEY || '').trim();
+      const model = (aiSettings.geminiModel || process.env.GEMINI_MODEL || 'gemini-3.5-flash-lite').trim();
+      if (!apiKey) {
+        return res.status(400).json({ error: 'Please enter a valid Google Gemini API Key.' });
+      }
+      const { modelUsed } = await callResilientGeminiJson({
+        apiKey,
+        preferredModel: model,
+        systemPrompt: '',
+        userPrompt: 'Reply with JSON: {"status":"ok","engine":"Gemini Live"}',
+        temperature: 0.1,
+      });
+      return res.json({
+        ok: true,
+        provider: 'gemini',
+        model: modelUsed,
+        message: `Connected to live Google Gemini (${modelUsed}) successfully!`,
+      });
+    } else if (provider === 'openai') {
+      const apiKey = (aiSettings.openaiApiKey || process.env.OPENAI_API_KEY || '').trim();
+      const model = (aiSettings.openaiModel || process.env.OPENAI_MODEL || 'gpt-4o-mini').trim();
+      if (!apiKey) {
+        return res.status(400).json({ error: 'Please enter a valid OpenAI API Key.' });
+      }
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model,
+          temperature: 0.1,
+          response_format: { type: 'json_object' },
+          messages: [{ role: 'user', content: 'Reply with JSON: {"status":"ok","engine":"OpenAI Live"}' }],
+        }),
+      });
+      if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`OpenAI API Error (${response.status}): ${errText.slice(0, 200)}`);
+      }
+      return res.json({
+        ok: true,
+        provider: 'openai',
+        model,
+        message: `Connected to live OpenAI (${model}) successfully!`,
+      });
+    }
+
+    return res.status(400).json({ error: 'Select Google Gemini or OpenAI to test a live API key.' });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// 31. Generate / Refine a Document Section in AI Document Builder using Live LLM
+app.post('/api/ai/generate-section', async (req, res) => {
+  try {
+    const {
+      docTitle = 'Environmental Services Proposal',
+      sectionTitle = 'Executive Summary',
+      currentBody = '',
+      currentFocusTitle = '',
+      currentBullets = [],
+      currentCalloutTitle = '',
+      currentCalloutBody = '',
+      selectedText = '',
+      prompt = '',
+      tone = 'Professional',
+      emailId = null,
+    } = req.body || {};
+
+    const db = getDb();
+    const aiSettings = db.settings?.ai || {};
+    const companyProfile = db.settings?.companyProfile || {};
+    const linkedEmail = emailId ? (db.emails || []).find((e) => e.id === emailId) : null;
+
+    const systemPrompt = `You are an expert proposal & document editor for ${companyProfile.companyName || 'PGS Oman'}.
+Your #1 rule: STRICTLY and DIRECTLY execute the user's instructions ("User Instructions / Prompt") on the provided section content.
+- Make the user's requested edits, additions, replacements, numbers, pricing, names, or rewrites immediately visible right from the first sentence.
+- Do NOT pad with generic company license boilerplate unless the user specifically asks for licensing details.
+- If the user asks to change the section title/heading, update "title"; otherwise keep "${sectionTitle}".
+- If the user asks for specific bullet points, numbers, or callout notes, update "bullets", "focusTitle", "calloutTitle", and "calloutBody" to match.
+- Write in a "${tone}" tone.
+Return strictly valid JSON with these exact keys:
+{
+  "title": "Updated section heading (or keep existing heading if not asked to change)",
+  "body": "Updated section body text directly reflecting the user's prompt (use \\n\\n between paragraphs)",
+  "focusTitle": "Updated subheading for the bullet list",
+  "bullets": ["Updated bullet 1", "Updated bullet 2", "Updated bullet 3"],
+  "calloutTitle": "Updated callout box title",
+  "calloutBody": "Updated 1-2 sentence callout box text"
+}`;
+
+    const userPrompt = `Document Title: ${docTitle}
+Current Section Heading: ${sectionTitle}
+Current Section Body:
+${currentBody}
+Current Bullet Heading: ${currentFocusTitle}
+Current Bullets:
+${(Array.isArray(currentBullets) ? currentBullets : []).map((b, i) => `${i + 1}. ${b}`).join('\n')}
+Current Callout Box: [${currentCalloutTitle}] ${currentCalloutBody}
+${selectedText ? `\nSpecific Highlighted Text Selected by User to Edit:\n"${selectedText}"\n` : ''}
+USER INSTRUCTIONS / PROMPT TO APPLY NOW:
+${prompt || `Improve and refine the "${sectionTitle}" section for "${docTitle}".`}
+${linkedEmail ? `\nReferenced Client Email: From ${linkedEmail.companyName || linkedEmail.fromName} — Subject: ${linkedEmail.subject}\nEmail Body: ${(linkedEmail.bodyText || '').slice(0, 1500)}` : ''}`;
+
+    const geminiKey = (process.env.GEMINI_API_KEY || aiSettings.geminiApiKey || '').trim();
+    const openaiKey = (process.env.OPENAI_API_KEY || aiSettings.openaiApiKey || '').trim();
+
+    if ((aiSettings.provider === 'gemini' || !aiSettings.provider || geminiKey) && geminiKey) {
+      try {
+        const model = process.env.GEMINI_MODEL || aiSettings.geminiModel || 'gemini-3.5-flash-lite';
+        const { parsed, modelUsed } = await callResilientGeminiJson({
+          apiKey: geminiKey,
+          preferredModel: model,
+          systemPrompt,
+          userPrompt,
+          temperature: 0.3,
+        });
+        console.log(`[AI Document Builder] Generated section "${sectionTitle}" via ${modelUsed} for prompt: "${prompt.slice(0, 80)}"`);
+        return res.json({ ...parsed, usedProvider: `Google Gemini (${modelUsed})` });
+      } catch (gemErr) {
+        console.warn('[AI Document Builder Gemini Error]', gemErr.message);
+      }
+    }
+
+    if (aiSettings.provider === 'openai' && openaiKey) {
+      const model = aiSettings.openaiModel || process.env.OPENAI_MODEL || 'gpt-4o-mini';
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${openaiKey}`,
+        },
+        body: JSON.stringify({
+          model,
+          temperature: 0.3,
+          response_format: { type: 'json_object' },
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userPrompt },
+          ],
+        }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        const rawText = data?.choices?.[0]?.message?.content;
+        if (rawText) {
+          const parsed = JSON.parse(rawText);
+          return res.json({ ...parsed, usedProvider: `OpenAI (${model})` });
+        }
+      }
+    }
+
+    // Fallback when no live LLM key is configured yet
+    return res.json({
+      title: sectionTitle,
+      body: `${prompt.trim()}\n\n${currentBody}`,
+      focusTitle: currentFocusTitle || 'Key focus areas',
+      bullets:
+        Array.isArray(currentBullets) && currentBullets.length > 0
+          ? [prompt.trim().slice(0, 120), ...currentBullets.slice(0, 2)]
+          : [
+              `Execute ${sectionTitle.toLowerCase()} in alignment with project brief.`,
+              'Maintain 24/7 operational readiness across Muscat and Sohar industrial hubs.',
+              'Provide transparent monthly reporting, weighbridge tickets, and HSE compliance certificates.',
+            ],
+      calloutTitle: currentCalloutTitle || 'Key note',
+      calloutBody: currentCalloutBody || prompt.trim().slice(0, 160),
+      usedProvider: 'Smart Built-In Engine',
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 // Serve built frontend in production / single-click mode
 const distDir = path.join(__dirname, '..', 'dist');
@@ -1645,7 +2227,7 @@ if (fs.existsSync(distDir)) {
 }
 
 const PORT = process.env.PORT || 3005;
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`==================================================================`);
   console.log(`  PGS Oman — Complete Manager Virtual Assistant Dashboard`);
   console.log(`  Backend API Server listening on http://localhost:${PORT}`);
